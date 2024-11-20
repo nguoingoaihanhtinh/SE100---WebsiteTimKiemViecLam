@@ -7,32 +7,34 @@ const jobRoute = express.Router();
  * @swagger
  * /api/jobs:
  *   get:
- *     summary: Get all jobs with pagination or a specific job by job_id
+ *     summary: Retrieve jobs with optional pagination and filtering by job type
+ *     tags:
+ *       - Jobs
  *     parameters:
  *       - name: page
  *         in: query
- *         description: The page number to retrieve (default is 1)
+ *         description: Page number for pagination (default is 1)
  *         required: false
  *         schema:
  *           type: integer
  *           example: 1
  *       - name: limit
  *         in: query
- *         description: The number of jobs to retrieve per page (default is 10)
+ *         description: Number of jobs per page (default is 10)
  *         required: false
  *         schema:
  *           type: integer
  *           example: 10
- *       - name: job_id
+ *       - name: typeSlt
  *         in: query
- *         description: The job ID to retrieve a specific job. If not provided, all jobs are retrieved.
+ *         description: Filter jobs by job type (e.g., Technology, Sales)
  *         required: false
  *         schema:
- *           type: integer
- *           example: 3
+ *           type: string
+ *           example: Technology
  *     responses:
  *       200:
- *         description: List of jobs or a specific job with pagination metadata
+ *         description: Successfully retrieved jobs
  *         content:
  *           application/json:
  *             schema:
@@ -44,11 +46,11 @@ const jobRoute = express.Router();
  *                   example: 1
  *                 totalPages:
  *                   type: integer
- *                   description: The total number of pages
+ *                   description: Total number of pages available
  *                   example: 5
  *                 totalJobs:
  *                   type: integer
- *                   description: The total number of jobs
+ *                   description: Total number of jobs available
  *                   example: 50
  *                 jobs:
  *                   type: array
@@ -57,53 +59,81 @@ const jobRoute = express.Router();
  *                     properties:
  *                       id:
  *                         type: integer
- *                         description: The job ID
+ *                         description: Unique identifier for the job
  *                         example: 1
  *                       title:
  *                         type: string
- *                         description: The job title
+ *                         description: Title of the job
  *                         example: Software Engineer
  *                       rating:
  *                         type: number
- *                         description: The job rating
+ *                         description: Average rating of the job
  *                         example: 4.5
  *                       location:
  *                         type: string
- *                         description: The job location
+ *                         description: Location of the job
  *                         example: New York
  *                       position:
  *                         type: string
- *                         description: The job position
+ *                         description: Job position (e.g., Full-time, Part-time)
  *                         example: Full-time
  *                       experience:
  *                         type: string
- *                         description: The experience required for the job
+ *                         description: Required experience for the job
  *                         example: 3+ years
  *                       schedule:
  *                         type: string
- *                         description: The work schedule
+ *                         description: Work schedule (e.g., Flexible, Fixed)
  *                         example: Flexible
  *                       type:
  *                         type: string
- *                         description: The type of job
- *                         example: Permanent
+ *                         description: Job type (e.g., Technology, Sales)
+ *                         example: Technology
  *                       salary:
  *                         type: string
- *                         description: The salary for the job
+ *                         description: Salary range for the job
  *                         example: $80,000 - $100,000
  *                       paymentBy:
  *                         type: string
- *                         description: How the payment is made
+ *                         description: Payment frequency (e.g., Monthly, Weekly)
  *                         example: Monthly
  *                       company_id:
  *                         type: integer
- *                         description: The company ID for the job
+ *                         description: Unique identifier for the company offering the job
  *                         example: 1
+ *       400:
+ *         description: Invalid query parameters (e.g., invalid page or limit values)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
+ *                   example: Invalid query parameters
+ *       404:
+ *         description: No jobs found matching the specified filters
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
+ *                   example: Job type not found
  *       500:
- *         description: Failed to fetch jobs
- *   responses:
- *     500:
- *       description: Internal server error
+ *         description: Internal server error occurred while fetching jobs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
+ *                   example: Failed to fetch jobs
  */
 
 jobRoute.route('/jobs').get(JobController.getAllJobs);

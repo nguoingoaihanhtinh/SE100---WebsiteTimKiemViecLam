@@ -1,60 +1,88 @@
+import Company from "../models/CompanyModel.js";
 import Job from "../models/JobModel.js";
 import JobType from "../models/JobTypeModel.js";
 
 
 export const getAllJobs = async (req, res) => {
-    try {
-      const { page = 1, limit = 10, job_id = null } = req.query;  // Default job_id is null to fetch all jobs
-      const offset = (page - 1) * limit;
-  
-      let jobs;
-      let totalJobs;
-  
-      if (job_id) {
-        // If job_id is provided, fetch that specific job
-        jobs = await Job.findAll({
-          where: { id: job_id },  // Filter by job_id
-          limit: 1,  // Only one job should be returned
-        });
-        totalJobs = jobs.length;  // Only one job will be found, so totalJobs will be 1
-      } else {
-        // Otherwise, fetch all jobs with pagination
-        jobs = await Job.findAll({
-          limit: parseInt(limit),
-          offset: parseInt(offset),
-        });
-        totalJobs = await Job.count();  // Count all jobs
+  try {
+    const { page = 1, limit = 10, typeSlt = null } = req.query;
+    const offset = (page - 1) * limit;
+
+    let whereClause = {}; // Default: no filter
+
+    if (typeSlt) {
+      // console.log('Looking for job type:', typeSlt);
+      try {
+        const jobType = await JobType.findOne({ where: { name: typeSlt } });
+        if (!jobType) {
+          console.log('Job type not found');
+          return res.status(404).json({ error: 'Job type not found' });
+        }
+        whereClause.jobType_id = jobType.id;
+      } catch (jobTypeError) {
+        console.error('Error finding JobType:', jobTypeError);
+        return res.status(500).json({ error: 'Failed to find job type' });
       }
-  
-      const totalPages = job_id ? 1 : Math.ceil(totalJobs / limit);  // If job_id, only one page
-  
-      res.json({
-        currentPage: page,
-        totalPages: totalPages,
-        totalJobs: totalJobs,
-        jobs: jobs,
-      });
-    } catch (err) {
-      console.error('Error fetching jobs:', err);
-      res.status(500).json({ error: 'Failed to fetch jobs' });
     }
+
+    // console.log('whereClause:', whereClause);
+    
+    const jobs = await Job.findAll({
+      where: whereClause,
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
+      include: [ { model: JobType, as: 'jobType', attributes: ['name'] },
+                { model: Company, as: 'company', attributes: ['img', 'name'] },
+              ]
+    });    
+
+    const totalJobs = await Job.count({ where: whereClause });
+    const totalPages = Math.ceil(totalJobs / limit);
+
+    res.json({
+      status: 'success',
+      data: jobs,
+      pagination: {
+        currentPage: parseInt(page, 10),
+        pageSize: limit,
+        totalJobs,
+        totalPages
+      }
+    });
+  } catch (err) {
+    console.error('Error fetching jobs:', err);
+    res.status(500).json({ error: 'Failed to fetch jobs' });
+  }
 };
+
 export const getAllJobTypes = async (req, res) => {
-    try {
-      const jobTypes = await JobType.findAll(); // Fetch all job types from the database
-      return res.status(200).json({
-        success: true,
-        message: 'Job types fetched successfully',
-        data: jobTypes
-      });
-    } catch (error) {
-      console.error('Error fetching job types:', error);
-      return res.status(500).json({
+  try {
+    // Fetch all job types from the database
+    const jobTypes = await JobType.findAll(); // Make sure JobType is correctly defined in your models
+
+    // If no job types found, return an appropriate message
+    if (jobTypes.length === 0) {
+      return res.status(404).json({
         success: false,
-        message: 'Failed to fetch job types',
-        error: error.message
+        message: 'No job types found'
       });
     }
+
+    // Return successful response with the fetched job types
+    return res.status(200).json({
+      success: true,
+      message: 'Job types fetched successfully',
+      data: jobTypes
+    });
+  } catch (error) {
+    // Log error and send back a response with the error details
+    console.error('Error fetching job types:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch job types',
+      error: error.message
+    });
+  }
   };
 
 // controllers/jobController.js

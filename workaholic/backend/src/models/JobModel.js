@@ -1,6 +1,8 @@
 // models/Job.js
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
+import JobType from './JobTypeModel.js';
+import Company from './CompanyModel.js';
 
 const Job = sequelize.define('Job', {
   id: {
@@ -55,7 +57,7 @@ const Job = sequelize.define('Job', {
   jobType_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'JobType',  // Referring to the JobType model
+      model: 'job_type',  // Referring to the JobType model
       key: 'id',
     },
     allowNull: false,
@@ -64,5 +66,12 @@ const Job = sequelize.define('Job', {
   tableName: 'job', // Specify the actual table name in the database
   timestamps: false,
 });
+
+Job.belongsTo(JobType, { foreignKey: 'jobType_id', as: 'jobType' });
+JobType.hasMany(Job, { foreignKey: 'jobType_id' });
+
+Job.belongsTo(Company, { foreignKey: 'company_id', as: 'company' });
+Company.hasMany(Job, { foreignKey: 'company_id' });
+
 
 export default Job;
