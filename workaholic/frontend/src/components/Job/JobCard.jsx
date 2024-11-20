@@ -4,40 +4,49 @@ import Rating from "../Rating/Rating";
 import { useState } from "react";
 
 export const JobCard = ({ jobData }) => {
-const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
   function formatCurrency(amount) {
     return amount.toLocaleString().replace(/\./g, ",");
   }
 
-  // Function to determine background color based on job position
-  const getJobCardBackground = (position) => {
-    
-    switch (position.toLowerCase()) {
-      case "frontend developer":
-        return "bg-yellow-50"; // Yellow for frontend
-      case "backend developer":
-        return "bg-cyan-50"; // Blue for backend
-      case "business analyst":
-        return "bg-green-50"; // Green for BA
-      case "designer":
-        return "bg-pink-50"; // Pink for designer
-      case "product manager":
-        return "bg-gray-50";
+  // Function to determine background color based on job type (industry/field)
+  const getJobCardBackground = (jobType) => {
+    if (!jobType || !jobType.name) {
+      // console.log("Invalid jobType:", jobType); // Logging invalid jobType values
+      return "bg-white"; // Return default if jobType or name is missing
+    }
+
+    switch (jobType.name) {
+      case "Sales":
+        return "bg-yellow-50"; // Yellow for Sales
+      case "Technology":
+        return "bg-cyan-50"; // Cyan for Technology
+      case "Bank":
+        return "bg-green-50"; // Green for Bank
+      case "Marketing":
+        return "bg-pink-50"; // Pink for Marketing
+      case "Estate":
+        return "bg-gray-50"; // Gray for Estate
+      case "Service":
+        return "bg-red-50"; // Red for Service
+      case "Human Resource":
+        return "bg-orange-50"; // Orange for HR
       default:
-        return "bg-white"; // Default background
+        return "bg-white"; // Default background if no match
     }
   };
   const handleBookmarkClick = () => {
     setIsBookmarked(!isBookmarked);
   };
   return (
-    <div className={`border-[1px] border-black-50 transition-all duration-500 hover:shadow-xl cursor-pointer overflow-hidden rounded-xl ${getJobCardBackground(jobData.position)}`}>
+    <div className={`border-[1px] border-black-50 transition-all duration-500 hover:shadow-xl cursor-pointer overflow-hidden rounded-xl ${getJobCardBackground(jobData.jobType)}`}>
       <div className="overflow-hidden">
         <div className="content flex flex-col  m-3 rounded-xl">
           <div className="top flex justify-between p-5">
             <div className="icon">
               <img
-                src={jobData.img}
+                src={jobData.company.img}
                 alt="No image"
                 className="mx-auto rounded-xl w-10 h-10 object-cover transition duration-700 hover:skew-x-2 "
               />
