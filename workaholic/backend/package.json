@@ -18,11 +18,14 @@
     "express": "^4.21.1",
     "mysql2": "^3.11.4",
     "open": "^10.1.0",
-    "sequelize": "^6.37.5",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "sequelize": "^6.37.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "@types/express": "^4.17.21",
+    "@types/sequelize": "^4.28.20",
+    "sequelize-cli": "^6.6.2"
   }
 }

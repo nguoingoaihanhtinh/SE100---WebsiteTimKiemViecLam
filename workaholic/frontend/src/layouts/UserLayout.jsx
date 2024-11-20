@@ -9,7 +9,7 @@ const UserLayout = () => {
       <div className="mt-50 w-full ">
         <Outlet />
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };
