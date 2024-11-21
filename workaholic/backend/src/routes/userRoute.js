@@ -4,5 +4,7 @@ import * as authController from "../controllers/authController.js";
 const userRouter = express.Router();
 
 userRouter.post("/login", authController.login);
+userRouter.post("/register", authController.register);
+userRouter.get("/checkjwt", authController.checkUserSession);
 
 export default userRouter;

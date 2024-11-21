@@ -5,13 +5,23 @@ import sequelize from "./config/database.js";
 import routes from "./routes/index.js";
 import setupSwagger from "./swagger.js";
 import open from "open";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
 const server = express();
+// Parse application/json
+server.use(bodyParser.json());
 
+// Parse application/x-www-form-urlencoded
+server.use(bodyParser.urlencoded({ extended: true }));
 server.use(express.json());
-server.use(cors());
+server.use(
+  cors({
+    origin: "http://localhost:3000", // Frontend origin
+    credentials: true, // Allow cookies and credentials
+  })
+);
 
 sequelize
   .authenticate()
