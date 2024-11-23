@@ -5,7 +5,7 @@ const jobApi = {
     getAllJobs: async (paging,limit,type) => {
         let query = `/jobs?page=${paging}&limit=${limit}`
         if(type && type != "All"){
-            query += `&type=${type}`
+            query += `&typeSlt=${type}`
         }
         const response = await request.get(query);
         return response.data;
