@@ -2,7 +2,7 @@
 import { FaMagnifyingGlass } from "react-icons/fa6";
 export default function SearchBox() {
   return (
-    <div className="w-full md:w-[500px] bg-gray-50 rounded-full  flex items-center relative border ">
+    <div className="w-full  bg-gray-50 rounded-full  flex items-center relative border ">
       <input
         placeholder="Find job ..."
         className="w-full text-text/md/regular  bg-transparent outline-none px-4 md:px-6 py-3 placeholder-gray-600 placeholder-opacity-100"

@@ -87,6 +87,11 @@ export const JobCard = ({ jobData }) => {
                   <p className="text-center">{jobData.type}</p>
                 </div>
               </div>
+              <div className=" items-center ">
+                  <div className="position border border-gray-500 rounded-2xl min-h-10 min-w-20 w-full flex justify-center items-center p-2 hover:scale-105 " >
+                    <p className="text-center font-semibold ">{jobData.jobType.name}</p>
+                  </div>
+              </div>
             </div>
           </div>
         </div>
