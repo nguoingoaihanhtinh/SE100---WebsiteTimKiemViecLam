@@ -53,10 +53,10 @@ const SortBar = () => {
   };
 
   return (
-    <div className="flex gap-12 items-center">
+    <div className="flex gap-10 items-center">
       {/* Positions Dropdown */}
       <Dropdown overlay={createMenu(positions, setSelectedItem, 'Positions')} trigger={['click']}>
-        <Button className="flex items-center gap-2 text-2xl min-h-[60px] min-w-[300px] border-r-2 pr-4">
+        <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[18%] border-r-2 pr-4">
           <FaUserTie />
           {selectedPosition}
           <FaCaretDown className="ml-2" />
@@ -65,7 +65,7 @@ const SortBar = () => {
 
       {/* Place Dropdown */}
       <Dropdown overlay={createMenu(place, setSelectedItem, 'Location')} trigger={['click']}>
-        <Button className="flex items-center gap-2 text-2xl min-h-[60px] min-w-[300px] border-r-2 pr-4">
+        <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[18%] border-r-2 pr-4">
           <FaMapLocation />
           {selectedLocation}
           <FaCaretDown className="ml-2" />
@@ -74,18 +74,18 @@ const SortBar = () => {
 
       {/* Experience Dropdown */}
       <Dropdown overlay={createMenu(experience, setSelectedItem, 'Experience')} trigger={['click']}>
-        <Button className="flex items-center gap-2 text-2xl min-h-[60px] min-w-[300px] border-r-2 pr-4">
+        <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[18%] border-r-2 pr-4">
           <FaBriefcase />
           {selectedExperience}
           <FaCaretDown className="ml-2" />
         </Button>
       </Dropdown>
 
-      <div className="Salary flex gap-10">
+      <div className="Salary flex gap-10 basis-[46%] items-center">
         {/* Payment By Dropdown */}
         <div className="button">
           <Dropdown overlay={createMenu(paymentBy, setSelectedItem, 'Payment')} trigger={['click']}>
-            <Button className="flex items-center gap-2 text-2xl min-h-[60px] min-w-[300px]">
+            <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[18%]">
               <FaMoneyBill1Wave />
               {selectedPayment}
               <FaCaretDown className="ml-2" />
@@ -94,7 +94,7 @@ const SortBar = () => {
         </div>
 
         {/* Slider */}
-        <div className="slider w-full min-w-[300px] border rounded-xl px-3">
+        <div className="slider w-full basis-[60%] border rounded-xl px-3">
           <Slider
             range
             min={5000000}
