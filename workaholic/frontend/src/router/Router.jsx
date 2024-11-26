@@ -4,6 +4,7 @@ import HomePage from "../pages/HomePage/HomePage";
 import JobListPage from "../pages/JobListPage/JobListPage";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import RegisterPage from "../pages/RegisterPage/RegisterPage";
+import SearchPage from "../pages/SearchPage/SearchPage";
 
 const Router = createBrowserRouter(
   createRoutesFromElements(
@@ -11,6 +12,7 @@ const Router = createBrowserRouter(
       <Route path="*" element={<UserLayout />}>
         <Route index element={<HomePage />} />
         <Route path="category" element={<JobListPage />} />
+        <Route path="search" element={<SearchPage />} />
       </Route>
       <Route path="login" element={<LoginPage />} />
       <Route path="register" element={<RegisterPage />} />

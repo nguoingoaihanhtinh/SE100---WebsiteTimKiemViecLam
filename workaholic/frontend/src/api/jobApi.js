@@ -15,5 +15,10 @@ const jobApi = {
         const response = await request.get(query);
         return response.data;
     },
+    searchJob: async (paging, limit, keyword) => {
+        const query = `/jobs/search?page=${paging}&limit=${limit}&kw=${encodeURIComponent(keyword)}`;
+        const response = await request.get(query);
+        return response.data;
+    },
 };
 export default jobApi;

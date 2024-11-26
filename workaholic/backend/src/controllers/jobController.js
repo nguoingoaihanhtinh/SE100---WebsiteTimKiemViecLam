@@ -1,6 +1,7 @@
 import Company from "../models/CompanyModel.js";
 import Job from "../models/JobModel.js";
 import JobType from "../models/JobTypeModel.js";
+import { Op } from "sequelize";
 
 export const getAllJobs = async (req, res) => {
   try {
@@ -85,35 +86,66 @@ export const getAllJobTypes = async (req, res) => {
   }
 };
 
-// controllers/jobController.js
-
-export const getJobByName = async (req, res) => {
-  const { name } = req.params;
-  const { page = 1, limit = 10 } = req.query; // Pagination params
-
+export const searchJob = async (req, res) => {
   try {
+    const { page = 1, limit = 10, kw = "" } = req.query;
     const offset = (page - 1) * limit;
 
+    // Search for jobs by title only
     const jobs = await Job.findAll({
-      where: { title: { [Op.like]: `%${name}%` } }, // Search for jobs with similar names
-      limit: parseInt(limit),
-      offset: parseInt(offset),
+      where: {
+        title: { [Op.like]: `%${kw}%` }, // Only filter jobs by title
+      },
+      include: [
+        {
+          model: Company,
+          as: "company",
+          required: false, // Ensure jobs without a company are still included
+          attributes: ["name", "img"], // Only fetch name and img from the company
+        },
+        {
+          model: JobType,
+          as: "jobType",
+          required: false, // Ensure jobs without a company are still included
+          attributes: ["name"], // Only fetch name and img from the company
+        },
+      ],
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
     });
 
+    // Count the total number of jobs matching the search criteria
     const totalJobs = await Job.count({
-      where: { title: { [Op.like]: `%${name}%` } },
+      where: {
+        title: { [Op.like]: `%${kw}%` }, // Only count jobs with matching titles
+      },
+      include: [
+        {
+          model: Company,
+          as: "company",
+          required: false,
+        },
+      ],
     });
 
     const totalPages = Math.ceil(totalJobs / limit);
 
+    // Return the jobs and pagination info
     res.json({
-      currentPage: page,
-      totalPages: totalPages,
-      totalJobs: totalJobs,
-      jobs: jobs,
+      status: "success",
+      data: jobs,
+      pagination: {
+        currentPage: parseInt(page, 10),
+        pageSize: parseInt(limit, 10),
+        totalJobs,
+        totalPages,
+      },
     });
   } catch (err) {
-    console.error("Error fetching job:", err);
-    res.status(500).json({ error: "Failed to fetch job" });
+    console.error("Error searching jobs:", err);
+    res.status(500).json({ error: "Failed to search jobs" });
   }
 };
+
+
+

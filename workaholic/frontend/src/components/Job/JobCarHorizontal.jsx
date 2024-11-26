@@ -5,7 +5,7 @@ import Rating from "../Rating/Rating";
 
 export const JobCardHorizontal = ({ jobData }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
-
+  // console.log('data',jobData);
   // Format the currency to include commas
   function formatCurrency(amount) {
     return amount.toLocaleString().replace(/\./g, ",");
@@ -23,7 +23,7 @@ export const JobCardHorizontal = ({ jobData }) => {
       {/* Job Image */}
       <div className="flex-shrink-0">
         <img
-          src={jobData.img}
+          src={jobData.company?.img}
           alt="No image"
           className="rounded-xl w-16 h-16 object-cover"
         />
