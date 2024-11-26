@@ -33,7 +33,7 @@ const createMenu = (items, setSelectedItem, label) => (
 
 const SortBar = ({ onFilterChange }) => {
   const [salaryRange, setSalaryRange] = useState([5000000, 200000000]);
-  const [selectedJobType, setSelectedJobType] = useState('Job Type');
+  const [selectedJobType, setSelectedJobType] = useState('');  // Default to blank
   const [selectedLocation, setSelectedLocation] = useState('Location');
   const [selectedExperience, setSelectedExperience] = useState('Experience');
   const [selectedPayment, setSelectedPayment] = useState('Payment');
@@ -48,7 +48,7 @@ const SortBar = ({ onFilterChange }) => {
       selectedExperience,
       selectedPayment,
     },
-    3000 // Debounce delay in milliseconds
+    300 // Debounce delay in milliseconds
   );
 
   const debouncedOnFilterChange = useCallback(() => {
@@ -86,7 +86,7 @@ const SortBar = ({ onFilterChange }) => {
       <Dropdown overlay={createMenu(jobTypes.length > 0 ? jobTypes : ['No job types available'], setSelectedItem, 'Job Type')} trigger={['click']}>
         <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[18%] border-r-2 pr-4">
           <FaUserTie />
-          {selectedJobType}
+          {selectedJobType || 'Job Type'} {/* Display blank if no job type selected */}
           <FaCaretDown className="ml-2" />
         </Button>
       </Dropdown>

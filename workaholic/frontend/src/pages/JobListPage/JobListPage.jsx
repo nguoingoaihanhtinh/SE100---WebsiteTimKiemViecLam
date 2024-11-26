@@ -33,19 +33,21 @@ const JobListPage = () => {
   useEffect(() => {
     getAllJobs();
   }, [filters.selectedJobType, page]); // Fetch jobs when filters or page changes
-  console.log('Selected Job Type:', filters.selectedJobType);
+  // console.log('Selected Job Type:', filters.selectedJobType);
   // Filter jobs based only on the selected job type
   const jobTypeFilteredJobs = jobs.filter((job) => {
     return filters.selectedJobType && filters.selectedJobType !== '' && filters.selectedJobType !== 'Job Type'
       ? job.type === filters.selectedJobType
       : true;
   });
-  console.log('jobs',jobTypeFilteredJobs)
-  console.log('All Jobs:', jobs); 
+  // console.log('jobs',jobTypeFilteredJobs)
+ 
 
   const handleFilterChange = (newFilters) => {
-    setFilters(newFilters);
-    setPage(1); // Reset page to 1 when filters change
+    if (JSON.stringify(filters) !== JSON.stringify(newFilters)) {
+      setFilters(newFilters);
+      setPage(1);
+    }
   };
 
   return (

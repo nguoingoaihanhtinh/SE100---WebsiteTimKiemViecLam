@@ -7,6 +7,8 @@ import { CompanyCardHorizontal } from '../../components/Company/CompanyCardHoriz
 import SmallBanner from './SmallBanner';
 import Banner2 from './Banner2';
 import jobApi from '../../api/jobApi';
+import { Link } from 'react-router-dom';
+import JobListPage from '../JobListPage/JobListPage';
 export const fakeCompany = [
   {
     id: 1,
@@ -52,7 +54,7 @@ const HomeContent = () => {
 
   const getAllJobType = async ()=> {
     const response = await jobApi.getAllJobTypes()
-    console.log(response.data)
+    // console.log(response.data)
     if(response.status === "success"){
       setJobTypes(response.data);
     }
@@ -62,7 +64,7 @@ const HomeContent = () => {
   },[])
   const getAllJobs= async () => {
     const response = await jobApi.getAllJobs(page,4,jobTypes)
-    console.log(response.data)
+    // console.log(response.data)
     if(response.status === "success"){
       setJobs(response.data);
       setTotal(response.pagination.totalItems)
@@ -78,14 +80,16 @@ const HomeContent = () => {
         <header className="font-serif text-4xl font-medium my-4 text-blue-950">
           Recommended Jobs
         </header>
-        <div className="group flex items-center gap-4 cursor-pointer">
-          <p className="font-semibold group-hover:underline transition-all">
-            View all
-          </p>
-          <div className="px-2 py-2 rounded-full cursor-pointer group-hover:bg-orange-600 transition-all bg-primary-color text-white">
-            <FaAngleRight className="text-lg" />
+        <Link to={"/category"}>
+          <div className="group flex items-center gap-4 cursor-pointer">
+            <p className="font-semibold group-hover:underline transition-all text-primary-color">
+              View all
+            </p>
+            <div className="px-2 py-2 rounded-full cursor-pointer group-hover:bg-orange-600 transition-all bg-primary-color text-white">
+              <FaAngleRight className="text-lg" />
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
       <div className="grid grid-cols-3 gap-5">
       {jobs.map((job) => (
