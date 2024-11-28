@@ -18,6 +18,10 @@ const Company = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    feild: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     description: {
       type: DataTypes.STRING,
       allowNull: false,

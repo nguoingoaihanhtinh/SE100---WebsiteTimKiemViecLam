@@ -33,9 +33,13 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      salary: {
+      salary_from: {
         type: Sequelize.INTEGER,
         allowNull: false,
+      },
+      salary_to: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
       },
       valid_date: {
         type: Sequelize.STRING,
