@@ -45,7 +45,7 @@ export const register = async (req, res) => {
 
     // Create new user
     const newUser = await User.create({
-      userName,
+      user_name: userName,
       email,
       password: hashedPassword,
       role,
@@ -107,7 +107,7 @@ export const checkUserSession = async (req, res) => {
       message: "Session active",
       user: {
         id: user.id,
-        userName: user.userName,
+        user_name: user.user_name,
         email: user.email,
         role: user.role,
       },

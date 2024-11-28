@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 function UserSection() {
   const { userData, isLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
+  console.log(userData);
   return (
     <div className="flex gap-2 md:gap-5 items-center">
       <div className="location flex gap-1 items-center">
@@ -26,7 +27,7 @@ function UserSection() {
         {isLoggedIn && userData && (
           <div className="cursor-pointer flex gap-2 px-4  py-2 rounded-[4px] border-[1px] border-white items-center ">
             <FaUser className="w-4 h-4" />
-            <p>{userData.userName}</p>
+            <p>{userData.user_name}</p>
           </div>
         )}
         <div className="noti w-8 h-8 border rounded-full flex justify-center items-center">

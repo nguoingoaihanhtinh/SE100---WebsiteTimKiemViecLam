@@ -54,7 +54,7 @@ export default function RegisterPage() {
 
   return (
     <div className="!text-gray-800 w-[500px] mx-auto mt-18 border-[1px] border-gray-300 p-8 rounded-[12px]">
-      <header className="text-center text-4xl font-bold text-gray-800 mb-6 dark:text-dark-text">Sign Up</header>
+      <header className="text-center text-4xl font-bold text-gray-800 mb-6 ">Sign Up</header>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex gap-4 items-center">
           <div className="basis-[50%]">
