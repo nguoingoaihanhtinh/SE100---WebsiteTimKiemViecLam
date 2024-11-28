@@ -37,9 +37,13 @@ const Job = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    salary: {
+    salary_from: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    salary_to: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     valid_date: {
       type: DataTypes.STRING,
