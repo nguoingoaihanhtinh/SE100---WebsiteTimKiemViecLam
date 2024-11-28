@@ -4,9 +4,8 @@ import cors from "cors";
 import sequelize from "./config/database.js";
 import routes from "./routes/index.js";
 import setupSwagger from "./swagger.js";
-import open from "open";
 import bodyParser from "body-parser";
-
+import { Notification, User } from "./models/relation.js";
 dotenv.config();
 
 const server = express();

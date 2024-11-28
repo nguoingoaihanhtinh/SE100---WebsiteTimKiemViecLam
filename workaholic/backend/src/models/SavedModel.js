@@ -1,23 +1,21 @@
-// models/JobType.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
-const JobType = sequelize.define(
-  "JobType",
+
+const Saved = sequelize.define(
+  "Saved",
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    user_id: { type: DataTypes.INTEGER, allowNull: false },
+    job_id: { type: DataTypes.INTEGER, allowNull: false },
   },
   {
-    modelName: "jobType",
+    modelName: "saved",
     timestamps: true,
   }
 );
 
-export default JobType;
+export default Saved;

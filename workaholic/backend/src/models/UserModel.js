@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
-
 const User = sequelize.define(
   "User",
   {
@@ -9,7 +8,7 @@ const User = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    userName: {
+    user_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -26,15 +25,22 @@ const User = sequelize.define(
       allowNull: false,
       defaultValue: "User",
     },
+    avatar: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    cv_url: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
-    tableName: "users", // Optional: specify the table name
+    modelName: "user",
     timestamps: true, // Adds createdAt and updatedAt timestamps
   }
 );
-
 export default User;

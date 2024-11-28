@@ -1,40 +1,40 @@
 // models/Company.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
-import Job from "./JobModel.js";
-
-const Company = sequelize.define(
-  "Company",
+import User from "./UserModel.js";
+const Notification = sequelize.define(
+  "Notification",
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    img: {
-      type: DataTypes.STRING,
-    },
-    name: {
+    header: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    description: {
+    content: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    longitude: {
-      type: DataTypes.FLOAT,
-      allowNull: false,
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
-    lattidue: {
-      type: DataTypes.FLOAT,
+    is_global: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    date: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
-    modelName: "company",
+    modelName: "notification",
     timestamps: true,
   }
 );
 
-export default Company;
+export default Notification;

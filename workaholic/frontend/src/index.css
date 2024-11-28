@@ -31,7 +31,6 @@ body {
   min-height: 100vh;
 }
 
-
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -67,4 +66,8 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 0s 600000s, color 0s 600000s !important;
 }
