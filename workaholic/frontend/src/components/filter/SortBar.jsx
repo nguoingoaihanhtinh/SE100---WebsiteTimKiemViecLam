@@ -1,27 +1,24 @@
-import { Button, Dropdown, Menu, Slider } from 'antd'
-import React, { useState } from 'react'
+import { Button, Dropdown, Menu, Slider } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FaBriefcase, FaCaretDown, FaMapLocation, FaMoneyBill1Wave, FaUserTie } from 'react-icons/fa6';
+import jobApi from '../../api/jobApi';
+import useDebounce from '../../hooks/useDebouce';
 
-const positions = [
-  'designer',
-  'frontend dev',
-  'backend dev',
-  'business analyst',
-];
 const place = [
-  'Ho Chi Minh City',
-  'Ha Noi',
-  'Da Nang'
+  'An Giang', 'Bac Giang', 'Bac Kan', 'Bac Lieu', 'Bac Ninh', 'Binh Dinh', 'Binh Duong', 'Binh Phuoc', 'Binh Thuan',
+  'Ca Mau', 'Cao Bang', 'Dak Lak', 'Dak Nong', 'Dien Bien', 'Dong Nai', 'Dong Thap', 'Gia Lai', 'Ha Giang', 'Ha Nam',
+  'Ha Noi', 'Ha Tinh', 'Hau Giang', 'Ho Chi Minh City', 'Hoa Binh', 'Hung Yen', 'Khanh Hoa', 'Kien Giang', 'Kon Tum',
+  'Lai Chau', 'Lang Son', 'Lao Cai', 'Long An', 'Nam Dinh', 'Nghe An', 'Ninh Binh', 'Ninh Thuan', 'Phu Tho', 'Phu Yen',
+  'Quang Binh', 'Quang Nam', 'Quang Ngai', 'Quang Ninh', 'Quang Tri', 'Soc Trang', 'Son La', 'Tay Ninh', 'Thai Binh',
+  'Thai Nguyen', 'Thanh Hoa', 'Thua Thien-Hue', 'Tien Giang', 'Tuyen Quang', 'Vinh Long', 'Vinh Phuc', 'Yen Bai'
 ];
+
 const experience = [
-  'graduated',
-  '1 year',
-  '2+ years'
+  'graduated', '1 year', '2+ years'
 ];
+
 const paymentBy = [
-  'per month',
-  'per year',
-  'per project'
+  'Monthly', 'Yearly', 'per project'
 ];
 
 const createMenu = (items, setSelectedItem, label) => (
@@ -34,38 +31,69 @@ const createMenu = (items, setSelectedItem, label) => (
   </Menu>
 );
 
-const SortBar = () => {
+const SortBar = ({ onFilterChange }) => {
   const [salaryRange, setSalaryRange] = useState([5000000, 200000000]);
-  const [selectedPosition, setSelectedPosition] = useState('Positions');
+  const [selectedJobType, setSelectedJobType] = useState('');  // Default to blank
   const [selectedLocation, setSelectedLocation] = useState('Location');
   const [selectedExperience, setSelectedExperience] = useState('Experience');
   const [selectedPayment, setSelectedPayment] = useState('Payment');
+  const [jobTypes, setJobTypes] = useState([]);
+
+  // Use debounced filters
+  const debouncedFilters = useDebounce(
+    {
+      salaryRange,
+      selectedJobType,
+      selectedLocation,
+      selectedExperience,
+      selectedPayment,
+    },
+    300 // Debounce delay in milliseconds
+  );
+
+  const debouncedOnFilterChange = useCallback(() => {
+    onFilterChange(debouncedFilters);  // Trigger onFilterChange after debounce
+  }, [debouncedFilters, onFilterChange]);
+
+  useEffect(() => {
+    debouncedOnFilterChange(); // Call debounced function when filters change
+  }, [debouncedOnFilterChange]);
+
+  useEffect(() => {
+    const getAllJobType = async () => {
+      const response = await jobApi.getAllJobTypes();
+      if (response.success) {
+        setJobTypes(response.data.map((job) => job.name));
+      }
+    };
+    getAllJobType();
+  }, []);
 
   const onSliderChange = (value) => {
-    setSalaryRange(value);
+    setSalaryRange(value); // Update salary range when slider is changed
   };
 
   const setSelectedItem = (item, label) => {
-    if (label === 'Positions') setSelectedPosition(item);
-    if (label === 'Location') setSelectedLocation(item);
-    if (label === 'Experience') setSelectedExperience(item);
-    if (label === 'Payment') setSelectedPayment(item);
+    if (label === 'Job Type' && item !== selectedJobType) setSelectedJobType(item);
+    if (label === 'Location' && item !== selectedLocation) setSelectedLocation(item);
+    if (label === 'Experience' && item !== selectedExperience) setSelectedExperience(item);
+    if (label === 'Payment' && item !== selectedPayment) setSelectedPayment(item);
   };
 
   return (
     <div className="flex gap-12 items-center">
-      {/* Positions Dropdown */}
-      <Dropdown overlay={createMenu(positions, setSelectedItem, 'Positions')} trigger={['click']}>
-        <Button className="flex items-center gap-2 text-2xl min-h-[60px] min-w-[300px] border-r-2 pr-4">
+      {/* Job Type Dropdown */}
+      <Dropdown overlay={createMenu(jobTypes.length > 0 ? jobTypes : ['No job types available'], setSelectedItem, 'Job Type')} trigger={['click']}>
+        <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[18%] border-r-2 pr-4">
           <FaUserTie />
-          {selectedPosition}
+          {selectedJobType || 'Job Type'} {/* Display blank if no job type selected */}
           <FaCaretDown className="ml-2" />
         </Button>
       </Dropdown>
 
-      {/* Place Dropdown */}
+      {/* Location Dropdown */}
       <Dropdown overlay={createMenu(place, setSelectedItem, 'Location')} trigger={['click']}>
-        <Button className="flex items-center gap-2 text-2xl min-h-[60px] min-w-[300px] border-r-2 pr-4">
+        <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[18%] border-r-2 pr-4">
           <FaMapLocation />
           {selectedLocation}
           <FaCaretDown className="ml-2" />
@@ -74,18 +102,19 @@ const SortBar = () => {
 
       {/* Experience Dropdown */}
       <Dropdown overlay={createMenu(experience, setSelectedItem, 'Experience')} trigger={['click']}>
-        <Button className="flex items-center gap-2 text-2xl min-h-[60px] min-w-[300px] border-r-2 pr-4">
+        <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[18%] border-r-2 pr-4">
           <FaBriefcase />
           {selectedExperience}
           <FaCaretDown className="ml-2" />
         </Button>
       </Dropdown>
 
-      <div className="Salary flex gap-10">
-        {/* Payment By Dropdown */}
+      {/* Salary & Payment Filters */}
+      <div className="Salary flex gap-10 basis-[46%]">
+        {/* Payment Dropdown */}
         <div className="button">
           <Dropdown overlay={createMenu(paymentBy, setSelectedItem, 'Payment')} trigger={['click']}>
-            <Button className="flex items-center gap-2 text-2xl min-h-[60px] min-w-[300px]">
+            <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[40%]">
               <FaMoneyBill1Wave />
               {selectedPayment}
               <FaCaretDown className="ml-2" />
@@ -93,8 +122,8 @@ const SortBar = () => {
           </Dropdown>
         </div>
 
-        {/* Slider */}
-        <div className="slider w-full min-w-[300px] border rounded-xl px-3">
+        {/* Salary Range Slider */}
+        <div className="slider w-full min-w-[300px] border rounded-xl px-3 text-center">
           <Slider
             range
             min={5000000}
@@ -108,7 +137,6 @@ const SortBar = () => {
             trackStyle={{ backgroundColor: 'white' }}  // Track color for the slider
             handleStyle={{ backgroundColor: '#3B82F6' }} // Handle color for the slider
           />
-          {/* Display the selected range */}
           <div className="text-gray-400 mt-2">
             {salaryRange[0].toLocaleString()} VND - {salaryRange[1].toLocaleString()} VND
           </div>

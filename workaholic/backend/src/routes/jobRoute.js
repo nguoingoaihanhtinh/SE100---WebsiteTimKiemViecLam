@@ -178,5 +178,90 @@ jobRoute.route('/jobs').get(JobController.getAllJobs);
  */
 jobRoute.route('/jobs/getAllType').get(JobController.getAllJobTypes);
 
-
+/**
+ * @swagger
+ * /api/jobs/search:
+ *   get:
+ *     summary: Search jobs by keyword with optional pagination
+ *     tags:
+ *       - Jobs
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         description: Page number for pagination (default is 1)
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *       - name: limit
+ *         in: query
+ *         description: Number of jobs per page (default is 10)
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *       - name: kw
+ *         in: query
+ *         description: Keyword to search in job titles, locations, or positions
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: Engineer
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved jobs matching the keyword
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 currentPage:
+ *                   type: integer
+ *                   description: The current page number
+ *                   example: 1
+ *                 totalPages:
+ *                   type: integer
+ *                   description: Total number of pages available
+ *                   example: 5
+ *                 totalJobs:
+ *                   type: integer
+ *                   description: Total number of jobs matching the keyword
+ *                   example: 50
+ *                 jobs:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: Unique identifier for the job
+ *                         example: 1
+ *                       title:
+ *                         type: string
+ *                         description: Title of the job
+ *                         example: Software Engineer
+ *       404:
+ *         description: No jobs found matching the keyword
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
+ *                   example: No jobs found
+ *       500:
+ *         description: Internal server error occurred while searching jobs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
+ *                   example: Failed to search jobs
+ */
+jobRoute.route('/jobs/search').get(JobController.searchJob);
 export default jobRoute;

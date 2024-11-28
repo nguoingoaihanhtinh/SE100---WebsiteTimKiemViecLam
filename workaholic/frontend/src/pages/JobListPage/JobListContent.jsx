@@ -1,32 +1,39 @@
-import React from 'react'
-import Jobs from '../../components/Job/Jobs'
-import { FaAngleRight } from 'react-icons/fa6'
+import React from 'react';
+import { JobCard } from '../../components/Job/JobCard';
+import { Pagination } from 'antd';
 
-const JobListContent = () => {
+
+const JobListContent = ({ jobs, totalJobs, page, setPage }) => {
+  // Ensure jobs is always an array
+  // console.log(jobs);
+  const validJobs = Array.isArray(jobs) ? jobs : [];
+
+  const totalPages = Math.ceil(totalJobs / 10); // Calculate total pages based on total jobs and limit
+
+
+    const handlePageChange = (newPage) => {
+      setPage(newPage); // This will update the page number in SearchPage component
+    };
+  
   return (
-    <div className="mt-12 w-full">
-      <div className="flex justify-between items-center w-full">
-        <header className="font-serif text-4xl font-medium my-4 text-blue-950">
-          Recommended Jobs
-        </header>
-        
-        <div className="group flex items-center gap-4 cursor-pointer">
-          <p className="font-semibold group-hover:underline transition-all">
-            View all
-          </p>
-          <div className="px-2 py-2 rounded-full cursor-pointer group-hover:bg-orange-600 transition-all bg-primary-color text-white">
-            <FaAngleRight className="text-lg" />
-          </div>
-        </div>
+    <div className="w-full">
+      <div className="grid grid-cols-3 gap-18">
+        {validJobs.length === 0 ? (
+          <div>No jobs found based on the selected filters</div>
+        ) : (
+          validJobs.map((job) => (
+            <JobCard key={job.id} jobData={job} />
+          ))
+        )}
       </div>
-      <Jobs />
-      {/* <div className="w-full flex justify-center mt-5">
-        <Pagination className="items-center" onChange={(page) => {
-          setPage(page)
-        }} total={total} defaultCurrent={1} pageSize={4}/>
-      </div> */}
+      <div className="flex justify-center p-2">
+        <Pagination current={page}
+        total={totalJobs}
+        pageSize={9}
+        onChange={handlePageChange}/>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default JobListContent
+export default JobListContent;
