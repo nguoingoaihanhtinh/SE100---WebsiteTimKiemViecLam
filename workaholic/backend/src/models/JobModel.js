@@ -19,10 +19,12 @@ const Job = sequelize.define(
     },
     rating: {
       type: DataTypes.FLOAT,
+      allowNull: true,
       defaultValue: 0,
     },
     number_rating: {
       type: DataTypes.INTEGER,
+      allowNull: true,
       defaultValue: 0,
     },
     position: {
