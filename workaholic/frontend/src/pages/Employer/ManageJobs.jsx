@@ -117,7 +117,7 @@ const ManageJobs = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-100 p-8 text-black">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Job Listings Management</h1>
@@ -147,7 +147,7 @@ const ManageJobs = () => {
               <input
                 type="text"
                 placeholder="Search jobs..."
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full text-black bg-white pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -177,19 +177,28 @@ const ManageJobs = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredJobs.map((job) => (
                     <tr key={job.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">{job.title}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{job.company}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{job.location}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{job.datePosted}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap text-black-2">{job.title}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-black-2">{job.company}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-black-2">{job.location}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-black-2">{job.datePosted}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-black-2">
                         <div className="flex space-x-3">
-                          <button onClick={() => handleView(job)} className="text-blue-600 hover:text-blue-800">
+                          <button
+                            onClick={() => handleView(job)}
+                            className="text-blue-600 bg-gray-200 hover:text-blue-800"
+                          >
                             <FiEye className="w-5 h-5" />
                           </button>
-                          <button onClick={() => handleEdit(job)} className="text-green-600 hover:text-green-800">
+                          <button
+                            onClick={() => handleEdit(job)}
+                            className="text-green-600 bg-gray-200 hover:text-green-800"
+                          >
                             <FiEdit className="w-5 h-5" />
                           </button>
-                          <button onClick={() => handleDelete(job.id)} className="text-red-600 hover:text-red-800">
+                          <button
+                            onClick={() => handleDelete(job.id)}
+                            className="text-red-600 bg-gray-200 hover:text-red-800"
+                          >
                             <FiTrash2 className="w-5 h-5" />
                           </button>
                         </div>
@@ -203,7 +212,7 @@ const ManageJobs = () => {
         )}
 
         {showForm && (
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-6 ">
             <h2 className="text-2xl font-bold mb-6">{selectedJob ? "Edit Job" : "Add New Job"}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -212,7 +221,7 @@ const ManageJobs = () => {
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  className={`bg-white px-2 py-2 border-[1px] mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
                     formErrors.title ? "border-red-500" : ""
                   }`}
                 />
@@ -225,7 +234,7 @@ const ManageJobs = () => {
                   type="text"
                   value={formData.company}
                   onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  className={` bg-white px-2 py-2 border-[1px] mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
                     formErrors.company ? "border-red-500" : ""
                   }`}
                 />
@@ -238,7 +247,7 @@ const ManageJobs = () => {
                   type="text"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  className={`bg-white px-2 py-2 border-[1px] mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
                     formErrors.location ? "border-red-500" : ""
                   }`}
                 />
@@ -251,7 +260,7 @@ const ManageJobs = () => {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows="4"
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  className={`bg-white px-2 py-2 border-[1px] mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
                     formErrors.description ? "border-red-500" : ""
                   }`}
                 />
@@ -264,7 +273,7 @@ const ManageJobs = () => {
                   value={formData.requirements}
                   onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
                   rows="4"
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
+                  className={` bg-white px-2 py-2 border-[1px] mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
                     formErrors.requirements ? "border-red-500" : ""
                   }`}
                 />
@@ -279,7 +288,7 @@ const ManageJobs = () => {
                     setSelectedJob(null);
                     setFormErrors({});
                   }}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                  className="bg-white px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
                 >
                   Cancel
                 </button>
@@ -295,7 +304,7 @@ const ManageJobs = () => {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold">Job Details</h2>
-              <button onClick={() => setShowDetails(false)} className="text-gray-600 hover:text-gray-800">
+              <button onClick={() => setShowDetails(false)} className="text-gray-600 hover:text-gray-800 bg-gray-200">
                 Close
               </button>
             </div>
