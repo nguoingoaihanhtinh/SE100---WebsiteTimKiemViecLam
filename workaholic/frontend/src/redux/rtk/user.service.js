@@ -1,9 +1,7 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { baseApi } from "./base.service";
 
-export const userRTKApi = createApi({
+export const userRTKApi = baseApi.injectEndpoints({
   reducerPath: "userRTKApi",
-  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
-  tagTypes: ["user"],
   endpoints: (build) => ({
     login: build.mutation({
       query: (body) => ({
