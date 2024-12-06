@@ -5,54 +5,48 @@ import { Op } from "sequelize";
 
 export const getAllJobs = async (req, res) => {
   try {
-    const { page = 1, limit = 10, typeSlt = null } = req.query;
-    const offset = (page - 1) * limit;
+    // Extract pagination parameters from query string
+    const { page = 1, limit = 10 } = req.query;
 
-    let whereClause = {}; // Default: no filter
+    // Convert page and limit to integers
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
 
-    if (typeSlt) {
-      // console.log('Looking for job type:', typeSlt);
-      try {
-        const jobType = await JobType.findOne({ where: { name: typeSlt } });
-        if (!jobType) {
-          console.log("Job type not found");
-          return res.status(404).json({ error: "Job type not found" });
-        }
-        whereClause.jobType_id = jobType.id;
-      } catch (jobTypeError) {
-        console.error("Error finding JobType:", jobTypeError);
-        return res.status(500).json({ error: "Failed to find job type" });
-      }
+    // Validate pagination parameters
+    if (isNaN(pageNumber) || isNaN(limitNumber) || pageNumber < 1 || limitNumber < 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid pagination parameters. 'page' and 'limit' must be positive integers.",
+      });
     }
 
-    // console.log('whereClause:', whereClause);
+    // Calculate offset for pagination
+    const offset = (pageNumber - 1) * limitNumber;
 
-    const jobs = await Job.findAll({
-      where: whereClause,
-      limit: parseInt(limit, 10),
-      offset: parseInt(offset, 10),
-      include: [
-        { model: JobType, as: "jobType", attributes: ["name"] },
-        { model: Company, as: "company", attributes: ["img", "name"] },
-      ],
+    // Fetch jobs with pagination
+    const { rows: jobs, count: totalItems } = await Job.findAndCountAll({
+      offset,
+      limit: limitNumber,
+      order: [["createdAt", "DESC"]], // Order by newest jobs first
     });
 
-    const totalJobs = await Job.count({ where: whereClause });
-    const totalPages = Math.ceil(totalJobs / limit);
-
-    res.json({
-      status: "success",
+    // Prepare the response with pagination metadata
+    res.status(200).json({
+      success: true,
       data: jobs,
-      pagination: {
-        currentPage: parseInt(page, 10),
-        pageSize: limit,
-        totalJobs,
-        totalPages,
+      meta: {
+        totalItems,
+        currentPage: pageNumber,
+        totalPages: Math.ceil(totalItems / limitNumber),
+        itemsPerPage: limitNumber,
       },
     });
-  } catch (err) {
-    console.error("Error fetching jobs:", err);
-    res.status(500).json({ error: "Failed to fetch jobs" });
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching jobs.",
+    });
   }
 };
 
@@ -146,6 +140,3 @@ export const searchJob = async (req, res) => {
     res.status(500).json({ error: "Failed to search jobs" });
   }
 };
-
-
-
