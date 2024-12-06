@@ -1,10 +1,6 @@
 // models/Job.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
-import JobType from "./JobTypeModel.js";
-import Company from "./CompanyModel.js";
-import User from "./UserModel.js";
-import Application from "./ApplicationModel.js";
 const Job = sequelize.define(
   "Job",
   {
