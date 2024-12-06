@@ -53,13 +53,11 @@ const HomeContent = () => {
   const [total,setTotal] = useState(4)
   const [page,setPage] = useState(1)
 
-  const { data: companies = [] } = useGetAllCompaniesQuery();
-
+  const { data: companyData = [] } = useGetAllCompaniesQuery();
+  const companies = companyData.companies || [];
   const getAllJobType = async ()=> {
     const response = await jobApi.getAllJobTypes()
-    if(response.status === "success"){
-      setJobTypes(response.data);
-    }
+    setJobTypes(response.data);
   }
   useEffect(()=>{
     getAllJobType();
@@ -125,7 +123,7 @@ const HomeContent = () => {
             ))}
           </div>
           <div className="companyCard grid grid-cols-3 gap-5 px-5">
-            {fakeCompany.map((company) => (
+            {companies.map((company) => (
               <CompanyCardHorizontal key={company.id} companyData={company} />
             ))}
           </div>

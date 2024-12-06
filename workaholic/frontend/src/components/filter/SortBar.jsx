@@ -32,7 +32,7 @@ const createMenu = (items, setSelectedItem, label) => (
 );
 
 const SortBar = ({ onFilterChange }) => {
-  const [salaryRange, setSalaryRange] = useState([5000000, 200000000]);
+  const [salaryRange, setSalaryRange] = useState([0, 1000000]);
   const [selectedJobType, setSelectedJobType] = useState('');  // Default to blank
   const [selectedLocation, setSelectedLocation] = useState('Location');
   const [selectedExperience, setSelectedExperience] = useState('Experience');
@@ -110,25 +110,16 @@ const SortBar = ({ onFilterChange }) => {
       </Dropdown>
 
       {/* Salary & Payment Filters */}
-      <div className="Salary flex gap-10 basis-[46%]">
-        {/* Payment Dropdown */}
-        <div className="button">
-          <Dropdown overlay={createMenu(paymentBy, setSelectedItem, 'Payment')} trigger={['click']}>
-            <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[40%]">
-              <FaMoneyBill1Wave />
-              {selectedPayment}
-              <FaCaretDown className="ml-2" />
-            </Button>
-          </Dropdown>
-        </div>
+      <div className="Salary flex gap-10 basis-[35%]">
+      
 
         {/* Salary Range Slider */}
         <div className="slider w-full min-w-[300px] border rounded-xl px-3 text-center">
           <Slider
             range
-            min={5000000}
-            max={200000000}
-            step={500000}
+            min={0}
+            max={1000000}
+            step={100000}
             value={salaryRange}
             onChange={onSliderChange}
             tooltip={{

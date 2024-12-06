@@ -2,15 +2,26 @@ import { FaBookmark, FaLocationDot, FaLocationPin } from "react-icons/fa6";
 import { Button } from "antd";
 import Rating from "../Rating/Rating";
 import { useState } from "react";
+import ApplyButton from "../ui/ApplyButton";
+import JobApplicationForm from "../../pages/Application/ApplicationForm";
 
 export const JobCard = ({ jobData }) => {
-  console.log('job',jobData)
+  // console.log('job',jobData)
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   function formatCurrency(amount) {
     return amount.toLocaleString().replace(/\./g, ",");
   }
+  const [isFormVisible, setFormVisible] = useState(false);
 
+  const showForm = () => {
+    console.log('click')
+    setFormVisible(true); // Show the application form
+  };
+
+  const closeForm = () => {
+    setFormVisible(false); // Close the application form
+  };
   // Function to determine background color based on job type (industry/field)
   const getJobCardBackground = (jobType) => {
     if (!jobType || !jobType.name) {
@@ -93,9 +104,14 @@ export const JobCard = ({ jobData }) => {
         </div>
         <div className="payment flex flex-col text-primary-color mx-3 px-5 gap-3 my-3">
           <p className="text-lg font-bold">{jobData.salary_from}đ/<span className="text-md font-normal">{jobData.paymentBy}</span></p>
-          <Button>Details</Button>
+          <div className="buttons flex justify-between">
+            <button className="px-4 py-2 bg-white w-1/3">Details</button>
+            <ApplyButton onClick={showForm}>a</ApplyButton>
+          </div>
+
         </div>
       </div>
+      {isFormVisible && <JobApplicationForm closeForm={closeForm} />}
     </div>
   );
 };

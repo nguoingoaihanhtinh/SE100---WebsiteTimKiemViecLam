@@ -2,22 +2,27 @@ import React, { useState } from 'react';
 import { FaBookmark, FaLocationPin, FaUserTie } from "react-icons/fa6";
 import { Button } from "antd";
 import Rating from "../Rating/Rating";
+import { useNavigate } from 'react-router-dom';
 
 export const JobCardHorizontal = ({ jobData }) => {
+  const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState(false);
-  console.log('data',jobData);
+  // console.log('data',jobData);
   // Format the currency to include commas
   function formatCurrency(amount) {
     return amount.toLocaleString().replace(/\./g, ",");
   }
 
+  // handleCardClick = ({}) => {
+  //   navigate(`/${jobData.id}`)
+  // };
 
   const handleBookmarkClick = () => {
     setIsBookmarked(!isBookmarked);
   };
 
   return (
-    <div
+    <div 
       className={`border-[1px] border-gray-300 w-full transition-all duration-500 hover:shadow-md cursor-pointer overflow-hidden h-full flex items-center p-2 rounded-xl`}
     >
       {/* Job Image */}
