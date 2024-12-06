@@ -1,4 +1,4 @@
-import {Application, User} from "../models/relation.js";
+import {Application, Job, User} from "../models/relation.js";
 
 
 // Create an application
@@ -66,11 +66,19 @@ export const deleteApplication = async (req, res) => {
 export const getApplicationsByJobId = async (req, res) => {
   try {
     const jobId = req.params.jobId;
-
-    // Fetch applications for the given job ID, including user details
     const applications = await Application.findAll({
       where: { job_id: jobId },
-      include: [{ model: User }], // Ensure associations are set
+      include: [
+        { 
+          model: User, 
+          as: 'user', 
+          attributes: ['id', 'user_name', 'email'],
+        },
+        {
+          model: Job,
+          as: 'job', 
+          attributes: ['id', 'title'], 
+        }],
     });
 
     if (!applications.length) {

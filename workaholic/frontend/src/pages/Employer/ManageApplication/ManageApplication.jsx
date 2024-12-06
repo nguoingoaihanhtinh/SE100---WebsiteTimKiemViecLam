@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { FaTrash, FaSearch, FaPlus, FaChevronDown, FaUser, FaAngleDown, FaAngleUp } from "react-icons/fa";
+import { useDeleteApplicationMutation, useGetApplicationsByJobIdQuery, useUpdateApplicationMutation } from "../../../redux/rtk/application.service";
+import { useParams } from "react-router-dom";
 
 const initialApplications = [
   {
@@ -38,21 +40,28 @@ const initialApplications = [
 ];
 
 const ManageApplication = () => {
-  const [applications, setApplications] = useState(initialApplications);
+//   const [applications, setApplications] = useState(initialApplications);
+  const { id } = useParams();
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [editApplication, setEditApplication] = useState(null);
   const [expandedRow, setExpandedRow] = useState(null);
-  const [formData, setFormData] = useState({
-    userName: "",
-    email: "",
-    phone: "",
-    jobTitle: "",
-    company: "",
-    experience: "",
-    education: "",
-    status: "pending"
-  });
+
+
+    const { data: applications = [], refetch } = useGetApplicationsByJobIdQuery(id);
+    const [deleteApplication] = useDeleteApplicationMutation();
+    const [updateApplication] = useUpdateApplicationMutation();
+    console.log('app',applications);
+    const [formData, setFormData] = useState({
+        userName: "",
+        email: "",
+        phone: "",
+        jobTitle: "",
+        company: "",
+        experience: "",
+        education: "",
+        status: "pending"
+    });
   const [errors, setErrors] = useState({});
   const [openStatusDropdown, setOpenStatusDropdown] = useState(null);
 
@@ -65,38 +74,30 @@ const ManageApplication = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: "" });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      if (editApplication) {
-        setApplications(applications.map(app => app.id === editApplication.id ? { ...formData, id: editApplication.id } : app));
-      } else {
-        setApplications([...applications, { ...formData, id: applications.length + 1 }]);
-      }
-      setShowForm(false);
-      setFormData({ userName: "", email: "", phone: "", jobTitle: "", company: "", experience: "", education: "", status: "pending" });
-      setEditApplication(null);
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await updateApplication({ id, applicationData: { status: newStatus } }).unwrap();
+      refetch();
+    } catch (error) {
+      console.error("Failed to update application status", error);
     }
   };
 
-  const handleDelete = (id) => {
-    setApplications(applications.filter(app => app.id !== id));
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteApplication(id).unwrap();
+      refetch();
+    } catch (error) {
+      console.error("Failed to delete application", error);
+    }
   };
 
-  const handleStatusChange = (id, newStatus) => {
-    setApplications(applications.map(app => app.id === id ? { ...app, status: newStatus } : app));
-    setOpenStatusDropdown(null);
-  };
+
 
   const filteredApplications = applications.filter(app =>
-    app.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.jobTitle.toLowerCase().includes(searchTerm.toLowerCase())
+    app.user?.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    app.job?.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getStatusStyle = (status) => {
@@ -135,8 +136,8 @@ const ManageApplication = () => {
               <p className="text-gray-500 text-lg">No applications found</p>
             </div>
           ) : (
-            <div className="overflow-x-auto bg-white rounded-xl shadow h-full">
-              <table className="min-w-full divide-y divide-gray-200">
+            <div className="overflow-x-auto bg-white rounded-xl shadow">
+              <table className="min-w-full divide-y divide-gray-200 mb-30">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
@@ -161,11 +162,11 @@ const ManageApplication = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <FaUser className="mr-2 text-gray-400" />
-                            <div className="text-sm font-medium text-gray-900">{app.userName}</div>
+                            <div className="text-sm font-medium text-gray-900">{app.user?.user_name}</div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-500">{app.jobTitle}</div>
+                          <div className="text-sm text-gray-500">{app.job?.title}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="relative">
@@ -214,23 +215,18 @@ const ManageApplication = () => {
                       {expandedRow === app.id && (
                         <tr>
                           <td colSpan="5" className="px-6 py-4 bg-gray-50">
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
+                            <div className="flex gap-4">
+                              <div className="basis-[30%]">
                                 <p className="text-sm font-medium text-gray-500">Email</p>
-                                <p className="text-sm text-gray-900">{app.email}</p>
+                                <p className="text-sm text-gray-900">{app.user?.email}</p>
                               </div>
-                              <div>
-                                <p className="text-sm font-medium text-gray-500">Phone</p>
-                                <p className="text-sm text-gray-900">{app.phone}</p>
+                              <div className="basis-[70%]">
+                                <p className="text-sm font-medium text-gray-500">CV:</p>
+                                <p className="text-sm text-gray-900">
+                                    {app.user?.cv_url ? app.user.cv_url : 'Người dùng chưa có cv'}
+                                </p>
                               </div>
-                              <div>
-                                <p className="text-sm font-medium text-gray-500">Experience</p>
-                                <p className="text-sm text-gray-900">{app.experience}</p>
-                              </div>
-                              <div>
-                                <p className="text-sm font-medium text-gray-500">Education</p>
-                                <p className="text-sm text-gray-900">{app.education}</p>
-                              </div>
+                             
                             </div>
                           </td>
                         </tr>

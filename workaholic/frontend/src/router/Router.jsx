@@ -21,7 +21,7 @@ const Router = createBrowserRouter(
       </Route>
       <Route path="employer" element={<EmployerLayout />}>
         <Route path="joblist" element={<ManageJobs />} />
-        <Route path="application" element={<ManageApplication />} />
+        <Route path="joblist/:id" element={<ManageApplication />} />
       </Route>
 
       <Route path="login" element={<LoginPage />} />
