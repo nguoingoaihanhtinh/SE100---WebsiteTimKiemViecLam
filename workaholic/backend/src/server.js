@@ -5,7 +5,7 @@ import sequelize from "./config/database.js";
 import routes from "./routes/index.js";
 import setupSwagger from "./swagger.js";
 import bodyParser from "body-parser";
-import { Notification, User } from "./models/relation.js";
+import open from "open";
 dotenv.config();
 
 const server = express();
@@ -31,11 +31,10 @@ setupSwagger(server);
 routes(server);
 
 const PORT = process.env.PORT || 5000;
-console.log("port",process.env.PORT)
+console.log("port", process.env.PORT);
 server.listen(process.env.PORT, () => {
-  
   console.log(`App listening at http://localhost:${process.env.PORT}`);
 
   // Open Swagger UI in the browser automatically
-  // open("http://localhost:5000/api-docs");
+  open("http://localhost:5000/api-docs");
 });
