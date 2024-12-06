@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import Filter from '../../components/filter/Filter';
-import JobListContent from './JobListContent';
-import JobBanner from './JobBanner';
-import SortBar from '../../components/filter/SortBar';
-import jobApi from '../../api/jobApi'; // Assuming you're fetching jobs from this API
+import React, { useEffect, useState } from "react";
+import Filter from "../../components/filter/Filter";
+import JobListContent from "./JobListContent";
+import JobBanner from "./JobBanner";
+import SortBar from "../../components/filter/SortBar";
+import jobApi from "../../api/jobApi"; // Assuming you're fetching jobs from this API
 
 const JobListPage = () => {
   const [filters, setFilters] = useState({
     salaryRange: [5000000, 200000000],
-    selectedJobType: '', // Default to "All" for job type
-    selectedLocation: 'Location',
-    selectedExperience: 'Experience',
-    selectedPayment: 'Payment',
+    selectedJobType: "", // Default to "All" for job type
+    selectedLocation: "Location",
+    selectedExperience: "Experience",
+    selectedPayment: "Payment",
   });
 
   const [jobs, setJobs] = useState([]);
@@ -36,12 +36,11 @@ const JobListPage = () => {
   // console.log('Selected Job Type:', filters.selectedJobType);
   // Filter jobs based only on the selected job type
   const jobTypeFilteredJobs = jobs.filter((job) => {
-    return filters.selectedJobType && filters.selectedJobType !== '' && filters.selectedJobType !== 'Job Type'
+    return filters.selectedJobType && filters.selectedJobType !== "" && filters.selectedJobType !== "Job Type"
       ? job.type === filters.selectedJobType
       : true;
   });
   // console.log('jobs',jobTypeFilteredJobs)
- 
 
   const handleFilterChange = (newFilters) => {
     if (JSON.stringify(filters) !== JSON.stringify(newFilters)) {
