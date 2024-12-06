@@ -65,7 +65,71 @@ export const getAllJobs = async (req, res) => {
     });
   }
 };
+export const getAllJobsByCompanyId = async (req, res) => {
+  try {
+    // Extract pagination parameters from query string
+    const { company_id, page = 1, limit = 10 } = req.query;
 
+    // Convert page and limit to integers
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    // Validate pagination parameters
+    if (
+      isNaN(pageNumber) ||
+      isNaN(limitNumber) ||
+      pageNumber < 1 ||
+      limitNumber < 1
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Invalid pagination parameters. 'page' and 'limit' must be positive integers.",
+      });
+    }
+
+    // Calculate offset for pagination
+    const offset = (pageNumber - 1) * limitNumber;
+
+    // Fetch jobs with pagination and include related models
+    const { rows: jobs, count: totalItems } = await Job.findAndCountAll({
+      where: { company_id: company_id },
+      offset,
+      limit: limitNumber,
+      order: [["createdAt", "DESC"]], // Order by newest jobs first
+      include: [
+        {
+          model: Company,
+          as: "company", // Alias for company (match with association alias)
+          attributes: ["id", "name", "feild", "description", "img", "user_id"], // Select specific fields from company
+        },
+        {
+          model: JobType,
+          as: "jobType", // Alias for jobType (match with association alias)
+          attributes: ["id", "name"], // Select specific fields from jobType
+        },
+      ],
+    });
+
+    // Prepare the response with pagination metadata
+    res.status(200).json({
+      success: true,
+      data: jobs,
+      meta: {
+        totalItems,
+        currentPage: pageNumber,
+        totalPages: Math.ceil(totalItems / limitNumber),
+        itemsPerPage: limitNumber,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching jobs.",
+    });
+  }
+};
 export const getAllJobTypes = async (req, res) => {
   try {
     // Fetch all job types from the database
