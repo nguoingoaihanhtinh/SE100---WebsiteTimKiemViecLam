@@ -1,6 +1,4 @@
-import Company from "../models/CompanyModel.js";
-import Job from "../models/JobModel.js";
-import JobType from "../models/JobTypeModel.js";
+import { Company, Job, JobType } from "../models/relation.js";
 import { Op } from "sequelize";
 
 export const getAllJobs = async (req, res) => {
@@ -13,21 +11,39 @@ export const getAllJobs = async (req, res) => {
     const limitNumber = parseInt(limit, 10);
 
     // Validate pagination parameters
-    if (isNaN(pageNumber) || isNaN(limitNumber) || pageNumber < 1 || limitNumber < 1) {
+    if (
+      isNaN(pageNumber) ||
+      isNaN(limitNumber) ||
+      pageNumber < 1 ||
+      limitNumber < 1
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Invalid pagination parameters. 'page' and 'limit' must be positive integers.",
+        message:
+          "Invalid pagination parameters. 'page' and 'limit' must be positive integers.",
       });
     }
 
     // Calculate offset for pagination
     const offset = (pageNumber - 1) * limitNumber;
 
-    // Fetch jobs with pagination
+    // Fetch jobs with pagination and include related models
     const { rows: jobs, count: totalItems } = await Job.findAndCountAll({
       offset,
       limit: limitNumber,
       order: [["createdAt", "DESC"]], // Order by newest jobs first
+      include: [
+        {
+          model: Company,
+          as: "company", // Alias for company (match with association alias)
+          attributes: ["id", "name", "feild", "description", "img", "user_id"], // Select specific fields from company
+        },
+        {
+          model: JobType,
+          as: "jobType", // Alias for jobType (match with association alias)
+          attributes: ["id", "name"], // Select specific fields from jobType
+        },
+      ],
     });
 
     // Prepare the response with pagination metadata

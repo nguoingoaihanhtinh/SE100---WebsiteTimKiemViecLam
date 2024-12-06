@@ -13,16 +13,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      rating: {
-        type: Sequelize.FLOAT,
-        allowNull: true,
-        defaultValue: 0,
-      },
-      number_rating: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        defaultValue: 0,
-      },
       position: {
         type: Sequelize.STRING,
         allowNull: false,
