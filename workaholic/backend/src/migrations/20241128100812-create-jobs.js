@@ -15,10 +15,12 @@ module.exports = {
       },
       rating: {
         type: Sequelize.FLOAT,
+        allowNull: true,
         defaultValue: 0,
       },
       number_rating: {
         type: Sequelize.INTEGER,
+        allowNull: true,
         defaultValue: 0,
       },
       position: {
