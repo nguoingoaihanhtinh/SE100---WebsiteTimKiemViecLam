@@ -9,6 +9,7 @@ import Banner2 from './Banner2';
 import jobApi from '../../api/jobApi';
 import { Link } from 'react-router-dom';
 import JobListPage from '../JobListPage/JobListPage';
+import { useGetAllCompaniesQuery } from '../../redux/rtk/company.service';
 export const fakeCompany = [
   {
     id: 1,
@@ -52,28 +53,30 @@ const HomeContent = () => {
   const [total,setTotal] = useState(4)
   const [page,setPage] = useState(1)
 
+  const { data: companyData = [] } = useGetAllCompaniesQuery();
+  const companies = companyData.companies || [];
   const getAllJobType = async ()=> {
     const response = await jobApi.getAllJobTypes()
-    // console.log(response.data)
-    if(response.status === "success"){
-      setJobTypes(response.data);
-    }
+    setJobTypes(response.data);
   }
   useEffect(()=>{
     getAllJobType();
   },[])
-  const getAllJobs= async () => {
-    const response = await jobApi.getAllJobs(page,4,jobTypes)
-    // console.log(response.data)
-    if(response.status === "success"){
+  const getAllJobs = async () => {
+    try {
+      const response = await jobApi.getAllJobs(page, 4);
       setJobs(response.data);
-      setTotal(response.pagination.totalItems)
-
+      setTotal(response.pagination.totalItems);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
     }
-  }
+  };
+  
   useEffect(() => {
     getAllJobs();
-  },[jobTypes,page]) 
+
+  }, [page]);
+  
   return (
     <div className="mt-12 w-full">
       <div className="flex justify-between items-center w-full">
@@ -92,9 +95,15 @@ const HomeContent = () => {
         </Link>
       </div>
       <div className="grid grid-cols-3 gap-5">
-      {jobs.map((job) => (
-        <JobCardHorizontal key={job.id} jobData={job} />
-      ))}
+      {
+        jobs && jobs.length > 0 ? (
+          jobs.map(job => (
+            <JobCardHorizontal key={job.id} jobData={job} />
+          ))
+        ) : (
+          <p>No jobs available</p>
+        )
+      }
       </div>
       <div className="company rounded-xl shadow-md mt-10 border">
           <div className="heading rounded-t-xl bg-sky-400 flex">
@@ -114,7 +123,7 @@ const HomeContent = () => {
             ))}
           </div>
           <div className="companyCard grid grid-cols-3 gap-5 px-5">
-            {fakeCompany.map((company) => (
+            {companies.map((company) => (
               <CompanyCardHorizontal key={company.id} companyData={company} />
             ))}
           </div>

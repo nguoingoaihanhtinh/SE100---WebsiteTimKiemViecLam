@@ -12,20 +12,24 @@ import SearchPage from "../pages/SearchPage/SearchPage";
 import JobDetailPage from "../pages/JobDetailPage/JobDetailPage";
 import EmployerLayout from "../layouts/EmployerLayout";
 import ManageJobs from "../pages/Employer/ManageJobs";
+import ManageApplication from "../pages/Employer/ManageApplication/ManageApplication";
 import Dashboard from "../pages/Employer/Dashboard";
+import JobApplicationList from "../pages/Application/ApplicationList";
 
 const Router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path="*" element={<UserLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="category" element={<JobListPage />} />
+        <Route path="jobs" element={<JobListPage />} />
         <Route path="search" element={<SearchPage />} />
         <Route path="jobs/:id" element={<JobDetailPage />} />
+        <Route path="application" element={<JobApplicationList />} />
       </Route>
       <Route path="employer" element={<EmployerLayout />}>
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="joblist" element={<ManageJobs />} />
+        <Route path="joblist/:id" element={<ManageApplication />} />
       </Route>
 
       <Route path="login" element={<LoginPage />} />
