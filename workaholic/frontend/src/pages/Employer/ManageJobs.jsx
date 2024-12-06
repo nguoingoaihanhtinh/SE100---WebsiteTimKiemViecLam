@@ -18,6 +18,7 @@ const ManageJobs = () => {
             Add Job
           </div>
         </div>
+        
         <div className="mb-4 relative">
           <FiSearch className="absolute left-3 top-3 text-gray-400" />
           <input
