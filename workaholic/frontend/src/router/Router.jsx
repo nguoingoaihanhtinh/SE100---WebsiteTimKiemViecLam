@@ -15,6 +15,9 @@ import ManageJobs from "../pages/Employer/ManageJobs";
 import ManageApplication from "../pages/Employer/ManageApplication/ManageApplication";
 import Dashboard from "../pages/Employer/Dashboard";
 import JobApplicationList from "../pages/Application/ApplicationList";
+import CompanyDetailPage from "../pages/CompanyDetailPage/CompanyDetailPage"
+import CvPage from "../pages/CvPage/CvPage"
+import ProfilePage from "../pages/ProfilePage/ProfilePage"
 
 const Router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,6 +28,9 @@ const Router = createBrowserRouter(
         <Route path="search" element={<SearchPage />} />
         <Route path="jobs/:id" element={<JobDetailPage />} />
         <Route path="application" element={<JobApplicationList />} />
+        <Route path="cv" element={<CvPage />} />
+        <Route path="companydetail" element={<CompanyDetailPage />} />
+        <Route path="profile" element={<ProfilePage />} />
       </Route>
       <Route path="employer" element={<EmployerLayout />}>
         <Route path="dashboard" element={<Dashboard />} />
