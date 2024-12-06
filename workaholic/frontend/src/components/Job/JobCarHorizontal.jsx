@@ -57,7 +57,7 @@ export const JobCardHorizontal = ({ jobData }) => {
         {/* Rating and Salary */}
         <div className="flex items-center justify-between mt-2">
           <p className="text-lg font-semibold text-primary-color">
-            {formatCurrency(jobData.salary)}đ / <span className="text-sm">{jobData.paymentBy}</span>
+            {formatCurrency(jobData.salary_from)}đ / <span className="text-sm">{jobData.paymentBy}</span>
           </p>
           <div className="ml-auto">
 

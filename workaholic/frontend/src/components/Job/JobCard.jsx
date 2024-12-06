@@ -4,6 +4,7 @@ import Rating from "../Rating/Rating";
 import { useState } from "react";
 
 export const JobCard = ({ jobData }) => {
+  console.log('job',jobData)
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   function formatCurrency(amount) {
@@ -64,7 +65,7 @@ export const JobCard = ({ jobData }) => {
               <span className="mb-[2px] text-xl">
                 <Rating rating={jobData.rating} />
               </span>
-              <h1 className="text-sm text-primary-color"> ( {23} reviews) </h1>
+              <h1 className="text-sm text-primary-color"> ( {jobData.number_rating} reviews) </h1>
             </div>
             <div className="location flex gap-2 text-primary-color items-center px-5 text-lg">
               <FaLocationPin />
@@ -84,19 +85,14 @@ export const JobCard = ({ jobData }) => {
                   <p className="text-center">{jobData.schedule}</p>
                 </div>
                 <div className="type border border-gray-500 rounded-2xl min-h-10 min-w-20 flex justify-center items-center p-2 hover:scale-105">
-                  <p className="text-center">{jobData.type}</p>
+                  <p className="text-center">{jobData.jobType.name}</p>
                 </div>
-              </div>
-              <div className=" items-center ">
-                  <div className="position border border-gray-500 rounded-2xl min-h-10 min-w-20 w-full flex justify-center items-center p-2 hover:scale-105 " >
-                    <p className="text-center font-semibold ">{jobData.jobType.name}</p>
-                  </div>
               </div>
             </div>
           </div>
         </div>
         <div className="payment flex flex-col text-primary-color mx-3 px-5 gap-3 my-3">
-          <p className="text-lg font-bold">{jobData.salary}đ/<span className="text-md font-normal">{jobData.paymentBy}</span></p>
+          <p className="text-lg font-bold">{jobData.salary_from}đ/<span className="text-md font-normal">{jobData.paymentBy}</span></p>
           <Button>Details</Button>
         </div>
       </div>

@@ -8,6 +8,7 @@ import SearchPage from "../pages/SearchPage/SearchPage";
 import JobDetailPage from "../pages/JobDetailPage/JobDetailPage";
 import EmployerLayout from "../layouts/EmployerLayout";
 import ManageJobs from "../pages/Employer/ManageJobs";
+import ManageApplication from "../pages/Employer/ManageApplication/ManageApplication";
 
 const Router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,6 +21,7 @@ const Router = createBrowserRouter(
       </Route>
       <Route path="employer" element={<EmployerLayout />}>
         <Route path="joblist" element={<ManageJobs />} />
+        <Route path="application" element={<ManageApplication />} />
       </Route>
 
       <Route path="login" element={<LoginPage />} />
