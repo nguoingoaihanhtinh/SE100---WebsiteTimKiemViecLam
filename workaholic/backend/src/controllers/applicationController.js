@@ -72,7 +72,7 @@ export const getApplicationsByJobId = async (req, res) => {
         { 
           model: User, 
           as: 'user', 
-          attributes: ['id', 'user_name', 'email'],
+          attributes: ['id', 'user_name', 'email', 'avatar'],
         },
         {
           model: Job,

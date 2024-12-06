@@ -5,7 +5,7 @@ import Rating from "../Rating/Rating";
 
 export const JobCardHorizontal = ({ jobData }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
-  // console.log('data',jobData);
+  console.log('data',jobData);
   // Format the currency to include commas
   function formatCurrency(amount) {
     return amount.toLocaleString().replace(/\./g, ",");

@@ -49,7 +49,6 @@ const ManageApplication = () => {
 
 
     const { data: applications = [], refetch } = useGetApplicationsByJobIdQuery(id);
-    const [deleteApplication] = useDeleteApplicationMutation();
     const [updateApplication] = useUpdateApplicationMutation();
     console.log('app',applications);
     const [formData, setFormData] = useState({
@@ -83,15 +82,6 @@ const ManageApplication = () => {
     }
   };
 
-
-  const handleDelete = async (id) => {
-    try {
-      await deleteApplication(id).unwrap();
-      refetch();
-    } catch (error) {
-      console.error("Failed to delete application", error);
-    }
-  };
 
 
 
@@ -141,10 +131,10 @@ const ManageApplication = () => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avatar</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Name</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Title</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Status</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -160,6 +150,21 @@ const ManageApplication = () => {
                           </button>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                                {app.user?.avatar ? (
+                                <img
+                                    src={app.user.avatar}
+                                    alt="User Avatar"
+                                    className="w-10 h-10 rounded-full"
+                                />
+                                ) : (
+                                <div className="text-sm font-medium text-gray-900">
+                                    No Avatar
+                                </div>
+                                )}
+                            </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <FaUser className="mr-2 text-gray-400" />
                             <div className="text-sm font-medium text-gray-900">{app.user?.user_name}</div>
@@ -168,48 +173,35 @@ const ManageApplication = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-500">{app.job?.title}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="relative">
-                            <button
-                              onClick={() => setOpenStatusDropdown(openStatusDropdown === app.id ? null : app.id)}
-                              className={`inline-flex justify-between items-center w-32 px-4 py-2 text-sm font-medium text-white rounded-xl ${getStatusStyle(app.status)}`}
-                            >
-                              {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
-                              <FaChevronDown className="ml-2" />
-                            </button>
-                            {openStatusDropdown === app.id && (
-                              <div className="absolute z-10 mt-1 w-32 rounded-xl shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                <div className="py-1" role="menu">
-                                  <button
-                                    onClick={() => handleStatusChange(app.id, "pending")}
-                                    className="block w-full bg-transparent text-left border px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                  >
-                                    Pending
-                                  </button>
-                                  <button
+                        <td className="px-6 py-4 whitespace-nowrap w-1/3 text-center">
+                            <div className="relative">
+                            {app.status === "pending" ? (
+                                // Show buttons if status is "pending"
+                                <div className="flex space-x-2">
+                                <button
                                     onClick={() => handleStatusChange(app.id, "approved")}
-                                    className="block w-full bg-transparent text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                  >
+                                    className="inline-flex justify-center items-center w-32 px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-xl hover:bg-green-600"
+                                >
                                     Approved
-                                  </button>
-                                  <button
+                                </button>
+                                <button
                                     onClick={() => handleStatusChange(app.id, "rejected")}
-                                    className="block w-full bg-transparent text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                  >
+                                    className="inline-flex justify-center items-center w-32 px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-xl hover:bg-red-600"
+                                >
                                     Rejected
-                                  </button>
+                                </button>
                                 </div>
-                              </div>
+                            ) : (
+                                // Show the selected status as a label
+                                <span
+                                className={`inline-block w-32 px-4 py-2 text-center text-sm font-medium text-white rounded-xl ${getStatusStyle(
+                                    app.status
+                                )}`}
+                                >
+                                {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                                </span>
                             )}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button
-                            onClick={() => handleDelete(app.id)}
-                            className="text-red-600 hover:text-red-900 bg-transparent"
-                          >
-                            <FaTrash className="inline-block" />
-                          </button>
+                            </div>
                         </td>
                       </tr>
                       {expandedRow === app.id && (
