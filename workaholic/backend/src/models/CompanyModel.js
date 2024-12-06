@@ -1,7 +1,6 @@
 // models/Company.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
-import Job from "./JobModel.js";
 
 const Company = sequelize.define(
   "Company",
@@ -26,6 +25,16 @@ const Company = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    rating: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      defaultValue: 0,
+    },
+    number_rating: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
+    },
     longitude: {
       type: DataTypes.FLOAT,
       allowNull: false,
@@ -33,6 +42,14 @@ const Company = sequelize.define(
     lattidue: {
       type: DataTypes.FLOAT,
       allowNull: false,
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true, // Optional
+      references: {
+        model: "users", // Table name for User
+        key: "id",
+      },
     },
   },
   {

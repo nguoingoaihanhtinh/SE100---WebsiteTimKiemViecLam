@@ -22,7 +22,7 @@ User.hasMany(Application, {
   foreignKey: "user_id",
   as: "applications",
 });
-
+User.hasOne(Company, { foreignKey: "user_id", as: "Company" });
 // For Noti
 Notification.belongsTo(User, {
   foreignKey: "user_id", // Links Notification.user_id to User.id
@@ -48,6 +48,7 @@ Job.hasMany(Application, {
 
 // Company
 Company.hasMany(Job, { foreignKey: "company_id", as: "jobs" });
+Company.belongsTo(User, { foreignKey: "user_id", as: "Employer" });
 
 //Application
 Application.belongsTo(User, {
@@ -59,4 +60,5 @@ Application.belongsTo(Job, {
   foreignKey: "job_id",
   as: "job",
 });
+
 export { User, Notification, Job, JobType, Application, Company, Saved };
