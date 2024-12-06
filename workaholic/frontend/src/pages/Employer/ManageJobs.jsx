@@ -1,12 +1,40 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { useGetAllJobsQuery } from "../../redux/rtk/job.service";
-
+import { useLazyGetAllJobsByCompanyIdQuery } from "../../redux/rtk/job.service";
+import { AuthContext } from "../../context/AuthProvider";
+import { useGetCompanyByUserIdQuery } from "../../redux/rtk/company.service";
+import { useNavigate } from "react-router";
 const ManageJobs = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: jobsRes } = useGetAllJobsQuery();
-  const jobs = jobsRes?.data || [];
-  if (!jobs) return <></>;
+  const { userData } = useContext(AuthContext);
+  const { data: company } = useGetCompanyByUserIdQuery(userData?.id, {
+    skip: !userData?.id,
+  });
+  const navigate = useNavigate();
+  const [callGetJobs] = useLazyGetAllJobsByCompanyIdQuery();
+  const [jobs, setJobs] = useState([]);
+  /*  const { data: jobsRes } = useGetAllJobsByCompanyIdQuery(
+    {
+      limit: 1000,
+      page: 1,
+      company_id: userData?.id,
+    },
+    { skip: !userData?.id }
+  );
+  */
+  const getJobs = async () => {
+    const res = await callGetJobs({
+      limit: 1000,
+      page: 1,
+      company_id: company?.data?.id,
+    });
+    setJobs(res.data?.data);
+  };
+  useEffect(() => {
+    if (company?.data?.id) {
+      getJobs();
+    }
+  }, [company]);
   return (
     <div className="min-h-screen bg-gray-100 p-8 text-black">
       <div className="max-w-7xl mx-auto">
@@ -34,6 +62,7 @@ const ManageJobs = () => {
             jobs.map((job) => (
               <div
                 key={job.id}
+                onClick={() => navigate(`/employer/joblist/${job.id}`)}
                 className="border border-gray-300 rounded-lg bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 p-6"
               >
                 <h2 className="text-xl font-semibold text-blue-600">
@@ -53,10 +82,6 @@ const ManageJobs = () => {
                 <p className="text-gray-600">Valid Date: {job.valid_date}</p>
                 <p className="text-gray-600">
                   Expired Date: {job.expired_date}
-                </p>
-                <p className="text-gray-600">
-                  Rating: <span className="font-bold">{job.rating}</span> (
-                  {job.number_rating} ratings)
                 </p>
               </div>
             ))
