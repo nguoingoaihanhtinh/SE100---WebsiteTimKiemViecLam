@@ -1,39 +1,34 @@
-import Company from '../models/CompanyModel.js';
+// controllers/companyController.js
+
+import {Company} from "../models/relation.js";
+
+
 
 export const getAllCompanies = async (req, res) => {
   try {
-    const { page = 1, limit = 10, company_id = null } = req.query;
-    let companies;
+    const page = parseInt(req.query.page) || 1; // Default page 1 if not provided
+    const limit = parseInt(req.query.limit) || 10; // Default limit 10 if not provided
 
-    if (company_id) {
-      // Fetch a specific company by ID
-      companies = await Company.findOne({
-        where: { id: company_id },
-      });
-      if (!companies) {
-        return res.status(404).json({ error: 'Company not found' });
-      }
-      return res.json(companies);
-    }
-
-    // Pagination for all companies
+    // Calculate the offset for pagination
     const offset = (page - 1) * limit;
-    companies = await Company.findAll({
-      limit: parseInt(limit),
-      offset: parseInt(offset),
+
+    // Get the companies with pagination
+    const companies = await Company.findAll({
+      limit: limit,
+      offset: offset,
     });
 
+    // Get the total count of companies for pagination purposes
     const totalCompanies = await Company.count();
-    const totalPages = Math.ceil(totalCompanies / limit);
 
     res.json({
       currentPage: page,
-      totalPages: totalPages,
+      totalPages: Math.ceil(totalCompanies / limit),
       totalCompanies: totalCompanies,
       companies: companies,
     });
   } catch (err) {
-    console.error('Error fetching companies:', err);
-    res.status(500).json({ error: 'Failed to fetch companies' });
+    console.error(err);
+    res.status(500).json({ error: "Error fetching companies" });
   }
 };

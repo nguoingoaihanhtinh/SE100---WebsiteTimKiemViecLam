@@ -23,13 +23,7 @@ const companyRoute = express.Router();
  *         schema:
  *           type: integer
  *           example: 10
- *       - name: company_id
- *         in: query
- *         description: The company ID to retrieve a specific company. If not provided, all companies are retrieved.
- *         required: false
- *         schema:
- *           type: integer
- *           example: 3
+ *      
  *     responses:
  *       200:
  *         description: List of companies or a specific company with pagination metadata
