@@ -1,4 +1,8 @@
-import { createBrowserRouter, createRoutesFromElements, Route } from "react-router-dom";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+} from "react-router-dom";
 import UserLayout from "../layouts/UserLayout";
 import HomePage from "../pages/HomePage/HomePage";
 import JobListPage from "../pages/JobListPage/JobListPage";
@@ -9,6 +13,7 @@ import JobDetailPage from "../pages/JobDetailPage/JobDetailPage";
 import EmployerLayout from "../layouts/EmployerLayout";
 import ManageJobs from "../pages/Employer/ManageJobs";
 import ManageApplication from "../pages/Employer/ManageApplication/ManageApplication";
+import Dashboard from "../pages/Employer/Dashboard";
 
 const Router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,6 +25,7 @@ const Router = createBrowserRouter(
         <Route path="jobs/:id" element={<JobDetailPage />} />
       </Route>
       <Route path="employer" element={<EmployerLayout />}>
+        <Route path="dashboard" element={<Dashboard />} />
         <Route path="joblist" element={<ManageJobs />} />
         <Route path="joblist/:id" element={<ManageApplication />} />
       </Route>
