@@ -11,16 +11,10 @@ export const getAllJobs = async (req, res) => {
     const limitNumber = parseInt(limit, 10);
 
     // Validate pagination parameters
-    if (
-      isNaN(pageNumber) ||
-      isNaN(limitNumber) ||
-      pageNumber < 1 ||
-      limitNumber < 1
-    ) {
+    if (isNaN(pageNumber) || isNaN(limitNumber) || pageNumber < 1 || limitNumber < 1) {
       return res.status(400).json({
         success: false,
-        message:
-          "Invalid pagination parameters. 'page' and 'limit' must be positive integers.",
+        message: "Invalid pagination parameters. 'page' and 'limit' must be positive integers.",
       });
     }
 
@@ -75,16 +69,10 @@ export const getAllJobsByCompanyId = async (req, res) => {
     const limitNumber = parseInt(limit, 10);
 
     // Validate pagination parameters
-    if (
-      isNaN(pageNumber) ||
-      isNaN(limitNumber) ||
-      pageNumber < 1 ||
-      limitNumber < 1
-    ) {
+    if (isNaN(pageNumber) || isNaN(limitNumber) || pageNumber < 1 || limitNumber < 1) {
       return res.status(400).json({
         success: false,
-        message:
-          "Invalid pagination parameters. 'page' and 'limit' must be positive integers.",
+        message: "Invalid pagination parameters. 'page' and 'limit' must be positive integers.",
       });
     }
 
@@ -128,6 +116,139 @@ export const getAllJobsByCompanyId = async (req, res) => {
       success: false,
       message: "An error occurred while fetching jobs.",
     });
+  }
+};
+export const createJob = async (req, res) => {
+  try {
+    const {
+      title,
+      position,
+      experience,
+      schedule,
+      salary_from,
+      salary_to,
+      valid_date,
+      expired_date,
+      jobType_id,
+      company_id,
+    } = req.body;
+
+    // Validation: You can add additional validation here
+    if (
+      !title ||
+      !position ||
+      !experience ||
+      !schedule ||
+      !salary_from ||
+      !valid_date ||
+      !expired_date ||
+      !company_id ||
+      !jobType_id
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Create a new job entry
+    const newJob = await Job.create({
+      title,
+      position,
+      experience,
+      schedule,
+      salary_from,
+      salary_to,
+      valid_date,
+      expired_date,
+      company_id,
+      jobType_id,
+    });
+
+    // Return the newly created job record
+    return res.status(201).json(newJob);
+  } catch (error) {
+    console.error("Error creating job:", error);
+    return res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+export const updateJob = async (req, res) => {
+  try {
+    const { id } = req.params; // Get job id from request parameters
+    const {
+      title,
+      position,
+      experience,
+      schedule,
+      salary_from,
+      salary_to,
+      valid_date,
+      expired_date,
+      jobType_id,
+      company_id,
+    } = req.body;
+
+    // Validation: Ensure all required fields are present (you can customize validation)
+    if (
+      !title ||
+      !position ||
+      !experience ||
+      !schedule ||
+      !salary_from ||
+      !valid_date ||
+      !expired_date ||
+      !company_id ||
+      !jobType_id
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Find the job by ID
+    const job = await Job.findByPk(id);
+
+    // If the job doesn't exist, return a 404 response
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    // Update the job record
+    const updatedJob = await job.update({
+      title,
+      position,
+      experience,
+      schedule,
+      salary_from,
+      salary_to,
+      valid_date,
+      expired_date,
+      company_id,
+      jobType_id,
+    });
+
+    // Return the updated job
+    return res.status(200).json(updatedJob);
+  } catch (error) {
+    console.error("Error updating job:", error);
+    return res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+export const deleteJob = async (req, res) => {
+  try {
+    const { id } = req.params; // Get job id from request parameters
+
+    // Find the job by ID
+    const job = await Job.findByPk(id);
+
+    // If the job doesn't exist, return a 404 response
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    // Delete the job record
+    await job.destroy();
+
+    // Return a success message
+    return res.status(200).json({ message: "Job deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting job:", error);
+    return res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
 export const getAllJobTypes = async (req, res) => {
