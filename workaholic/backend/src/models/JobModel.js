@@ -18,7 +18,7 @@ const Job = sequelize.define(
       allowNull: false,
     },
     experience: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     schedule: {

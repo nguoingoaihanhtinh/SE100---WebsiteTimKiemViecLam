@@ -21,6 +21,6 @@ INSERT INTO companies (id,img, name, feild, description, longitude, lattidue, cr
 
 -- Insert fake jobs
 INSERT INTO jobs (id,title, position, experience, schedule, salary_from, salary_to, valid_date, expired_date, company_id, jobType_id, createdAt, updatedAt) VALUES
-(1,'Software Engineer','Mid-Level', '3+ years', 'Day', 60000, 90000, '2024-01-01', '2024-12-31', 1, 1, NOW(), NOW()),
-(2,'Data Analyst', 'Junior', '1+ years', 'Day', 45000, 70000, '2024-01-01', '2024-12-31', 2, 2, NOW(), NOW()),
-(3,'Project Manager', 'Senior', '5+ years', 'Day', 80000, 120000, '2024-01-01', '2024-12-31', 3, 1, NOW(), NOW());
+(3,'Software Engineer','Mid-Level', 3, 'Day', 60000, 90000, '2024-01-01', '2024-12-31', 1, 1, NOW(), NOW()),
+(4,'Data Analyst', 'Junior', 1, 'Day', 45000, 70000, '2024-01-01', '2024-12-31', 1, 2, NOW(), NOW()),
+(5,'Project Manager', 'Senior', 5, 'Day', 80000, 120000, '2024-01-01', '2024-12-31', 1, 1, NOW(), NOW());
