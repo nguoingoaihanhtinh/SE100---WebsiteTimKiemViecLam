@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { FaBookmark, FaLocationPin, FaUserTie } from "react-icons/fa6";
 import { Button } from "antd";
 import Rating from "../Rating/Rating";
+import { useNavigate } from 'react-router-dom';
 
 export const JobCardHorizontal = ({ jobData }) => {
+  const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState(false);
   // console.log('data',jobData);
   // Format the currency to include commas
@@ -11,13 +13,16 @@ export const JobCardHorizontal = ({ jobData }) => {
     return amount.toLocaleString().replace(/\./g, ",");
   }
 
+  // handleCardClick = ({}) => {
+  //   navigate(`/${jobData.id}`)
+  // };
 
   const handleBookmarkClick = () => {
     setIsBookmarked(!isBookmarked);
   };
 
   return (
-    <div
+    <div 
       className={`border-[1px] border-gray-300 w-full transition-all duration-500 hover:shadow-md cursor-pointer overflow-hidden h-full flex items-center p-2 rounded-xl`}
     >
       {/* Job Image */}
@@ -57,7 +62,7 @@ export const JobCardHorizontal = ({ jobData }) => {
         {/* Rating and Salary */}
         <div className="flex items-center justify-between mt-2">
           <p className="text-lg font-semibold text-primary-color">
-            {formatCurrency(jobData.salary)}đ / <span className="text-sm">{jobData.paymentBy}</span>
+            {formatCurrency(jobData.salary_from)}đ / <span className="text-sm">{jobData.paymentBy}</span>
           </p>
           <div className="ml-auto">
 

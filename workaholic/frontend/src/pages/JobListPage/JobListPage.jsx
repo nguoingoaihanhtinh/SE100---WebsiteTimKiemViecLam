@@ -7,11 +7,10 @@ import jobApi from "../../api/jobApi"; // Assuming you're fetching jobs from thi
 
 const JobListPage = () => {
   const [filters, setFilters] = useState({
-    salaryRange: [5000000, 200000000],
+    salaryRange: [0, 1000000],
     selectedJobType: "", // Default to "All" for job type
     selectedLocation: "Location",
     selectedExperience: "Experience",
-    selectedPayment: "Payment",
   });
 
   const [jobs, setJobs] = useState([]);
@@ -21,17 +20,21 @@ const JobListPage = () => {
 
   // Fetch jobs when filters or page changes
   const getAllJobs = async () => {
-    setLoading(true); // Start loading when the request is made
-    const response = await jobApi.getAllJobs(page, 9, filters.selectedJobType);
-    if (response.status === "success") {
+    setLoading(true); 
+    try {
+      const response = await jobApi.getAllJobs(page, 9, filters.selectedJobType);
       setJobs(response.data);
       setTotalJobs(response.pagination.totalItems);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+    } finally {
+      setLoading(false); // Stop loading after data is fetched
     }
-    setLoading(false); // Stop loading after data is fetched
   };
 
   useEffect(() => {
     getAllJobs();
+    // console.log('job',jobs)
   }, [filters.selectedJobType, page]); // Fetch jobs when filters or page changes
   // console.log('Selected Job Type:', filters.selectedJobType);
   // Filter jobs based only on the selected job type
@@ -40,7 +43,7 @@ const JobListPage = () => {
       ? job.type === filters.selectedJobType
       : true;
   });
-  // console.log('jobs',jobTypeFilteredJobs)
+
 
   const handleFilterChange = (newFilters) => {
     if (JSON.stringify(filters) !== JSON.stringify(newFilters)) {
@@ -65,7 +68,7 @@ const JobListPage = () => {
           {loading ? (
             <div>Loading...</div> // Show loading indicator while fetching
           ) : (
-            <JobListContent jobs={jobs} totalJobs={totalJobs} page={page} setPage={setPage} />
+            <JobListContent jobs={jobTypeFilteredJobs} totalJobs={totalJobs} page={page} setPage={setPage} />
           )}
         </div>
       </div>

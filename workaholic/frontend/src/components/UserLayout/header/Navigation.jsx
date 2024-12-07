@@ -11,7 +11,7 @@ const Navigation = () => {
 
   return (
     <div className="flex gap-8 items-center">
-      <SearchBox />
+
       {menu.map((item, index) => (
         <div key={index} className="hover:text-primary-color cursor-pointer text-2xl">
           {item}
