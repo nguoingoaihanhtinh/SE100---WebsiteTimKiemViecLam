@@ -291,6 +291,8 @@ export const searchJob = async (req, res) => {
       experience = 0,
       longitude,
       lattidue, // Assuming you meant latitude
+      salary_from = 0,
+      salary_to = 100000000,
     } = req.query;
 
     const offset = (page - 1) * limit;
@@ -309,7 +311,9 @@ export const searchJob = async (req, res) => {
     if (jobType_id) {
       whereClause.jobType_id = jobType_id;
     }
-
+    // Add salary range filter if it exists
+    whereClause.salary_from = { [Op.gte]: parseInt(salary_from, 10) };
+    whereClause.salary_to = { [Op.lte]: parseInt(salary_to, 10) };
     // Define the Haversine formula condition
     if (longitude && lattidue) {
       const radiusKm = 30; // 30 km radius
