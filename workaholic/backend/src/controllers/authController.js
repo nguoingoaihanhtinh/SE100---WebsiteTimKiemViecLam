@@ -27,6 +27,12 @@ const sendJsonToken = (user, statusCode, req, res) => {
   res.status(statusCode).json({
     status: "success",
     token,
+    user: {
+      id: user.dataValues.id,
+      user_name: user.dataValues.user_name,
+      email: user.dataValues.email,
+      role: user.dataValues.role,
+    },
   });
 };
 // Register Controller
@@ -86,14 +92,26 @@ export const checkUserSession = async (req, res) => {
   try {
     // Retrieve the token from the Authorization header or cookies
     let token;
-    if (req.headers.cookie?.split("=")[1]) {
-      token = req.headers.cookie?.split("=")[1];
+    if (req.headers.cookie) {
+      const cookies = req.headers.cookie.split("; ");
+      const jwtCookie = cookies.find((cookie) => cookie.startsWith("jwt="));
+      if (jwtCookie) {
+        token = jwtCookie.split("=")[1];
+      }
     }
+
     if (!token) {
       return res.status(401).json({ message: "Unauthorized: No token provided" });
     }
+     console.log("Received token:", token);
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      console.log("Decoded Token:", decoded);
+    } catch (err) {
+      console.error("JWT Verification Error:", err);
+      return res.status(401).json({ message: "Invalid or malformed token" });
+    }
 
-    // Verify the token
     const decoded = jwt.verify(token, JWT_SECRET);
 
     // Check if the user exists in the database

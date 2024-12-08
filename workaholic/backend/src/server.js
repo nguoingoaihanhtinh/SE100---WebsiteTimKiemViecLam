@@ -6,6 +6,7 @@ import routes from "./routes/index.js";
 import setupSwagger from "./swagger.js";
 import bodyParser from "body-parser";
 import open from "open";
+import cookieParser from "cookie-parser";
 dotenv.config();
 
 const server = express();
@@ -21,7 +22,7 @@ server.use(
     credentials: true, // Allow cookies and credentials
   })
 );
-
+server.use(cookieParser());
 sequelize
   .authenticate()
   .then(() => console.log("Connection established successfully."))

@@ -90,3 +90,29 @@ export const getApplicationsByJobId = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getUserApplications = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log('usre',userId);
+    // Fetch applications by the user
+    const applications = await Application.findAll({
+      where: { user_id: userId },
+      include: [
+        { 
+          model: Job, 
+          as: 'job', 
+          attributes: ['id', 'title', 'salary_from'],
+        }
+      ],
+    });
+
+    if (!applications.length) {
+      return res.status(404).json({ message: "No applications found for this user" });
+    }
+
+    res.status(200).json(applications);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
