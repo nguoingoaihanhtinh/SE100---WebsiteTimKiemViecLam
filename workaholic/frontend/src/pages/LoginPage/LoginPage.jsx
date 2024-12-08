@@ -28,7 +28,6 @@ export default function LoginPage() {
         email,
         password,
       }).unwrap();
-
       window.location.href = "/";
     } catch (err) {
       console.error("Login failed:", err);

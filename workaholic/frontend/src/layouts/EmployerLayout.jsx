@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { FiHome, FiBriefcase, FiBell, FiUsers, FiSettings, FiMenu, FiX } from "react-icons/fi";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 const EmployerLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const location = useLocation(); // Get the location object
 
   const menuItems = [
     { title: "Dashboard", icon: <FiHome className="w-6 h-6" />, path: "/employer/dashboard" },
@@ -29,14 +30,16 @@ const EmployerLayout = () => {
         </div>
         <nav className="px-4 pt-4">
           {menuItems.map((item, index) => (
-            <a
+            <Link
               key={index}
-              href={item.path}
-              className="flex items-center px-2 py-3 mb-2 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+              to={item.path}
+              className={`${
+                location.pathname.startsWith(item.path) ? "bg-blue-50 text-blue-600" : " text-gray-700"
+              } flex items-center px-2 py-3 mb-2  rounded-[8px] hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200`}
             >
               <span className="mr-3">{item.icon}</span>
               <span className="text-sm font-medium">{item.title}</span>
-            </a>
+            </Link>
           ))}
         </nav>
       </div>
