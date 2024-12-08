@@ -6,6 +6,9 @@ import { useGetCompanyByUserIdQuery } from "../../redux/rtk/company.service";
 import { useNavigate } from "react-router";
 import AddJobForm from "./AddJobForm";
 import { FaRegPenToSquare, FaRegTrashCan } from "react-icons/fa6";
+const formatNumber = (number) => {
+  return new Intl.NumberFormat("en-US").format(number);
+};
 const ManageJobs = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddJobForm, setShowAddJobForm] = useState(-1);
@@ -40,15 +43,7 @@ const ManageJobs = () => {
   useEffect(() => {
     const filteredJobs = allJobs.filter((job) => {
       const lowerSearchQuery = searchQuery.toLowerCase();
-      return (
-        job.title.toLowerCase().includes(lowerSearchQuery) ||
-        job.position.toLowerCase().includes(lowerSearchQuery) ||
-        job.experience.toLowerCase().includes(lowerSearchQuery) ||
-        job.salary_from.toString().includes(lowerSearchQuery) ||
-        job.salary_to.toString().includes(lowerSearchQuery) ||
-        job.company.name.toLowerCase().includes(lowerSearchQuery) ||
-        job.jobType.name.toLowerCase().includes(lowerSearchQuery)
-      );
+      return job.title.toLowerCase().includes(lowerSearchQuery);
     });
     setJobs(filteredJobs);
   }, [searchQuery]);
@@ -88,11 +83,11 @@ const ManageJobs = () => {
                     Company: <span className="font-bold">{job.company.name}</span>
                   </p>
                   <p className="text-gray-600">Position: {job.position}</p>
-                  <p className="text-gray-600">Experience: {job.experience}</p>
+                  <p className="text-gray-600">Experience: {job.experience} (Years)</p>
                   <p className="text-gray-600">
                     Salary:{" "}
                     <span className="font-bold">
-                      ${job.salary_from} - ${job.salary_to}
+                      {formatNumber(job.salary_from)}đ - {formatNumber(job.salary_to)}đ
                     </span>
                   </p>
                   <p className="text-gray-600">Valid Date: {job.valid_date}</p>

@@ -1,10 +1,13 @@
 import { createContext, useState, useEffect } from "react";
 import { useCheckLoginQuery } from "../redux/rtk/user.service";
+import { useNavigate } from "react-router-dom";
 const AuthContext = createContext();
 function AuthProvider({ children }) {
   const { data: user } = useCheckLoginQuery();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState();
+
+  const navigate = useNavigate();
   const login = () => {
     setIsLoggedIn(true);
   };
@@ -14,9 +17,19 @@ function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    if (user && user.user) {
+    if (user && user?.user) {
       setUserData(user.user);
       login();
+      if (
+        user.user.role === "Employer" &&
+        !location.pathname.startsWith("/employer") &&
+        !location.pathname.startsWith("/login")
+      ) {
+        navigate("/employer");
+      }
+      if (user.user.role === "User" && location.pathname.startsWith("/employer")) {
+        navigate("/");
+      }
     }
   }, [user]);
   return (

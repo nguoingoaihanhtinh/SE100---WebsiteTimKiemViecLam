@@ -106,7 +106,7 @@ export default function AddJobForm({ onClose, companyId, refetch, editJob }) {
         <div onClick={() => onClose()} className="flex items-center cursor-pointer w-[40px] h-[40px] justify-center">
           <FaChevronLeft />
         </div>
-        <h2 className="text-2xl font-bold">Add Job</h2>
+        <h2 className="text-2xl font-bold">{editJob ? "Update job" : "Add Job"}</h2>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="gap-8 grid grid-cols-2">
         <div>
