@@ -4,6 +4,7 @@ import Rating from "../Rating/Rating";
 import { useState } from "react";
 import ApplyButton from "../ui/ApplyButton";
 import JobApplicationForm from "../../pages/Application/ApplicationForm";
+import { FaPaperPlane } from "react-icons/fa";
 
 export const JobCard = ({ jobData }) => {
   // console.log('job',jobData)
@@ -16,11 +17,11 @@ export const JobCard = ({ jobData }) => {
 
   const showForm = () => {
     console.log('click')
-    setFormVisible(true); // Show the application form
+    setFormVisible(true); 
   };
 
   const closeForm = () => {
-    setFormVisible(false); // Close the application form
+    setFormVisible(false); 
   };
   // Function to determine background color based on job type (industry/field)
   const getJobCardBackground = (jobType) => {
@@ -105,13 +106,16 @@ export const JobCard = ({ jobData }) => {
         <div className="payment flex flex-col text-primary-color mx-3 px-5 gap-3 my-3">
           <p className="text-lg font-bold">{jobData.salary_from}đ/<span className="text-md font-normal">{jobData.paymentBy}</span></p>
           <div className="buttons flex justify-between">
-            <button className="px-4 py-2 bg-white w-1/3">Details</button>
-            <ApplyButton onClick={showForm}>a</ApplyButton>
+            <button onClick={() => { console.log('Button clicked')}} className="px-4 py-2 bg-white w-1/3">Details</button>
+            <button onClick={showForm} className="px-4 py-2 bg-black rounded-[4px] inline-flex text-white items-center gap-4 cursor-pointer hover:opacity-90 transition-all">
+                <FaPaperPlane className="text-white" />
+                <p className="text-white font-medium">Ứng tuyển ngay</p>
+            </button>
           </div>
 
         </div>
       </div>
-      {isFormVisible && <JobApplicationForm closeForm={closeForm} />}
+      {isFormVisible && <JobApplicationForm closeForm={closeForm} jobId={jobData.id} />}
     </div>
   );
 };
