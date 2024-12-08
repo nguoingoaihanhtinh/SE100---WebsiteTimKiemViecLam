@@ -103,6 +103,11 @@ export const getUserApplications = async (req, res) => {
           model: Job, 
           as: 'job', 
           attributes: ['id', 'title', 'salary_from'],
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id','user_name','email'],
         }
       ],
     });

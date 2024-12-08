@@ -1,6 +1,7 @@
 // models/Company.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
+
 const Application = sequelize.define(
   "Application",
   {
@@ -30,9 +31,14 @@ const Application = sequelize.define(
       defaultValue: "pending",
     },
     date_applied: {
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
+    letter: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    }
   },
   {
     modelName: "application",

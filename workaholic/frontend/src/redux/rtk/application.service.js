@@ -12,7 +12,12 @@ export const applicationApi = baseApi.injectEndpoints({
         credentials: "include", // if needed
       }),
     }),
-
+    getUserApplication: build.query({
+      query: () => ({
+        url: "/application/user",
+        credentials: "include",
+      }),
+    }),
     // Get all applications
     getAllApplications: build.query({
       query: () => ({
@@ -65,4 +70,5 @@ export const {
   useUpdateApplicationMutation,
   useDeleteApplicationMutation,
   useGetApplicationsByJobIdQuery,
+  useGetUserApplicationQuery,
 } = applicationApi;
