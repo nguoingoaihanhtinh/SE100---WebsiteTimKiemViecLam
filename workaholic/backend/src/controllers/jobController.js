@@ -1,5 +1,5 @@
 import { Company, Job, JobType } from "../models/relation.js";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 
 export const getAllJobs = async (req, res) => {
   try {
@@ -283,56 +283,83 @@ export const getAllJobTypes = async (req, res) => {
 
 export const searchJob = async (req, res) => {
   try {
-    const { page = 1, limit = 10, kw = "" } = req.query;
+    const {
+      page = 1,
+      limit = 10,
+      kw = "",
+      jobType_id,
+      experience = 0,
+      longitude,
+      lattidue, // Assuming you meant latitude
+    } = req.query;
+
     const offset = (page - 1) * limit;
 
-    // Search for jobs by title only
-    const jobs = await Job.findAll({
-      where: {
-        title: { [Op.like]: `%${kw}%` }, // Only filter jobs by title
-      },
+    // Create the base `where` clause for filtering by title
+    const whereClause = {
+      title: { [Op.like]: `%${kw}%` }, // Filter jobs by title
+    };
+
+    // Add experience filter if it exists in the query
+    if (experience) {
+      whereClause.experience = { [Op.gte]: parseInt(experience, 10) }; // Filter jobs with experience >= provided value
+    }
+
+    // Add `jobType_id` filter if it exists in the query
+    if (jobType_id) {
+      whereClause.jobType_id = jobType_id;
+    }
+
+    // Define the Haversine formula condition
+    if (longitude && lattidue) {
+      const radiusKm = 30; // 30 km radius
+      const earthRadius = 6371; // Earth's radius in km
+
+      const distanceCondition = Sequelize.literal(`
+        (
+          ${earthRadius} * acos(
+            cos(radians(${lattidue})) * cos(radians(company.lattidue)) *
+            cos(radians(company.longitude) - radians(${longitude})) +
+            sin(radians(${lattidue})) * sin(radians(company.lattidue))
+          )
+        ) <= ${radiusKm}
+      `);
+
+      // Add the distance condition to the query pipeline
+      whereClause[Op.and] = [Sequelize.where(distanceCondition, true)];
+    }
+
+    // Fetch jobs with pagination
+    const jobs = await Job.findAndCountAll({
+      where: whereClause,
       include: [
         {
           model: Company,
           as: "company",
-          required: false, // Ensure jobs without a company are still included
-          attributes: ["name", "img"], // Only fetch name and img from the company
+          required: true, // Only include jobs with a valid company
+          attributes: ["name", "img", "longitude", "lattidue"], // Fetch relevant fields
         },
         {
           model: JobType,
           as: "jobType",
-          required: false, // Ensure jobs without a company are still included
-          attributes: ["name"], // Only fetch name and img from the company
+          required: false, // Include jobs without a job type
+          attributes: ["name"], // Fetch only name field
         },
       ],
       limit: parseInt(limit, 10),
       offset: parseInt(offset, 10),
     });
 
-    // Count the total number of jobs matching the search criteria
-    const totalJobs = await Job.count({
-      where: {
-        title: { [Op.like]: `%${kw}%` }, // Only count jobs with matching titles
-      },
-      include: [
-        {
-          model: Company,
-          as: "company",
-          required: false,
-        },
-      ],
-    });
-
-    const totalPages = Math.ceil(totalJobs / limit);
+    const totalPages = Math.ceil(jobs.count / limit);
 
     // Return the jobs and pagination info
     res.json({
       status: "success",
-      data: jobs,
+      data: jobs.rows,
       pagination: {
         currentPage: parseInt(page, 10),
         pageSize: parseInt(limit, 10),
-        totalJobs,
+        totalJobs: jobs.count,
         totalPages,
       },
     });
