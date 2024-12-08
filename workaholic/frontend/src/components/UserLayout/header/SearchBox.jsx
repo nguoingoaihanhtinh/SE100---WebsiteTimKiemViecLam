@@ -1,11 +1,10 @@
-
 import { useEffect, useRef, useState } from "react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import useDebounce from "../../../hooks/useDebouce";
 import { useNavigate } from "react-router-dom";
 import jobApi from "../../../api/jobApi";
 import { JobCardHorizontal } from "../../Job/JobCarHorizontal";
-import { Spin } from 'antd';
+import { Spin } from "antd";
 export default function SearchBox() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -58,7 +57,7 @@ export default function SearchBox() {
             setIsSearching(true);
           }}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "Enter") {
               handleSearchSubmit(); // Submit on Enter key press
             }
           }}
@@ -69,15 +68,13 @@ export default function SearchBox() {
       </div>
       {isSearching && (
         <div className="absolute top-[60px] left-[50%] translate-x-[-50%] bg-white shadow-lg rounded-xl p-4 max-h-[300px] flex flex-col gap-3 overflow-y-auto w-[500px] scrollbar-hidden">
-              <div>
-                {jobs.length > 0 ? (
-                  jobs.map((item) => (
-                    <JobCardHorizontal key={item.id} jobData={item} />
-                  ))
-                ) : (
-                  <p className="text-gray-500 text-center">No results found</p>
-              )}
-               </div>
+          <div>
+            {jobs.length > 0 ? (
+              jobs.map((item) => <JobCardHorizontal key={item.id} jobData={item} />)
+            ) : (
+              <p className="text-gray-500 text-center">No results found</p>
+            )}
+          </div>
         </div>
       )}
     </div>

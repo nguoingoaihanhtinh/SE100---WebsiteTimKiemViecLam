@@ -1,14 +1,12 @@
 import { Link } from "react-router-dom";
-import Navigation from "./Navigation";
 import UserSection from "./UserSection";
-import SortBar from "../../filter/SortBar";
 import SearchBox from "./SearchBox";
 
 const Header = () => {
   return (
     <div className="flex flex-col fixed bg-blue-900 left-0 right-0 top-0 px-6 md:px-24 gap-8 py-4 md:py-0 z-[10] w-full">
       {/* Header Section */}
-      <div className="top-header flex flex-wrap  w-full justify-between items-center mt-5 gap-4 md:gap-0">
+      <div className=" flex flex-wrap  w-full justify-between items-center mt-5 gap-4 md:gap-0">
         <Link
           to="/"
           style={{
@@ -16,7 +14,7 @@ const Header = () => {
           }}
           className="h-[40px] w-[100px] md:h-[50px] md:w-[146px] bg-no-repeat bg-contain bg-center"
         ></Link>
-        
+
         {/* On smaller screens, search box and user section stack */}
         <div className="flex flex-grow justify-center ">
           <SearchBox />
@@ -29,7 +27,6 @@ const Header = () => {
       </div>
 
       <div className="seperator w-full border-b border-blue-500"></div>
-      
     </div>
   );
 };
