@@ -1,11 +1,32 @@
-import React, { useState } from "react";
-import { FaUser, FaEnvelope, FaBriefcase, FaPaperPlane, FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { useGetUserApplicationQuery } from "../../redux/rtk/application.service";
+import React, { useState, useEffect } from "react";
+import { FaUser, FaEnvelope, FaBriefcase, FaPaperPlane, FaChevronDown, FaChevronUp, FaTrash } from "react-icons/fa";
+import { useGetUserApplicationQuery, useDeleteApplicationMutation } from "../../redux/rtk/application.service";
+import { useCheckLoginQuery } from "../../redux/rtk/user.service";
+import { Link } from "react-router-dom";
 
 const JobApplicationList = () => {
   const [expandedApplication, setExpandedApplication] = useState(null);
-  const { data: applications, error, isLoading } = useGetUserApplicationQuery(); // Fetch user applications
-  console.log('app',applications)
+  const { data: applications, error, isLoading } = useGetUserApplicationQuery();
+  const [deleteApplication] = useDeleteApplicationMutation();
+  const [deleteMessage, setDeleteMessage] = useState(null);
+  const { data: loginStatus, isLoading: loginLoading } = useCheckLoginQuery();
+
+  console.log('app', applications);
+
+  useEffect(() => {
+    if (isLoading) {
+      alert("Loading user status. Please wait.");
+      return;
+    }
+
+    if (!loginStatus?.user?.id) {
+      alert("You must be logged in to apply for a job.");
+      window.location.href = "/login"; // Redirect to login page
+      return;
+    }
+
+  }, [loginLoading, loginStatus]);
+
   const getStatusColor = (status) => {
     switch (status) {
       case "approved":
@@ -22,18 +43,39 @@ const JobApplicationList = () => {
   };
 
   // Handle loading and error states
-  if (isLoading) {
+  if (isLoading || loginLoading) {
     return <div>Loading...</div>;
   }
 
   if (error) {
-    return <div>Error loading applications: {error.message}</div>;
+    return (
+      <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 items-center text-center">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-gray-800 8">
+            Job Applications List
+          </h2>
+          <div className="text-red-500 text-center p-5">Error loading applications:  <span className="font-semibold">{error.data.message}</span></div>;
+          <Link to={'/jobs'} className="border border-gray-400 p-2 rounded-xl">Find a job now</Link>
+        </div>
+
+      </div>
+    );
   }
 
-  // If applications are not found or empty, show a message
-  if (!applications || applications.length === 0) {
-    return <div>No applications found.</div>;
-  }
+
+
+  // Handle deleting an application
+  const handleDelete = async (id) => {
+    try {
+      await deleteApplication(id);
+      setDeleteMessage("Application deleted successfully.");
+      // Reload the page after successful deletion
+      window.location.reload();
+    } catch (error) {
+      setDeleteMessage("Error deleting application.");
+      console.error("Error deleting application:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -41,7 +83,11 @@ const JobApplicationList = () => {
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
           Job Applications List
         </h2>
-
+        {deleteMessage && (
+          <div className="mb-4 text-green-500">
+            {deleteMessage}
+          </div>
+        )}
         <div className="space-y-4">
           {applications.map((application) => (
             <div
@@ -67,6 +113,18 @@ const JobApplicationList = () => {
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
+                    {/* Delete Icon */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent expanding/collapsing when deleting
+                        handleDelete(application.id);
+                      }}
+                      className="text-gray-600 hover:text-red-500"
+                    >
+                      <FaTrash />
+                    </button>
+
+                    {/* Status */}
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
                         application.status

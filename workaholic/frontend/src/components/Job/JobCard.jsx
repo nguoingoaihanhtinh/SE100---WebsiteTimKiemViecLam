@@ -5,19 +5,37 @@ import { useState } from "react";
 import ApplyButton from "../ui/ApplyButton";
 import JobApplicationForm from "../../pages/Application/ApplicationForm";
 import { FaPaperPlane } from "react-icons/fa";
+import { useCheckLoginQuery } from "../../redux/rtk/user.service";
 
 export const JobCard = ({ jobData }) => {
   // console.log('job',jobData)
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const { data: loginStatus, isLoading } = useCheckLoginQuery();
+  const userData = loginStatus?.user;
+
 
   function formatCurrency(amount) {
     return amount.toLocaleString().replace(/\./g, ",");
   }
   const [isFormVisible, setFormVisible] = useState(false);
 
+
+
+
+ 
   const showForm = () => {
-    console.log('click')
-    setFormVisible(true); 
+    if (isLoading) {
+      alert("Loading user status. Please wait.");
+      return;
+    }
+
+    if (!loginStatus?.user?.id) {
+      alert("You must be logged in to apply for a job.");
+      window.location.href = "/login"; // Redirect to login page
+      return;
+    }
+
+    setFormVisible(true);
   };
 
   const closeForm = () => {
@@ -103,19 +121,19 @@ export const JobCard = ({ jobData }) => {
             </div>
           </div>
         </div>
-        <div className="payment flex flex-col text-primary-color mx-3 px-5 gap-3 my-3">
-          <p className="text-lg font-bold">{jobData.salary_from}đ/<span className="text-md font-normal">{jobData.paymentBy}</span></p>
-          <div className="buttons flex justify-between">
+        <div className="payment flex flex-col text-primary-color mx-1 px-2 gap-3 my-3">
+          <p className="text-lg font-bold px-2">{jobData.salary_from}đ/<span className="text-md font-normal">{jobData.paymentBy}</span></p>
+          <div className="buttons flex justify-between gap-2">
             <button onClick={() => { console.log('Button clicked')}} className="px-4 py-2 bg-white w-1/3">Details</button>
-            <button onClick={showForm} className="px-4 py-2 bg-black rounded-[4px] inline-flex text-white items-center gap-4 cursor-pointer hover:opacity-90 transition-all">
+            <button onClick={showForm} className="px-4 py-2 bg-black text-sm rounded-[4px] inline-flex text-white items-center gap-2 cursor-pointer hover:opacity-90 transition-all">
                 <FaPaperPlane className="text-white" />
-                <p className="text-white font-medium">Ứng tuyển ngay</p>
+                <p className="text-white font-md">Ứng tuyển ngay</p>
             </button>
           </div>
 
         </div>
       </div>
-      {isFormVisible && <JobApplicationForm closeForm={closeForm} jobId={jobData.id} />}
+      {isFormVisible && <JobApplicationForm closeForm={closeForm} JobData={jobData} user={userData} />}
     </div>
   );
 };

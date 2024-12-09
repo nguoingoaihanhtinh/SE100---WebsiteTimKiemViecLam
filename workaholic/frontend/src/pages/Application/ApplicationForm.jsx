@@ -3,14 +3,15 @@ import { FaUser, FaEnvelope, FaBriefcase, FaPaperPlane } from "react-icons/fa";
 import { useCreateApplicationMutation } from "../../redux/rtk/application.service";
 
 
-const JobApplicationForm = ({ jobId, closeForm }) => {
-  console.log("job", jobId);
+const JobApplicationForm = ({ JobData, closeForm, user }) => {
+  console.log("job", JobData);
   const [formData, setFormData] = useState({
-    jobName: "Software Developer",
-    name: "John Smith",
-    email: "john.smith@example.com",
-    coverLetter: "",
+    jobName: JobData.title, 
+    name: user ? user.user_name : "", 
+    email: user ? user.email : "", 
+    coverLetter: "", 
   });
+
 
   const [errors, setErrors] = useState({});
   const [createApplication, { isLoading, isSuccess, isError, error }] =
@@ -44,7 +45,7 @@ const JobApplicationForm = ({ jobId, closeForm }) => {
     if (validateForm()) {
       try {
         await createApplication({
-          job_id: jobId,
+          job_id: JobData.id,
           user_id: 1, // Replace with the actual user ID
           letter: formData.coverLetter,
         }).unwrap();

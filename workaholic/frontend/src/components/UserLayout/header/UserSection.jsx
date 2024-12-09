@@ -8,7 +8,7 @@ function UserSection() {
   const navigate = useNavigate();
   console.log(userData);
   return (
-    <div className="flex gap-2 md:gap-5 items-center">
+    <div className="flex gap-2 md:gap-5 items-center justify-between">
       <div className="location flex gap-1 items-center">
         <FaLocationDot />
         <p>Ho Chi Minh City</p>
