@@ -5,6 +5,7 @@ import { useCreateApplicationMutation } from "../../redux/rtk/application.servic
 
 const JobApplicationForm = ({ JobData, closeForm, user }) => {
   console.log("job", JobData);
+  console.log("user", user);
   const [formData, setFormData] = useState({
     jobName: JobData.title, 
     name: user ? user.user_name : "", 
@@ -46,7 +47,7 @@ const JobApplicationForm = ({ JobData, closeForm, user }) => {
       try {
         await createApplication({
           job_id: JobData.id,
-          user_id: 1, // Replace with the actual user ID
+          user_id: user.id,
           letter: formData.coverLetter,
         }).unwrap();
         setFormData((prev) => ({ ...prev, coverLetter: "" }));
