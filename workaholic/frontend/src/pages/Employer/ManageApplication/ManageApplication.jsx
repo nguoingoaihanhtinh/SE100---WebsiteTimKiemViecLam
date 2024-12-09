@@ -2,89 +2,32 @@ import React, { useState } from "react";
 import { FaTrash, FaSearch, FaPlus, FaChevronDown, FaUser, FaAngleDown, FaAngleUp } from "react-icons/fa";
 import { useDeleteApplicationMutation, useGetApplicationsByJobIdQuery, useUpdateApplicationMutation } from "../../../redux/rtk/application.service";
 import { useParams } from "react-router-dom";
-
-const initialApplications = [
-  {
-    id: 1,
-    userName: "John Smith",
-    email: "john.smith@email.com",
-    phone: "(555) 123-4567",
-    jobTitle: "Frontend Developer",
-    company: "TechCorp Inc.",
-    experience: "5 years",
-    education: "BS in Computer Science",
-    status: "pending"
-  },
-  {
-    id: 2,
-    userName: "Sarah Johnson",
-    email: "sarah.j@email.com",
-    phone: "(555) 987-6543",
-    jobTitle: "UX Designer",
-    company: "Design Studios",
-    experience: "3 years",
-    education: "BA in Design",
-    status: "pending"
-  },
-  {
-    id: 3,
-    userName: "Michael Chen",
-    email: "m.chen@email.com",
-    phone: "(555) 456-7890",
-    jobTitle: "Backend Engineer",
-    company: "DataSys Solutions",
-    experience: "7 years",
-    education: "MS in Software Engineering",
-    status: "pending"
-  }
-];
+import { useGetNotificationsQuery } from "../../../redux/rtk/notification.service";
 
 const ManageApplication = () => {
 //   const [applications, setApplications] = useState(initialApplications);
   const { id } = useParams();
-  const [showForm, setShowForm] = useState(false);
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [editApplication, setEditApplication] = useState(null);
+
   const [expandedRow, setExpandedRow] = useState(null);
 
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
 
-    const { data: applications = [], refetch } = useGetApplicationsByJobIdQuery(id);
-    const [updateApplication] = useUpdateApplicationMutation();
-    console.log('app',applications);
-    const [formData, setFormData] = useState({
-        userName: "",
-        email: "",
-        phone: "",
-        jobTitle: "",
-        company: "",
-        experience: "",
-        education: "",
-        status: "pending"
-    });
-  const [errors, setErrors] = useState({});
-  const [openStatusDropdown, setOpenStatusDropdown] = useState(null);
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.userName) newErrors.userName = "User Name is required";
-    if (!formData.email) newErrors.email = "Email is required";
-    if (!formData.jobTitle) newErrors.jobTitle = "Job Title is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
+  const { data: applications = [], refetch } = useGetApplicationsByJobIdQuery(id);
+  const [updateApplication] = useUpdateApplicationMutation();
+    // console.log('app',applications);
   const handleStatusChange = async (id, newStatus) => {
     try {
       await updateApplication({ id, applicationData: { status: newStatus } }).unwrap();
       refetch();
+      setPopupMessage(`Application has been ${newStatus}.`);
+      setShowPopup(true);
     } catch (error) {
       console.error("Failed to update application status", error);
     }
   };
-
-
-
-
   const filteredApplications = applications.filter(app =>
     app.user?.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     app.job?.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -229,6 +172,19 @@ const ManageApplication = () => {
               </table>
             </div>
           )}
+             {showPopup && (
+              <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+                <div className="bg-white p-6 rounded-xl shadow-md">
+                  <p className="text-lg font-medium text-gray-800">{popupMessage}</p>
+                  <button
+                    onClick={() => setShowPopup(false)}
+                    className="mt-4 px-4 py-2 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
         </div>
       
     </div>

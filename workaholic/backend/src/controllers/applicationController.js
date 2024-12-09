@@ -1,15 +1,74 @@
-import {Application, Job, User} from "../models/relation.js";
+import sequelize from "../config/database.js";
+import {Application, Job, User, Notification, Company} from "../models/relation.js";
 
 
 // Create an application
 export const createApplication = async (req, res) => {
+  const transaction = await sequelize.transaction(); // Begin a transaction for atomicity
   try {
-    const application = await Application.create(req.body);
+    const { user_id, job_id, status } = req.body;
+
+    // Validate User (applicant)
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Validate Job
+    const job = await Job.findByPk(job_id);
+    if (!job) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+
+    // Validate Company
+    const company = await Company.findByPk(job.company_id);
+    if (!company || !company.user_id) {
+      return res.status(404).json({ error: "Company or employer not found" });
+    }
+
+    // Create Application
+    const application = await Application.create(
+      { user_id, job_id, status },
+      { transaction }
+    );
+
+    // Notification for the user (applicant)
+    await Notification.create(
+      {
+        header: "Application Submitted",
+        content: `Your application for Job ID ${job_id} has been submitted.`,
+        user_id,
+        is_global: false,
+        date: new Date().toISOString(),
+      },
+      { transaction }
+    );
+
+    // Notification for the employer
+    await Notification.create(
+      {
+        header: "New Application Received",
+        content: `A new application has been submitted for Job ID ${job_id}.`,
+        user_id: company.user_id,
+        is_global: false,
+        date: new Date().toISOString(),
+      },
+      { transaction }
+    );
+
+    await transaction.commit();
+
     res.status(201).json(application);
+
   } catch (error) {
+    if (transaction) {
+      await transaction.rollback();
+    }
+    console.error(error);
     res.status(400).json({ error: error.message });
   }
 };
+
 
 // Get all applications
 export const getAllApplications = async (req, res) => {
@@ -34,19 +93,66 @@ export const getApplicationById = async (req, res) => {
   }
 };
 
-// Update an application
 export const updateApplication = async (req, res) => {
+  const transaction = await sequelize.transaction(); // Begin a transaction for atomicity
   try {
     const application = await Application.findByPk(req.params.id);
     if (!application) {
       return res.status(404).json({ error: "Application not found" });
     }
-    await application.update(req.body);
+
+    const { user_id, job_id } = application;
+    const updatedStatus = req.body.status;
+
+    //JobSeeker
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const job = await Job.findByPk(job_id);
+    if (!job) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+    const company = await Company.findByPk(job.company_id);
+    if (!company || !company.user_id) {
+      return res.status(404).json({ error: "Company or employer not found" });
+    }
+   
+    await application.update({ status: updatedStatus }, { transaction });
+
+    // Notification for the user (applicant)
+    await Notification.create({
+      header: "Application Status Updated",
+      content: `Your application for Job ID ${job_id} has been updated to ${updatedStatus}.`,
+      user_id,
+      is_global: false,
+      date: new Date().toISOString(),
+    }, { transaction });
+
+    // Notification for the employer
+    await Notification.create({
+      header: "Application Update Confirmation",
+      content: `You have updated the status of the application for Job ID ${job_id}. The new status is ${updatedStatus}.`,
+      user_id: company.user_id,
+      is_global: false,
+      date: new Date().toISOString(),
+    }, { transaction });
+
+    await transaction.commit();
+
     res.status(200).json(application);
+
   } catch (error) {
+
+    if (transaction) {
+      await transaction.rollback();
+    }
+    console.error(error); 
     res.status(400).json({ error: error.message });
   }
 };
+
+
 
 // Delete an application
 export const deleteApplication = async (req, res) => {
