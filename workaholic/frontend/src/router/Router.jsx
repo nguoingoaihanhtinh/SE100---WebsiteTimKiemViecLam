@@ -14,6 +14,8 @@ import JobApplicationList from "../pages/Application/ApplicationList";
 import CompanyDetailPage from "../pages/CompanyDetailPage/CompanyDetailPage";
 import CvPage from "../pages/CvPage/CvPage";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
+import ManageNotification from "../pages/Employer/ManageNotification/ManageNotification";
+import NotificationPage from "../pages/Notification/NotificationPage";
 
 const Router = () => {
   return (
@@ -28,11 +30,13 @@ const Router = () => {
           <Route path="cv" element={<CvPage />} />
           <Route path="companydetail" element={<CompanyDetailPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="noti" element={<NotificationPage />} />
         </Route>
         <Route path="employer" element={<EmployerLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="joblist" element={<ManageJobs />} />
           <Route path="joblist/:id" element={<ManageApplication />} />
+          <Route path="noti" element={<ManageNotification />} />
         </Route>
 
         <Route path="login" element={<LoginPage />} />

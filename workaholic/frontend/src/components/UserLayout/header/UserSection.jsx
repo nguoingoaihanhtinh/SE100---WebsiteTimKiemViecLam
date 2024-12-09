@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { FaBars, FaBell, FaLocationDot, FaUser } from "react-icons/fa6";
 import { AuthContext } from "../../../context/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function UserSection() {
   const { userData, isLoggedIn } = useContext(AuthContext);
@@ -69,9 +69,11 @@ function UserSection() {
             </ul>
           </div>
         )}
-        <div className="noti w-8 h-8 border rounded-full flex justify-center items-center">
-          <FaBell className="w-4 h-4" />
-        </div>
+        <Link to={'/noti'}>
+          <div className="noti w-8 h-8 border rounded-full flex justify-center items-center">
+            <FaBell className="w-4 h-4" />
+          </div>
+        </Link>
       </div>
     </div>
   );
