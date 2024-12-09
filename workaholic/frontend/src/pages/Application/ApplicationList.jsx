@@ -1,57 +1,31 @@
-import React, { useState } from "react";
-import { FaUser, FaEnvelope, FaBriefcase, FaPaperPlane, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { FaUser, FaEnvelope, FaBriefcase, FaPaperPlane, FaChevronDown, FaChevronUp, FaTrash } from "react-icons/fa";
+import { useGetUserApplicationQuery, useDeleteApplicationMutation } from "../../redux/rtk/application.service";
+import { useCheckLoginQuery } from "../../redux/rtk/user.service";
+import { Link } from "react-router-dom";
 
 const JobApplicationList = () => {
   const [expandedApplication, setExpandedApplication] = useState(null);
+  const { data: applications, error, isLoading } = useGetUserApplicationQuery();
+  const [deleteApplication] = useDeleteApplicationMutation();
+  const [deleteMessage, setDeleteMessage] = useState(null);
+  const { data: loginStatus, isLoading: loginLoading } = useCheckLoginQuery();
 
-  // Dummy data based on the Application model
-  const applications = [
-    {
-      id: 1,
-      user_id: 1,
-      job_id: 1,
-      status: "pending",
-      date_applied: "2024-01-15",
-      user: {
-        name: "John Smith",
-        email: "john.smith@example.com"
-      },
-      job: {
-        jobName: "Software Developer"
-      },
-      coverLetter: "I am writing to express my strong interest in the Software Developer position. With my extensive experience in full-stack development and problem-solving skills, I believe I would be a valuable addition to your team."
-    },
-    {
-      id: 2,
-      user_id: 2,
-      job_id: 2,
-      status: "approved",
-      date_applied: "2024-01-16",
-      user: {
-        name: "Jane Doe",
-        email: "jane.doe@example.com"
-      },
-      job: {
-        jobName: "UI/UX Designer"
-      },
-      coverLetter: "As a passionate UI/UX designer with 5 years of experience, I am excited about the opportunity to join your creative team and contribute to designing exceptional user experiences."
-    },
-    {
-      id: 3,
-      user_id: 3,
-      job_id: 3,
-      status: "rejected",
-      date_applied: "2024-01-17",
-      user: {
-        name: "Mike Johnson",
-        email: "mike.johnson@example.com"
-      },
-      job: {
-        jobName: "Product Manager"
-      },
-      coverLetter: "I am writing to apply for the Product Manager position. With my track record of successful product launches and team leadership, I am confident in my ability to drive product success."
+  console.log('app', applications);
+
+  useEffect(() => {
+    if (isLoading) {
+      alert("Loading user status. Please wait.");
+      return;
     }
-  ];
+
+    if (!loginStatus?.user?.id) {
+      alert("You must be logged in to apply for a job.");
+      window.location.href = "/login"; // Redirect to login page
+      return;
+    }
+
+  }, [loginLoading, loginStatus]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -68,13 +42,52 @@ const JobApplicationList = () => {
     setExpandedApplication(expandedApplication === id ? null : id);
   };
 
+  // Handle loading and error states
+  if (isLoading || loginLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 items-center text-center">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-gray-800 8">
+            Job Applications List
+          </h2>
+          <div className="text-red-500 text-center p-5">Error loading applications:  <span className="font-semibold">{error.data.message}</span></div>;
+          <Link to={'/jobs'} className="border border-gray-400 p-2 rounded-xl">Find a job now</Link>
+        </div>
+
+      </div>
+    );
+  }
+
+
+
+  // Handle deleting an application
+  const handleDelete = async (id) => {
+    try {
+      await deleteApplication(id);
+      setDeleteMessage("Application deleted successfully.");
+      // Reload the page after successful deletion
+      window.location.reload();
+    } catch (error) {
+      setDeleteMessage("Error deleting application.");
+      console.error("Error deleting application:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
           Job Applications List
         </h2>
-
+        {deleteMessage && (
+          <div className="mb-4 text-green-500">
+            {deleteMessage}
+          </div>
+        )}
         <div className="space-y-4">
           {applications.map((application) => (
             <div
@@ -94,12 +107,24 @@ const JobApplicationList = () => {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">
-                        {application.user.name}
+                        {application.user.user_name}
                       </h3>
-                      <p className="text-gray-600">{application.job.jobName}</p>
+                      <p className="text-gray-600">{application.job.title}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
+                    {/* Delete Icon */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent expanding/collapsing when deleting
+                        handleDelete(application.id);
+                      }}
+                      className="text-gray-600 hover:text-red-500"
+                    >
+                      <FaTrash />
+                    </button>
+
+                    {/* Status */}
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
                         application.status
@@ -138,7 +163,7 @@ const JobApplicationList = () => {
                         Cover Letter
                       </h4>
                       <p className="text-gray-600 bg-gray-50 p-4 rounded-lg">
-                        {application.coverLetter}
+                        {application.letter}
                       </p>
                     </div>
                   </div>

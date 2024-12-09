@@ -103,10 +103,9 @@ export const checkUserSession = async (req, res) => {
     if (!token) {
       return res.status(401).json({ message: "Unauthorized: No token provided" });
     }
-     console.log("Received token:", token);
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
-      console.log("Decoded Token:", decoded);
+      // console.log("Decoded Token:", decoded);
     } catch (err) {
       console.error("JWT Verification Error:", err);
       return res.status(401).json({ message: "Invalid or malformed token" });

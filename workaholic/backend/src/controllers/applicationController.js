@@ -94,7 +94,6 @@ export const getApplicationsByJobId = async (req, res) => {
 export const getUserApplications = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log('usre',userId);
     // Fetch applications by the user
     const applications = await Application.findAll({
       where: { user_id: userId },
@@ -103,6 +102,11 @@ export const getUserApplications = async (req, res) => {
           model: Job, 
           as: 'job', 
           attributes: ['id', 'title', 'salary_from'],
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id','user_name','email'],
         }
       ],
     });
