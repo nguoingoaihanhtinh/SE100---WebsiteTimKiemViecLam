@@ -19,7 +19,7 @@ module.exports = {
         allowNull: false,
       },
       status: {
-        type: Sequelize.ENUM("pending", "is_read", "is_accepted", "rejected"),
+        type: Sequelize.ENUM("pending", "approved", "rejected"),
         defaultValue: "pending",
       },
       date_applied: {
