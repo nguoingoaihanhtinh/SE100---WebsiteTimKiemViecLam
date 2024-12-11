@@ -25,3 +25,25 @@ export const authorize = async (req, res, next) => {
         res.status(401).json({ message: "Invalid or expired token" });
     }
 };
+
+
+export const isAdmin = (req, res, next) => {
+    if (req.user.role === "Admin") {
+      return next(); // Allow the admin to proceed
+    }
+    return res.status(403).json({ error: "Access denied: Admins only" });
+  };
+  
+  export const isEmployer = (req, res, next) => {
+    if (req.user.role === "Employer") {
+      return next(); // Allow the employer to proceed
+    }
+    return res.status(403).json({ error: "Access denied: Employers only" });
+  };
+  
+  export const isUser = (req, res, next) => {
+    if (req.user.role === "User") {
+      return next(); // Allow the user to proceed
+    }
+    return res.status(403).json({ error: "Access denied: Users only" });
+  };
