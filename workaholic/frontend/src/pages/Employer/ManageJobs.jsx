@@ -26,6 +26,7 @@ const ManageJobs = () => {
       limit: 1000,
       page: 1,
       company_id: company?.data?.id,
+      kw: "",
     });
     setJobs(res.data?.data);
     setAllJobs(res.data?.data);

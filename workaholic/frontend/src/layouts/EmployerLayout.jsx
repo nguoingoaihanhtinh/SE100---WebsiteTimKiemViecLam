@@ -1,19 +1,26 @@
 import { useState } from "react";
-import { FiHome, FiBriefcase, FiBell, FiUsers, FiSettings, FiMenu, FiX } from "react-icons/fi";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { FaArrowRightFromBracket } from "react-icons/fa6";
+import { FiHome, FiBriefcase, FiBell, FiUsers, FiMenu, FiX } from "react-icons/fi";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useLogoutMutation } from "../redux/rtk/user.service";
 
 const EmployerLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [logout] = useLogoutMutation();
+  const navigate = useNavigate();
   const location = useLocation(); // Get the location object
 
   const menuItems = [
-    { title: "Dashboard", icon: <FiHome className="w-6 h-6" />, path: "/employer/dashboard" },
-    { title: "Manage Jobs", icon: <FiBriefcase className="w-6 h-6" />, path: "/employer/joblist" },
-    { title: "Manage Notifications", icon: <FiBell className="w-6 h-6" />, path: "/employer/noti" },
-    { title: "Manage Applications", icon: <FiUsers className="w-6 h-6" />, path: "/employer/application" },
-    { title: "Settings", icon: <FiSettings className="w-6 h-6" />, path: "/employer/setting" },
+    { title: "Dashboard", icon: <FiHome className="w-6 h-6 min-w-[30px]" />, path: "/employer/dashboard" },
+    { title: "Manage Jobs", icon: <FiBriefcase className="w-6 h-6 min-w-[30px]" />, path: "/employer/joblist" },
+    { title: "Manage Notifications", icon: <FiBell className="w-6 h-6 min-w-[30px]" />, path: "/employer/noti" },
+    { title: "Manage Applications", icon: <FiUsers className="w-6 h-6 min-w-[30px]" />, path: "/employer/application" },
+    { title: "Logout", icon: <FaArrowRightFromBracket className="w-5 h-5 min-w-[30px]" />, path: "#" },
   ];
-
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -33,6 +40,11 @@ const EmployerLayout = () => {
             <Link
               key={index}
               to={item.path}
+              onClick={() => {
+                if (item.path === "#") {
+                  handleLogout();
+                }
+              }}
               className={`${
                 location.pathname.startsWith(item.path) ? "bg-blue-50 text-blue-600" : " text-gray-700"
               } flex items-center px-2 py-3 mb-2  rounded-[8px] hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200`}
