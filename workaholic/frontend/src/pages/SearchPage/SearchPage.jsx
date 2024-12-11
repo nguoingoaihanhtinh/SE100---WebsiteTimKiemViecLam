@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import jobApi from '../../api/jobApi'; // Assuming you're fetching jobs from this API
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Button } from 'antd';
-import SortBar from '../../components/filter/SortBar';
-import Banner from '../JobListPage/JobBanner';
-import Filter from '../../components/filter/Filter';
-import JobListContent from '../JobListPage/JobListContent';
+import React, { useEffect, useState } from "react";
+import jobApi from "../../api/jobApi"; // Assuming you're fetching jobs from this API
+import { useLocation, useNavigate } from "react-router-dom";
+import { Button } from "antd";
+import SortBar from "../../components/filter/SortBar";
+import Banner from "../JobListPage/JobBanner";
+import Filter from "../../components/filter/Filter";
+import JobListContent from "../JobListPage/JobListContent";
 
 const SearchPage = () => {
+  const [isUsedFilters, setIsUsedFilters] = useState(false);
   const [filters, setFilters] = useState({
     salaryRange: [5000000, 200000000],
-    selectedJobType: '', // Default to "All" for job type
-    selectedLocation: 'Location',
-    selectedExperience: 'Experience',
-    selectedPayment: 'Payment',
+    selectedJobType: {
+      id: null,
+      name: "",
+    }, 
+    selectedLocation: "Location",
+    selectedExperience: "Experience",
+    selectedPayment: "Payment",
   });
 
   const location = useLocation();
@@ -21,55 +25,44 @@ const SearchPage = () => {
   const [totalJobs, setTotalJobs] = useState(0);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false); // For handling loading state
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
   const getQueryParams = () => {
     const params = new URLSearchParams(location.search);
-    return params.get('query') || ''; // Get the 'query' parameter
+    return params.get("query") || "";
   };
   const getSearchedJobs = async () => {
     const query = searchQuery || getQueryParams();
-    if (query) {
-      try {
-        setLoading(true);
-        const response = await jobApi.searchJob(1, 9, query);
-        if (response.status === "success") {
-          setJobs(response.data);
-          setTotalJobs(response.pagination.totalJobs);
-          setError(null);
-        } else {
-          setJobs([]);
-          setError('No results found');
-        }
-      } catch (err) {
-        setError('Failed to fetch jobs');
-      } finally {
-        setLoading(false);
+    try {
+      setLoading(true);
+      let response = null;
+      if (query !== "" || isUsedFilters || filters.selectedJobType.id) {
+        response = await jobApi.searchJob(page, 11, query, filters);
+      } else {
+        response = await jobApi.getAllJobs(page, 10);
       }
-    } else {
-      setJobs([]); // No query, reset jobs
+      setJobs(response.data);
+      setTotalJobs(response.pagination.totalJobs);
       setError(null);
+    } catch (error) {
+
+      setError("Failed to fetch jobs");
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
-    const query = searchQuery || getQueryParams();
-    if (query !== '') {
-      getSearchedJobs();
-    } else {
-      setJobs([]); // Reset jobs if there's no query
-      setError(null);
-    }
-  }, [searchQuery, location.search]); // Trigger when searchQuery or location.search changes
-  
+    getSearchedJobs();
+  }, [searchQuery, filters.selectedJobType]); // Trigger when searchQuery or location.search changes
+
   useEffect(() => {
     const query = getQueryParams();
     if (query !== searchQuery) {
       setSearchQuery(query); // Update searchQuery with the value from the URL
     }
-  }, [location.search]); // Trigger when the URL query changes
-  
- 
+  }, [location]); // Trigger when the URL query changes
 
   const handleFilterChange = (newFilters) => {
     if (JSON.stringify(filters) !== JSON.stringify(newFilters)) {
@@ -78,7 +71,7 @@ const SearchPage = () => {
     }
   };
   const handleCancelClick = () => {
-    navigate('/category'); // Redirect to /category page
+    navigate("/category"); // Redirect to /category page
   };
   return (
     <div className="w-full flex flex-col justify-center gap-5 px-20">
@@ -93,14 +86,26 @@ const SearchPage = () => {
           <Filter />
         </div>
         <div className="content w-3/4">
+          {searchQuery && (
             <div className="search flex justify-between p-3">
-                <label className='text-primary-color text-lg'>Search result for <span className='text-xl font-bold'>"{searchQuery}"</span> </label>
-                <Button onClick={handleCancelClick}>Cancel</Button> {/* Add onClick handler */}
+              <label className="text-primary-color text-lg">
+                Search result for {searchQuery}
+                <span className="text-xl font-bold">"{searchQuery}"</span>{" "}
+              </label>
+              <Button onClick={handleCancelClick}>Cancel</Button>{" "}
+              {/* Add onClick handler */}
             </div>
+          )}
+
           {loading ? (
             <div>Loading...</div> // Show loading indicator while fetching
           ) : (
-            <JobListContent jobs={jobs} totalJobs={totalJobs} page={page} setPage={setPage} />
+            <JobListContent
+              jobs={jobs}
+              totalJobs={totalJobs}
+              page={page}
+              setPage={setPage}
+            />
           )}
         </div>
       </div>

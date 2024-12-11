@@ -11,10 +11,16 @@ export const getAllJobs = async (req, res) => {
     const limitNumber = parseInt(limit, 10);
 
     // Validate pagination parameters
-    if (isNaN(pageNumber) || isNaN(limitNumber) || pageNumber < 1 || limitNumber < 1) {
+    if (
+      isNaN(pageNumber) ||
+      isNaN(limitNumber) ||
+      pageNumber < 1 ||
+      limitNumber < 1
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Invalid pagination parameters. 'page' and 'limit' must be positive integers.",
+        message:
+          "Invalid pagination parameters. 'page' and 'limit' must be positive integers.",
       });
     }
 
@@ -39,7 +45,6 @@ export const getAllJobs = async (req, res) => {
         },
       ],
     });
-
     // Prepare the response with pagination metadata
     res.status(200).json({
       success: true,
@@ -69,10 +74,16 @@ export const getAllJobsByCompanyId = async (req, res) => {
     const limitNumber = parseInt(limit, 10);
 
     // Validate pagination parameters
-    if (isNaN(pageNumber) || isNaN(limitNumber) || pageNumber < 1 || limitNumber < 1) {
+    if (
+      isNaN(pageNumber) ||
+      isNaN(limitNumber) ||
+      pageNumber < 1 ||
+      limitNumber < 1
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Invalid pagination parameters. 'page' and 'limit' must be positive integers.",
+        message:
+          "Invalid pagination parameters. 'page' and 'limit' must be positive integers.",
       });
     }
 
@@ -166,7 +177,9 @@ export const createJob = async (req, res) => {
     return res.status(201).json(newJob);
   } catch (error) {
     console.error("Error creating job:", error);
-    return res.status(500).json({ message: "Server Error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Server Error", error: error.message });
   }
 };
 export const updateJob = async (req, res) => {
@@ -226,7 +239,9 @@ export const updateJob = async (req, res) => {
     return res.status(200).json(updatedJob);
   } catch (error) {
     console.error("Error updating job:", error);
-    return res.status(500).json({ message: "Server Error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Server Error", error: error.message });
   }
 };
 export const deleteJob = async (req, res) => {
@@ -248,7 +263,9 @@ export const deleteJob = async (req, res) => {
     return res.status(200).json({ message: "Job deleted successfully" });
   } catch (error) {
     console.error("Error deleting job:", error);
-    return res.status(500).json({ message: "Server Error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Server Error", error: error.message });
   }
 };
 export const getAllJobTypes = async (req, res) => {
@@ -287,20 +304,21 @@ export const searchJob = async (req, res) => {
       page = 1,
       limit = 10,
       kw = "",
-      jobType_id,
+      jobType_id = null,
       experience = 0,
       longitude,
       lattidue, // Assuming you meant latitude
       salary_from = 0,
       salary_to = 100000000,
     } = req.query;
-
+    console.log('kw:',kw,'id:',jobType_id)
     const offset = (page - 1) * limit;
+    const whereClause = {};
 
     // Create the base `where` clause for filtering by title
-    const whereClause = {
-      title: { [Op.like]: `%${kw}%` }, // Filter jobs by title
-    };
+    if (kw) {
+      whereClause.title = { [Op.like]: `%${kw}%` };
+    }
 
     // Add experience filter if it exists in the query
     if (experience) {
@@ -308,8 +326,9 @@ export const searchJob = async (req, res) => {
     }
 
     // Add `jobType_id` filter if it exists in the query
-    if (jobType_id) {
-      whereClause.jobType_id = jobType_id;
+
+    if (jobType_id !== NaN && jobType_id) {
+      whereClause.jobType_id = Number(jobType_id); // Filter jobs by job type ID
     }
     // Add salary range filter if it exists
     whereClause.salary_from = { [Op.gte]: parseInt(salary_from, 10) };
@@ -353,12 +372,11 @@ export const searchJob = async (req, res) => {
       limit: parseInt(limit, 10),
       offset: parseInt(offset, 10),
     });
-
+    console.log(whereClause)
     const totalPages = Math.ceil(jobs.count / limit);
-
     // Return the jobs and pagination info
     res.json({
-      status: "success",
+      success: true,
       data: jobs.rows,
       pagination: {
         currentPage: parseInt(page, 10),

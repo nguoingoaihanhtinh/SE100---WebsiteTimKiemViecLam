@@ -5,7 +5,6 @@ import { Pagination } from 'antd';
 
 const JobListContent = ({ jobs, totalJobs, page, setPage }) => {
   // Ensure jobs is always an array
-  console.log('content',jobs);
   const validJobs = Array.isArray(jobs) ? jobs : [];
 
   const totalPages = Math.ceil(totalJobs / 10); // Calculate total pages based on total jobs and limit
