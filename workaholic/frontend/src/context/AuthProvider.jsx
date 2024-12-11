@@ -25,7 +25,7 @@ function AuthProvider({ children }) {
         !location.pathname.startsWith("/employer") &&
         !location.pathname.startsWith("/login")
       ) {
-        navigate("/employer");
+        navigate("/employer/dashboard");
       }
       if (user.user.role === "User" && location.pathname.startsWith("/employer")) {
         navigate("/");
