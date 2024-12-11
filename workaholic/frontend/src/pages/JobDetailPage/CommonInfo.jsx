@@ -1,6 +1,11 @@
 import { FaBriefcase, FaHourglass, FaJxl, FaUser, FaUsers } from "react-icons/fa6";
-
-export default function CommonInfo() {
+function experienceRequirement(years) {
+  if (typeof years !== "number" || years < 0) {
+    throw new Error("Invalid input. Please provide a non-negative number.");
+  }
+  return years === 0 ? "Không yêu cầu kinh nghiệm" : `Tối thiểu ${years} năm kinh nghiệm`;
+}
+export default function CommonInfo({ job }) {
   return (
     <div className="bg-white px-[24px] py-[24px] mt-8 rounded-[12px] w-full">
       <p className="text-[22px] font-bold">Thông tin chung</p>
@@ -10,7 +15,7 @@ export default function CommonInfo() {
         </div>
         <div className="flex flex-col">
           <p>Cấp bậc</p>
-          <p className="font-bold">Nhân viên</p>
+          <p className="font-bold">{job.position}</p>
         </div>
       </div>
       <div className="flex gap-4 mt-4">
@@ -19,7 +24,7 @@ export default function CommonInfo() {
         </div>
         <div className="flex flex-col">
           <p>Kinh nghiệm</p>
-          <p className="font-bold">Không yêu cầu kinh nghiệm</p>
+          <p className="font-bold">{experienceRequirement(job.experience)}</p>
         </div>
       </div>
       <div className="flex gap-4 mt-4">
@@ -28,7 +33,7 @@ export default function CommonInfo() {
         </div>
         <div className="flex flex-col">
           <p>Số lượng tuyển</p>
-          <p className="font-bold">30 người</p>
+          <p className="font-bold">3 người</p>
         </div>
       </div>
       <div className="flex gap-4 mt-4">
@@ -37,7 +42,7 @@ export default function CommonInfo() {
         </div>
         <div className="flex flex-col">
           <p>Hình thức làm việc</p>
-          <p className="font-bold">Toàn thời gian</p>
+          <p className="font-bold">{job.schedule}</p>
         </div>
       </div>
       <div className="flex gap-4 mt-4">

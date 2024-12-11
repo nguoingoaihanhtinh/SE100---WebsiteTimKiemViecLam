@@ -5,11 +5,10 @@ import { useCreateJobMutation, useGetAllJobTypesQuery, useUpdateJobMutation } fr
 import { Select } from "antd";
 import { useEffect, useState } from "react";
 import { FaChevronLeft } from "react-icons/fa6";
-
-// Zod Schema for Validation
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css"; // Zod Schema for Validation
 const jobSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
   position: z.string().min(1, "Position is required"),
   experience: z.coerce
     .number({
@@ -41,9 +40,10 @@ export default function AddJobForm({ onClose, companyId, refetch, editJob }) {
   const [jobTypes, setJobTypes] = useState([]);
   const [createJob] = useCreateJobMutation();
   const [updateJob] = useUpdateJobMutation();
+  const [text, setText] = useState("");
+
   const initialValues = {
     title: "",
-    description: "",
     position: "",
     experience: 0,
     schedule: "",
@@ -63,7 +63,7 @@ export default function AddJobForm({ onClose, companyId, refetch, editJob }) {
     defaultValues: initialValues,
   });
   const onSubmit = async (data) => {
-    const payload = { ...data, company_id: companyId };
+    const payload = { ...data, company_id: companyId, description: text || "Empty" };
     if (editJob) {
       const res = await updateJob({ payload, id: editJob.id });
       if (res) {
@@ -92,8 +92,8 @@ export default function AddJobForm({ onClose, companyId, refetch, editJob }) {
   useEffect(() => {
     if (editJob) {
       setValue("title", editJob.title);
-      setValue("position", editJob.position);
       setValue("description", editJob.description);
+      setValue("position", editJob.position);
       setValue("experience", editJob.experience);
       setValue("schedule", editJob.schedule);
       setValue("salary_from", editJob.salary_from);
@@ -101,6 +101,7 @@ export default function AddJobForm({ onClose, companyId, refetch, editJob }) {
       setValue("valid_date", editJob.valid_date);
       setValue("expired_date", editJob.expired_date);
       setValue("jobType_id", editJob.jobType_id);
+      setText(editJob.description);
     }
   }, [editJob]);
   return (
@@ -131,14 +132,14 @@ export default function AddJobForm({ onClose, companyId, refetch, editJob }) {
           />
           {errors.position && <span className="text-red-500 text-sm">{errors.position.message}</span>}
         </div>
-        <div>
+        <div className="max-h-[200px] min-h-[200px] mb-8">
           <label className="block text-sm font-medium text-gray-700">Description</label>
-          <input
+          {/* <input
             {...register("description")}
             placeholder="Enter value..."
             className="mt-1 block w-full bg-white border border-gray-300 rounded-md p-2"
-          />
-          {errors.position && <span className="text-red-500 text-sm">{errors.position.message}</span>}
+          /> */}
+          <ReactQuill theme="snow" className="h-[200px] " value={text} onChange={setText} />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Experience</label>
@@ -216,6 +217,7 @@ export default function AddJobForm({ onClose, companyId, refetch, editJob }) {
           />
         </div>
         <div></div>
+
         <div className="">
           <button
             type="submit"

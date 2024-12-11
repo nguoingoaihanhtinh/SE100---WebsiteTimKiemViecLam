@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { FaBookmark, FaLocationPin, FaUserTie } from "react-icons/fa6";
 import { Button } from "antd";
 import Rating from "../Rating/Rating";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 export const JobCardHorizontal = ({ jobData }) => {
   const navigate = useNavigate();
@@ -22,16 +22,13 @@ export const JobCardHorizontal = ({ jobData }) => {
   };
 
   return (
-    <div 
+    <div
+      onClick={() => navigate(`/jobs/${jobData.id}`)}
       className={`border-[1px] border-gray-300 w-full transition-all duration-500 hover:shadow-md cursor-pointer overflow-hidden h-full flex items-center p-2 rounded-xl`}
     >
       {/* Job Image */}
       <div className="flex-shrink-0">
-        <img
-          src={jobData.company?.img}
-          alt="No image"
-          className="rounded-xl w-16 h-16 object-cover"
-        />
+        <img src={jobData.company?.img} alt="No image" className="rounded-xl w-16 h-16 object-cover" />
       </div>
 
       {/* Job Information */}
@@ -64,13 +61,10 @@ export const JobCardHorizontal = ({ jobData }) => {
           <p className="text-lg font-semibold text-primary-color">
             {formatCurrency(jobData.salary_from)}đ / <span className="text-sm">{jobData.paymentBy}</span>
           </p>
-          <div className="ml-auto">
-
-        </div>
+          <div className="ml-auto"></div>
         </div>
       </div>
       {/* Action Button */}
-
     </div>
   );
 };

@@ -14,7 +14,7 @@ const Job = sequelize.define(
       allowNull: false,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     position: {

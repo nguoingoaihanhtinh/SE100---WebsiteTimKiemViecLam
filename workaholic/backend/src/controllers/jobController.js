@@ -30,7 +30,7 @@ export const getAllJobs = async (req, res) => {
         {
           model: Company,
           as: "company", // Alias for company (match with association alias)
-          attributes: ["id", "name", "feild", "description", "img", "user_id"], // Select specific fields from company
+          attributes: ["id", "name", "feild", "description", "img", "user_id", "address"], // Select specific fields from company
         },
         {
           model: JobType,
@@ -44,7 +44,7 @@ export const getAllJobs = async (req, res) => {
     res.status(200).json({
       success: true,
       data: jobs,
-      meta: {
+      paging: {
         totalItems,
         currentPage: pageNumber,
         totalPages: Math.ceil(totalItems / limitNumber),
@@ -52,7 +52,6 @@ export const getAllJobs = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching jobs:", error);
     res.status(500).json({
       success: false,
       message: "An error occurred while fetching jobs.",
@@ -62,7 +61,7 @@ export const getAllJobs = async (req, res) => {
 export const getAllJobsByCompanyId = async (req, res) => {
   try {
     // Extract pagination parameters from query string
-    const { company_id, page = 1, limit = 10 } = req.query;
+    const { company_id, page = 1, limit = 10, kw = "" } = req.query;
 
     // Convert page and limit to integers
     const pageNumber = parseInt(page, 10);
@@ -78,10 +77,18 @@ export const getAllJobsByCompanyId = async (req, res) => {
 
     // Calculate offset for pagination
     const offset = (pageNumber - 1) * limitNumber;
-
+    // Define the search condition for the keyword
+    const searchCondition = kw
+      ? {
+          [Op.or]: [
+            { title: { [Op.like]: `%${kw}%` } }, // Match title
+            { description: { [Op.like]: `%${kw}%` } }, // Match description
+          ],
+        }
+      : {};
     // Fetch jobs with pagination and include related models
     const { rows: jobs, count: totalItems } = await Job.findAndCountAll({
-      where: { company_id: company_id },
+      where: { company_id: company_id, ...searchCondition },
       offset,
       limit: limitNumber,
       order: [["createdAt", "DESC"]], // Order by newest jobs first
@@ -89,7 +96,7 @@ export const getAllJobsByCompanyId = async (req, res) => {
         {
           model: Company,
           as: "company", // Alias for company (match with association alias)
-          attributes: ["id", "name", "feild", "description", "img", "user_id"], // Select specific fields from company
+          attributes: ["id", "name", "feild", "description", "img", "user_id", "address"], // Select specific fields from company
         },
         {
           model: JobType,
@@ -103,7 +110,7 @@ export const getAllJobsByCompanyId = async (req, res) => {
     res.status(200).json({
       success: true,
       data: jobs,
-      meta: {
+      paging: {
         totalItems,
         currentPage: pageNumber,
         totalPages: Math.ceil(totalItems / limitNumber),
@@ -111,7 +118,6 @@ export const getAllJobsByCompanyId = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching jobs:", error);
     res.status(500).json({
       success: false,
       message: "An error occurred while fetching jobs.",
@@ -165,7 +171,6 @@ export const createJob = async (req, res) => {
     // Return the newly created job record
     return res.status(201).json(newJob);
   } catch (error) {
-    console.error("Error creating job:", error);
     return res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
@@ -175,7 +180,7 @@ export const updateJob = async (req, res) => {
     const {
       title,
       position,
-      experience,
+      experience = 0,
       schedule,
       salary_from,
       salary_to,
@@ -190,7 +195,6 @@ export const updateJob = async (req, res) => {
     if (
       !title ||
       !position ||
-      !experience ||
       !schedule ||
       !salary_from ||
       !valid_date ||
@@ -228,7 +232,6 @@ export const updateJob = async (req, res) => {
     // Return the updated job
     return res.status(200).json(updatedJob);
   } catch (error) {
-    console.error("Error updating job:", error);
     return res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
@@ -250,7 +253,6 @@ export const deleteJob = async (req, res) => {
     // Return a success message
     return res.status(200).json({ message: "Job deleted successfully" });
   } catch (error) {
-    console.error("Error deleting job:", error);
     return res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
@@ -263,7 +265,7 @@ export const getJobById = async (req, res) => {
         {
           model: Company,
           as: "company", // Alias for company (match with association alias)
-          attributes: ["id", "name", "feild", "description", "img", "user_id"], // Select specific fields from company
+          attributes: ["id", "name", "feild", "description", "img", "user_id", "address"], // Select specific fields from company
         },
         {
           model: JobType,
@@ -281,7 +283,6 @@ export const getJobById = async (req, res) => {
     // Return a success message
     return res.status(200).json({ message: "Get job successfully", data: job });
   } catch (error) {
-    console.error("Error deleting job:", error);
     return res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
@@ -306,7 +307,6 @@ export const getAllJobTypes = async (req, res) => {
     });
   } catch (error) {
     // Log error and send back a response with the error details
-    console.error("Error fetching job types:", error);
     return res.status(500).json({
       success: false,
       message: "Failed to fetch job types",
@@ -402,7 +402,6 @@ export const searchJob = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Error searching jobs:", err);
     res.status(500).json({ error: "Failed to search jobs" });
   }
 };

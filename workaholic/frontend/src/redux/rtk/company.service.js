@@ -1,4 +1,3 @@
-
 import { baseApi } from "./base.service";
 
 export const companyRTKApi = baseApi.injectEndpoints({
@@ -15,8 +14,13 @@ export const companyRTKApi = baseApi.injectEndpoints({
         credentials: "include",
       }),
     }),
+    getCompanyById: build.query({
+      query: (id) => ({
+        url: `/company/${id}`,
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-
-export const { useGetCompanyByUserIdQuery, useGetAllCompaniesQuery } = companyRTKApi;
+export const { useGetCompanyByUserIdQuery, useGetAllCompaniesQuery, useGetCompanyByIdQuery } = companyRTKApi;
