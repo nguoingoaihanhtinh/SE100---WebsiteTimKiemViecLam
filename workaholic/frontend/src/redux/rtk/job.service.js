@@ -31,9 +31,15 @@ export const jobRTKApi = baseApi.injectEndpoints({
         credentials: "include",
       }),
     }),
+    getById: build.query({
+      query: (id) => ({
+        url: `/job/getByid/${id}`,
+        credentials: "include",
+      }),
+    }),
     getAllJobsByCompanyId: build.query({
       query: (body) => ({
-        url: `/job/company?page=${body.page}&limit=${body.limit}&company_id=${body.company_id}`,
+        url: `/job/company?page=${body.page}&limit=${body.limit}&company_id=${body.company_id}&kw=${body.kw}`,
         credentials: "include",
       }),
     }),
@@ -47,7 +53,9 @@ export const jobRTKApi = baseApi.injectEndpoints({
 });
 export const {
   useGetAllJobsQuery,
+  useGetAllJobsByCompanyIdQuery,
   useLazyGetAllJobsByCompanyIdQuery,
+  useGetByIdQuery,
   useUpdateJobMutation,
   useGetAllJobTypesQuery,
   useDeleteJobMutation,

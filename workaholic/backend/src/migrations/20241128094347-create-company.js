@@ -28,6 +28,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.FLOAT,
       },
+      address: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
       rating: {
         type: Sequelize.FLOAT,
         allowNull: true,
