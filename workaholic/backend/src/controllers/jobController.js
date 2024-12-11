@@ -123,7 +123,7 @@ export const createJob = async (req, res) => {
     const {
       title,
       position,
-      experience,
+      experience = 0,
       schedule,
       salary_from,
       salary_to,
@@ -131,23 +131,22 @@ export const createJob = async (req, res) => {
       expired_date,
       jobType_id,
       company_id,
+      description,
     } = req.body;
-
     // Validation: You can add additional validation here
     if (
       !title ||
       !position ||
-      !experience ||
       !schedule ||
       !salary_from ||
       !valid_date ||
       !expired_date ||
       !company_id ||
-      !jobType_id
+      !jobType_id ||
+      !description
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
-
     // Create a new job entry
     const newJob = await Job.create({
       title,
@@ -160,6 +159,7 @@ export const createJob = async (req, res) => {
       expired_date,
       company_id,
       jobType_id,
+      description,
     });
 
     // Return the newly created job record
@@ -183,6 +183,7 @@ export const updateJob = async (req, res) => {
       expired_date,
       jobType_id,
       company_id,
+      description,
     } = req.body;
 
     // Validation: Ensure all required fields are present (you can customize validation)
@@ -195,7 +196,8 @@ export const updateJob = async (req, res) => {
       !valid_date ||
       !expired_date ||
       !company_id ||
-      !jobType_id
+      !jobType_id ||
+      !description
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -220,6 +222,7 @@ export const updateJob = async (req, res) => {
       expired_date,
       company_id,
       jobType_id,
+      description,
     });
 
     // Return the updated job
@@ -246,6 +249,37 @@ export const deleteJob = async (req, res) => {
 
     // Return a success message
     return res.status(200).json({ message: "Job deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting job:", error);
+    return res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+export const getJobById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // Find the job by ID
+    const job = await Job.findByPk(id, {
+      include: [
+        {
+          model: Company,
+          as: "company", // Alias for company (match with association alias)
+          attributes: ["id", "name", "feild", "description", "img", "user_id"], // Select specific fields from company
+        },
+        {
+          model: JobType,
+          as: "jobType", // Alias for jobType (match with association alias)
+          attributes: ["id", "name"], // Select specific fields from jobType
+        },
+      ],
+    });
+
+    // If the job doesn't exist, return a 404 response
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    // Return a success message
+    return res.status(200).json({ message: "Get job successfully", data: job });
   } catch (error) {
     console.error("Error deleting job:", error);
     return res.status(500).json({ message: "Server Error", error: error.message });

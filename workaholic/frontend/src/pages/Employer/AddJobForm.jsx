@@ -9,6 +9,7 @@ import { FaChevronLeft } from "react-icons/fa6";
 // Zod Schema for Validation
 const jobSchema = z.object({
   title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
   position: z.string().min(1, "Position is required"),
   experience: z.coerce
     .number({
@@ -42,6 +43,7 @@ export default function AddJobForm({ onClose, companyId, refetch, editJob }) {
   const [updateJob] = useUpdateJobMutation();
   const initialValues = {
     title: "",
+    description: "",
     position: "",
     experience: 0,
     schedule: "",
@@ -91,6 +93,7 @@ export default function AddJobForm({ onClose, companyId, refetch, editJob }) {
     if (editJob) {
       setValue("title", editJob.title);
       setValue("position", editJob.position);
+      setValue("description", editJob.description);
       setValue("experience", editJob.experience);
       setValue("schedule", editJob.schedule);
       setValue("salary_from", editJob.salary_from);
@@ -128,7 +131,15 @@ export default function AddJobForm({ onClose, companyId, refetch, editJob }) {
           />
           {errors.position && <span className="text-red-500 text-sm">{errors.position.message}</span>}
         </div>
-
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Description</label>
+          <input
+            {...register("description")}
+            placeholder="Enter value..."
+            className="mt-1 block w-full bg-white border border-gray-300 rounded-md p-2"
+          />
+          {errors.position && <span className="text-red-500 text-sm">{errors.position.message}</span>}
+        </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Experience</label>
           <input
