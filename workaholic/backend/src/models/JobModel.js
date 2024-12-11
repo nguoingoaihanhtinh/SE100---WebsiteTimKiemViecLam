@@ -13,6 +13,10 @@ const Job = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     position: {
       type: DataTypes.STRING,
       allowNull: false,

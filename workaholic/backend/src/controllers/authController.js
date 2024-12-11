@@ -53,7 +53,7 @@ export const register = async (req, res) => {
     const newUser = await User.create({
       user_name: userName,
       email,
-      password: hashedPassword,
+      password: password,
       role,
     });
     // Send JWT token and user info
@@ -77,7 +77,7 @@ export const login = async (req, res) => {
 
     // Check if password matches
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
+    if (password !== user.password) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
@@ -99,7 +99,7 @@ export const checkUserSession = async (req, res) => {
         token = jwtCookie.split("=")[1];
       }
     }
-
+    console.log(token);
     if (!token) {
       return res.status(401).json({ message: "Unauthorized: No token provided" });
     }

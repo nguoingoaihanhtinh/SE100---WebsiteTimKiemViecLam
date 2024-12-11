@@ -71,7 +71,7 @@ const ManageJobs = () => {
             />
           </div>
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {jobs.length > 0 ? (
+            {jobs?.length > 0 ? (
               jobs.map((job, idx) => (
                 <div
                   key={job.id}
