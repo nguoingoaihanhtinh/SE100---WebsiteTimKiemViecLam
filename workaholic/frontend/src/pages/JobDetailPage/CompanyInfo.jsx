@@ -1,6 +1,8 @@
 import { FaBox, FaLocationDot, FaUsers } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 export default function CompanyInfo({ job }) {
+  const navigate = useNavigate();
   return (
     <div className="bg-white px-[24px] py-[16px] rounded-[12px] w-full">
       <div className="flex gap-4">
@@ -34,7 +36,14 @@ export default function CompanyInfo({ job }) {
         <p className="font-medium line-clamp-2 max-w-[240px]">{job.company.address}</p>
       </div>
       <div className="w-full text-center mt-4">
-        <p className="underline cursor-pointer font-medium inline-block">Xem trang công ty</p>
+        <p
+          onClick={() => {
+            navigate(`/company/${job.company.id}`);
+          }}
+          className="underline cursor-pointer font-medium inline-block"
+        >
+          Xem trang công ty
+        </p>
       </div>
     </div>
   );

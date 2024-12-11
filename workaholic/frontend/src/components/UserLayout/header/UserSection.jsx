@@ -1,16 +1,17 @@
 import { useContext, useState } from "react";
-import { FaBars, FaBell, FaLocationDot, FaUser } from "react-icons/fa6";
+import { FaBell, FaLocationDot, FaUser } from "react-icons/fa6";
 import { AuthContext } from "../../../context/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
+import { useLogoutMutation } from "../../../redux/rtk/user.service";
 
 function UserSection() {
   const { userData, isLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const handleLogout = () => {
-    // Add logout functionality here
-    console.log("Logged out");
+  const [logout] = useLogoutMutation();
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
   };
 
   return (
@@ -42,34 +43,22 @@ function UserSection() {
         {dropdownOpen && (
           <div className="absolute right-0 top-12 bg-white shadow-md rounded-md w-48 z-10">
             <ul className="flex flex-col py-2">
-              <li
-                onClick={() => navigate("/profile")}
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              >
+              <li onClick={() => navigate("/profile")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                 Profile
               </li>
-              <li
-                onClick={() => navigate("/application")}
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              >
+              <li onClick={() => navigate("/application")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                 Application
               </li>
-              <li
-                onClick={() => navigate("/bookmarked")}
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              >
+              <li onClick={() => navigate("/bookmarked")} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                 Bookmarked
               </li>
-              <li
-                onClick={handleLogout}
-                className="px-4 py-2 hover:bg-red-100 text-red-600 cursor-pointer"
-              >
+              <li onClick={handleLogout} className="px-4 py-2 hover:bg-red-100 text-red-600 cursor-pointer">
                 Logout
               </li>
             </ul>
           </div>
         )}
-        <Link to={'/noti'}>
+        <Link to={"/noti"}>
           <div className="noti w-8 h-8 border rounded-full flex justify-center items-center">
             <FaBell className="w-4 h-4" />
           </div>

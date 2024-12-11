@@ -11,6 +11,14 @@ export const userRTKApi = baseApi.injectEndpoints({
         credentials: "include",
       }),
     }),
+    logout: build.mutation({
+      query: (body) => ({
+        url: "/user/logout",
+        method: "POST",
+        body,
+        credentials: "include",
+      }),
+    }),
     checkLogin: build.query({
       query: () => ({
         url: "/user/checkjwt",
@@ -27,4 +35,4 @@ export const userRTKApi = baseApi.injectEndpoints({
     }),
   }),
 });
-export const { useLoginMutation, useCheckLoginQuery, useRegisterMutation } = userRTKApi;
+export const { useLoginMutation, useCheckLoginQuery, useRegisterMutation, useLogoutMutation } = userRTKApi;

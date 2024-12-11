@@ -44,7 +44,7 @@ export const getAllJobs = async (req, res) => {
     res.status(200).json({
       success: true,
       data: jobs,
-      paging: {
+      pagination: {
         totalItems,
         currentPage: pageNumber,
         totalPages: Math.ceil(totalItems / limitNumber),
@@ -110,7 +110,7 @@ export const getAllJobsByCompanyId = async (req, res) => {
     res.status(200).json({
       success: true,
       data: jobs,
-      paging: {
+      pagination: {
         totalItems,
         currentPage: pageNumber,
         totalPages: Math.ceil(totalItems / limitNumber),

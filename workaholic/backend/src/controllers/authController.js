@@ -88,6 +88,21 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+export const logout = (req, res) => {
+  try {
+    // Clear the authentication cookie
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      sameSite: "strict", // Prevent CSRF attacks
+    });
+
+    res.status(200).json({ message: "Successfully logged out" });
+  } catch (error) {
+    console.error("Error logging out:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 export const checkUserSession = async (req, res) => {
   try {
     // Retrieve the token from the Authorization header or cookies
