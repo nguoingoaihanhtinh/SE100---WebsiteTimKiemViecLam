@@ -33,7 +33,7 @@ export default function Company() {
     kw: debouncedValue, // Use debounced value for the query
   });
 
-  const totalItems = data?.paging?.totalItems || 1;
+  const totalItems = data?.pagination?.totalItems || 1;
 
   useEffect(() => {
     if (data?.data) {
@@ -57,9 +57,7 @@ export default function Company() {
             }}
           ></div>
           <div className="flex flex-col gap-2 mt-[16px]">
-            <div className="text-2xl font-semibold text-white">
-              CÔNG TY TRÁCH NHIỆM HỮU HẠN BẢO HIỂM NHÂN THỌ MB AGEAS (MB AGEAS LIFE)
-            </div>
+            <div className="text-2xl font-semibold text-white">{company.name}</div>
             <div className="flex items-center gap-2 text-white">
               <FaLocationDot />
               <p className="text-lg font-semibold">{company.address}</p>
