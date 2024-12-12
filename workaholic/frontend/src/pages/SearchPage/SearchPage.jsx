@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import jobApi from "../../api/jobApi"; // Assuming you're fetching jobs from this API
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "antd";
@@ -8,9 +8,8 @@ import Filter from "../../components/filter/Filter";
 import JobListContent from "../JobListPage/JobListContent";
 
 const SearchPage = () => {
-  const [isUsedFilters, setIsUsedFilters] = useState(false);
   const [filters, setFilters] = useState({
-    salaryRange: [5000000, 200000000],
+    salaryRange: [0, 200000000],
     selectedJobType: {
       id: null,
       name: "",
@@ -31,14 +30,18 @@ const SearchPage = () => {
 
   const getQueryParams = () => {
     const params = new URLSearchParams(location.search);
+    return params.get("jobType_id") || "";
+  };
+  const getQueryParams2 = () => {
+    const params = new URLSearchParams(location.search);
     return params.get("query") || "";
   };
   const getSearchedJobs = async () => {
-    const query = searchQuery || getQueryParams();
+    const query = searchQuery || getQueryParams2();
     try {
       setLoading(true);
       let response = null;
-      if (query !== "" || isUsedFilters || filters.selectedJobType.id) {
+      if (query !== "" || filters.selectedJobType.id) {
         response = await jobApi.searchJob(page, 11, query, filters);
       } else {
         response = await jobApi.getAllJobs(page, 10);
@@ -47,6 +50,7 @@ const SearchPage = () => {
       setTotalJobs(response.pagination.totalJobs);
       setError(null);
     } catch (error) {
+      console.log(error);
       setError("Failed to fetch jobs");
     } finally {
       setLoading(false);
@@ -54,20 +58,24 @@ const SearchPage = () => {
   };
   useEffect(() => {
     getSearchedJobs();
-  }, [searchQuery, filters.selectedJobType]); // Trigger when searchQuery or location.search changes
+  }, [searchQuery, filters]); // Trigger when searchQuery or location.search changes
 
   useEffect(() => {
     const query = getQueryParams();
-    if (query !== searchQuery) {
-      setSearchQuery(query); // Update searchQuery with the value from the URL
+    const query2 = getQueryParams2();
+    if (query2) {
+      setSearchQuery(query2);
+    }
+    if (query) {
+      setFilters((prev) => ({ ...prev, selectedJobType: { id: query } })); // Update searchQuery with the value from the URL
+    } else {
+      setFilters(null);
     }
   }, [location]); // Trigger when the URL query changes
 
   const handleFilterChange = (newFilters) => {
-    if (JSON.stringify(filters) !== JSON.stringify(newFilters)) {
-      setFilters(newFilters);
-      setPage(1);
-    }
+    setFilters({ ...newFilters });
+    setPage(1);
   };
   const handleCancelClick = () => {
     navigate("/category"); // Redirect to /category page

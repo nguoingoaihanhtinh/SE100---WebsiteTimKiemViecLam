@@ -351,7 +351,7 @@ export const searchJob = async (req, res) => {
     whereClause.salary_to = { [Op.lte]: parseInt(salary_to, 10) };
     // Define the Haversine formula condition
     if (longitude && lattidue) {
-      const radiusKm = 30; // 30 km radius
+      const radiusKm = 60; // 30 km radius
       const earthRadius = 6371; // Earth's radius in km
 
       const distanceCondition = Sequelize.literal(`

@@ -1,14 +1,7 @@
-import { Button, Dropdown, Menu, Slider } from "antd";
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  FaBriefcase,
-  FaCaretDown,
-  FaMapLocation,
-  FaMoneyBill1Wave,
-  FaUserTie,
-} from "react-icons/fa6";
+import { Button, Dropdown, Slider } from "antd";
+import { useEffect, useState } from "react";
+import { FaBriefcase, FaCaretDown, FaMapLocation, FaUserTie } from "react-icons/fa6";
 import jobApi from "../../api/jobApi";
-import useDebounce from "../../hooks/useDebouce";
 
 const place = [
   { name: "An Giang", latitude: 10.521583, longitude: 105.125897 },
@@ -70,39 +63,28 @@ const place = [
 
 const experience = ["graduated", "1 year", "2+ years"];
 
-const paymentBy = ["Monthly", "Yearly", "per project"];
-
 const SortBar = ({ onFilterChange }) => {
-  const [salaryRange, setSalaryRange] = useState([0, 1000000]);
+  const [salaryRange, setSalaryRange] = useState([0, 100000000]);
   const [selectedJobType, setSelectedJobType] = useState({
     id: null,
     name: "",
-  }); // Default to blank
-  const [selectedLocation, setSelectedLocation] = useState("Location");
+  });
+  const [selectedLocation, setSelectedLocation] = useState({
+    name: "Location",
+  });
   const [selectedExperience, setSelectedExperience] = useState("Experience");
   const [selectedPayment, setSelectedPayment] = useState("Payment");
   const [jobTypes, setJobTypes] = useState([]);
-
-  // Use debounced filters
-  const debouncedFilters = useDebounce(
-    {
-      salaryRange,
-      selectedJobType,
-      selectedLocation,
-      selectedExperience,
-      selectedPayment,
-    },
-    300 // Debounce delay in milliseconds
-  );
-
-  const debouncedOnFilterChange = useCallback(() => {
-    onFilterChange(debouncedFilters); // Trigger onFilterChange after debounce
-  }, [debouncedFilters, onFilterChange]);
-
   useEffect(() => {
-    debouncedOnFilterChange(); // Call debounced function when filters change
-  }, [debouncedOnFilterChange]);
-
+    if (onFilterChange) {
+      onFilterChange({
+        selectedJobType,
+        salaryRange,
+        selectedLocation,
+        selectedExperience,
+      });
+    }
+  }, [selectedJobType, salaryRange, selectedLocation, selectedExperience]);
   useEffect(() => {
     const getAllJobType = async () => {
       const response = await jobApi.getAllJobTypes();
@@ -125,14 +107,9 @@ const SortBar = ({ onFilterChange }) => {
   };
 
   const setSelectedItem = (item, label) => {
-    if (label === "Job Type" && item !== selectedJobType)
-      setSelectedJobType(item);
-    if (label === "Location" && item !== selectedLocation)
-      setSelectedLocation(item);
-    if (label === "Experience" && item !== selectedExperience)
-      setSelectedExperience(item);
-    if (label === "Payment" && item !== selectedPayment)
-      setSelectedPayment(item);
+    if (label === "Job Type" && item !== selectedJobType) setSelectedJobType(item);
+    if (label === "Experience" && item !== selectedExperience) setSelectedExperience(item);
+    if (label === "Payment" && item !== selectedPayment) setSelectedPayment(item);
   };
 
   return (
@@ -142,7 +119,7 @@ const SortBar = ({ onFilterChange }) => {
         menu={{
           items:
             jobTypes.length > 0
-              ? jobTypes.map((item) => ({ label: item.name, key:item.name }))
+              ? jobTypes.map((item) => ({ label: item.name, key: item.name }))
               : [{ label: "Loading...", key: "Loading..." }],
 
           onClick: ({ key }) => {
@@ -156,22 +133,24 @@ const SortBar = ({ onFilterChange }) => {
       >
         <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[18%] border-r-2 pr-4">
           <FaUserTie />
-          {selectedJobType.name || "Job Type"}{" "}
-          {/* Display blank if no job type selected */}
+          {selectedJobType.name || "Job Type"} {/* Display blank if no job type selected */}
           <FaCaretDown className="ml-2" />
         </Button>
       </Dropdown>
       {/* Location Dropdown */}
       <Dropdown
         menu={{
-          items: place.map((item) => ({ label: item.name, key: item.name })),
-          onClick: ({ key }) => setSelectedItem(key, "Location"),
+          items: place.map((item) => ({
+            label: item.name,
+            key: JSON.stringify(item),
+          })),
+          onClick: (item) => setSelectedLocation(JSON.parse(item.key)),
         }}
         trigger={["click"]}
       >
         <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[18%] border-r-2 pr-4">
           <FaMapLocation />
-          {selectedLocation}
+          {selectedLocation?.name}
           <FaCaretDown className="ml-2" />
         </Button>
       </Dropdown>
@@ -199,8 +178,8 @@ const SortBar = ({ onFilterChange }) => {
           <Slider
             range
             min={0}
-            max={1000000}
-            step={100000}
+            max={100000000}
+            step={1000000}
             value={salaryRange}
             onChange={onSliderChange}
             tooltip={{
@@ -208,8 +187,7 @@ const SortBar = ({ onFilterChange }) => {
             }}
           />
           <div className="text-gray-400 mt-2">
-            {salaryRange[0].toLocaleString()} VND -{" "}
-            {salaryRange[1].toLocaleString()} VND
+            {salaryRange[0].toLocaleString()} VND - {salaryRange[1].toLocaleString()} VND
           </div>
         </div>
       </div>
