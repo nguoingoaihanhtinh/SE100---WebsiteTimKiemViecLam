@@ -1,22 +1,18 @@
-import React, { useState } from "react";
-import { FaUser, FaEnvelope, FaBriefcase, FaPaperPlane } from "react-icons/fa";
+import { useState } from "react";
 import { useCreateApplicationMutation } from "../../redux/rtk/application.service";
-
 
 const JobApplicationForm = ({ JobData, closeForm, user }) => {
   console.log("job", JobData);
   console.log("user", user);
   const [formData, setFormData] = useState({
-    jobName: JobData.title, 
-    name: user ? user.user_name : "", 
-    email: user ? user.email : "", 
-    coverLetter: "", 
+    jobName: JobData.title,
+    name: user ? user.user_name : "",
+    email: user ? user.email : "",
+    coverLetter: "",
   });
 
-
   const [errors, setErrors] = useState({});
-  const [createApplication, { isLoading, isSuccess, isError, error }] =
-    useCreateApplicationMutation();
+  const [createApplication, { isLoading, isSuccess, isError, error }] = useCreateApplicationMutation();
 
   const validateForm = () => {
     let tempErrors = {};
@@ -59,12 +55,16 @@ const JobApplicationForm = ({ JobData, closeForm, user }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) {
+          closeForm();
+        }
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+    >
       <div className="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 relative">
-        <button
-          onClick={closeForm}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-        >
+        <button onClick={closeForm} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
           &times;
         </button>
         <h2 className="text-2xl font-bold mb-6 text-primary-color">Job Application Form</h2>
@@ -121,11 +121,7 @@ const JobApplicationForm = ({ JobData, closeForm, user }) => {
               }`}
               rows="4"
             ></textarea>
-            {errors.coverLetter && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.coverLetter}
-              </p>
-            )}
+            {errors.coverLetter && <p className="text-red-500 text-sm mt-1">{errors.coverLetter}</p>}
           </div>
           <button
             type="submit"

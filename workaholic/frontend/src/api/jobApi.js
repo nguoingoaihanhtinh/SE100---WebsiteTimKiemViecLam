@@ -27,11 +27,14 @@ const jobApi = {
       if (filters.selectedJobType.id) {
         query += `&jobType_id=${filters.selectedJobType.id}`;
       }
-      if(filters.salaryRange){
-        query += `&salaryFrom=${filters.salaryRange[0]}&salaryTo=${filters.salaryRange[1]}`;
+      if (filters.salaryRange) {
+        query += `&salary_from=${filters.salaryRange[0]}&salary_to=${filters.salaryRange[1]}`;
       }
-      if(filters.experience){
+      if (filters.experience) {
         query += `&experience=${filters.experience}`;
+      }
+      if (filters.selectedLocation && filters.selectedLocation.latitude && filters.selectedLocation.longitude) {
+        query += `&longitude=${filters.selectedLocation.latitude}&lattidue=${filters.selectedLocation.longitude}`;
       }
     }
     const response = await request.get(query);
