@@ -60,5 +60,14 @@ Application.belongsTo(Job, {
   foreignKey: "job_id",
   as: "job",
 });
+Saved.belongsTo(User, {
+  foreignKey: "user_id",
+  as: "user",
+});
+
+Saved.belongsTo(Job, {
+  foreignKey: "job_id",
+  as: "job",
+});
 
 export { User, Notification, Job, JobType, Application, Company, Saved };
