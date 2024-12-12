@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FaUser, FaEnvelope, FaBriefcase, FaPaperPlane, FaChevronDown, FaChevronUp, FaTrash } from "react-icons/fa";
 import { useGetUserApplicationQuery, useDeleteApplicationMutation } from "../../redux/rtk/application.service";
 import { useCheckLoginQuery } from "../../redux/rtk/user.service";
@@ -11,7 +11,7 @@ const JobApplicationList = () => {
   const [deleteMessage, setDeleteMessage] = useState(null);
   const { data: loginStatus, isLoading: loginLoading } = useCheckLoginQuery();
 
-  console.log('app', applications);
+  console.log("app", applications);
 
   useEffect(() => {
     if (isLoading) {
@@ -24,7 +24,6 @@ const JobApplicationList = () => {
       window.location.href = "/login"; // Redirect to login page
       return;
     }
-
   }, [loginLoading, loginStatus]);
 
   const getStatusColor = (status) => {
@@ -51,18 +50,19 @@ const JobApplicationList = () => {
     return (
       <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 items-center text-center">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-gray-800 8">
-            Job Applications List
-          </h2>
-          <div className="text-red-500 text-center p-5">Error loading applications:  <span className="font-semibold">{error.data.message}</span></div>;
-          <Link to={'/jobs'} className="border border-gray-400 p-2 rounded-xl">Find a job now</Link>
+          <h2 className="text-3xl font-bold text-center text-gray-800 8">Job Applications List</h2>
+          <div className="text-red-500 text-center p-5">
+            Error loading applications:
+            <span className="font-semibold">{error.data.message}</span>
+          </div>
+          ;
+          <Link to={"/jobs"} className="border border-gray-400 p-2 rounded-xl">
+            Find a job now
+          </Link>
         </div>
-
       </div>
     );
   }
-
-
 
   // Handle deleting an application
   const handleDelete = async (id) => {
@@ -80,24 +80,12 @@ const JobApplicationList = () => {
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-          Job Applications List
-        </h2>
-        {deleteMessage && (
-          <div className="mb-4 text-green-500">
-            {deleteMessage}
-          </div>
-        )}
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Job Applications List</h2>
+        {deleteMessage && <div className="mb-4 text-green-500">{deleteMessage}</div>}
         <div className="space-y-4">
           {applications.map((application) => (
-            <div
-              key={application.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden"
-            >
-              <div
-                className="p-6 cursor-pointer"
-                onClick={() => toggleExpand(application.id)}
-              >
+            <div key={application.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="p-6 cursor-pointer" onClick={() => toggleExpand(application.id)}>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-4">
                     <div className="flex-shrink-0">
@@ -106,9 +94,7 @@ const JobApplicationList = () => {
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800">
-                        {application.user.user_name}
-                      </h3>
+                      <h3 className="text-lg font-semibold text-gray-800">{application.user.user_name}</h3>
                       <p className="text-gray-600">{application.job.title}</p>
                     </div>
                   </div>
@@ -130,8 +116,7 @@ const JobApplicationList = () => {
                         application.status
                       )}`}
                     >
-                      {application.status.charAt(0).toUpperCase() +
-                        application.status.slice(1)}
+                      {application.status.charAt(0).toUpperCase() + application.status.slice(1)}
                     </span>
                     {expandedApplication === application.id ? (
                       <FaChevronUp className="text-gray-400" />
@@ -147,24 +132,18 @@ const JobApplicationList = () => {
                   <div className="mt-4 space-y-4">
                     <div className="flex items-center">
                       <FaEnvelope className="text-gray-400 mr-2" />
-                      <span className="text-gray-600">
-                        {application.user.email}
-                      </span>
+                      <span className="text-gray-600">{application.user.email}</span>
                     </div>
                     <div className="flex items-center">
                       <FaBriefcase className="text-gray-400 mr-2" />
-                      <span className="text-gray-600">
-                        Applied on: {application.date_applied}
-                      </span>
+                      <span className="text-gray-600">Applied on: {application.date_applied}</span>
                     </div>
                     <div>
                       <h4 className="text-gray-700 font-medium mb-2 flex items-center">
                         <FaPaperPlane className="mr-2" />
                         Cover Letter
                       </h4>
-                      <p className="text-gray-600 bg-gray-50 p-4 rounded-lg">
-                        {application.letter}
-                      </p>
+                      <p className="text-gray-600 bg-gray-50 p-4 rounded-lg">{application.letter}</p>
                     </div>
                   </div>
                 </div>

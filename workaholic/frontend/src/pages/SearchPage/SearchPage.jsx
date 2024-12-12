@@ -25,7 +25,7 @@ const SearchPage = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false); // For handling loading state
   const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState(null);
+
   const navigate = useNavigate();
 
   const getQueryParams = () => {
@@ -48,10 +48,8 @@ const SearchPage = () => {
       }
       setJobs(response.data);
       setTotalJobs(response.pagination.totalJobs);
-      setError(null);
     } catch (error) {
       console.log(error);
-      setError("Failed to fetch jobs");
     } finally {
       setLoading(false);
     }
@@ -97,7 +95,7 @@ const SearchPage = () => {
             <div className="search flex justify-between p-3">
               <label className="text-primary-color text-lg">
                 Search result for {searchQuery}
-                <span className="text-xl font-bold">"{searchQuery}"</span>{" "}
+                <span className="text-xl font-bold">&quot;{searchQuery}&quot;</span>{" "}
               </label>
               <Button onClick={handleCancelClick}>Cancel</Button> {/* Add onClick handler */}
             </div>
