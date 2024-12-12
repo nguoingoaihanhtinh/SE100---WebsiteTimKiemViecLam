@@ -39,7 +39,6 @@ export const getAllJobs = async (req, res) => {
         },
       ],
     });
-
     // Prepare the response with pagination metadata
     res.status(200).json({
       success: true,
@@ -321,20 +320,21 @@ export const searchJob = async (req, res) => {
       page = 1,
       limit = 10,
       kw = "",
-      jobType_id,
+      jobType_id = null,
       experience = 0,
       longitude,
       lattidue, // Assuming you meant latitude
       salary_from = 0,
       salary_to = 100000000,
     } = req.query;
-
+    console.log("kw:", kw, "id:", jobType_id);
     const offset = (page - 1) * limit;
+    const whereClause = {};
 
     // Create the base `where` clause for filtering by title
-    const whereClause = {
-      title: { [Op.like]: `%${kw}%` }, // Filter jobs by title
-    };
+    if (kw) {
+      whereClause.title = { [Op.like]: `%${kw}%` };
+    }
 
     // Add experience filter if it exists in the query
     if (experience) {
@@ -342,8 +342,9 @@ export const searchJob = async (req, res) => {
     }
 
     // Add `jobType_id` filter if it exists in the query
-    if (jobType_id) {
-      whereClause.jobType_id = jobType_id;
+
+    if (jobType_id !== NaN && jobType_id) {
+      whereClause.jobType_id = Number(jobType_id); // Filter jobs by job type ID
     }
     // Add salary range filter if it exists
     whereClause.salary_from = { [Op.gte]: parseInt(salary_from, 10) };
@@ -387,12 +388,11 @@ export const searchJob = async (req, res) => {
       limit: parseInt(limit, 10),
       offset: parseInt(offset, 10),
     });
-
+    console.log(whereClause);
     const totalPages = Math.ceil(jobs.count / limit);
-
     // Return the jobs and pagination info
     res.json({
-      status: "success",
+      success: true,
       data: jobs.rows,
       pagination: {
         currentPage: parseInt(page, 10),

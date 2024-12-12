@@ -4,30 +4,30 @@ import useDebounce from "../../../hooks/useDebouce";
 import { useNavigate } from "react-router-dom";
 import jobApi from "../../../api/jobApi";
 import { JobCardHorizontal } from "../../Job/JobCarHorizontal";
-import { Spin } from "antd";
 export default function SearchBox() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [jobs, setJob] = useState([]);
+  const [jobs, setJobs] = useState([]);
   const debounceSearch = useDebounce(searchQuery, 500);
   const searchBoxRef = useRef(null);
   const navigate = useNavigate();
 
   const getSearchJobs = async () => {
     const response = await jobApi.searchJob(1, 4, debounceSearch);
-    // console.log(response.data);
-    if (response.status === "success") {
-      setJob(response.data);
-    }
+
+    setJobs(response.data);
   };
   useEffect(() => {
-    if (debounceSearch.trim() !== "") {
+    if (debounceSearch.trim() !== "") {  
       getSearchJobs();
     }
   }, [debounceSearch]);
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (searchBoxRef.current && !searchBoxRef.current.contains(event.target)) {
+      if (
+        searchBoxRef.current &&
+        !searchBoxRef.current.contains(event.target)
+      ) {
         setIsSearching(false);
       }
     };
@@ -70,7 +70,9 @@ export default function SearchBox() {
         <div className="absolute top-[60px] left-[50%] translate-x-[-50%] bg-white shadow-lg rounded-xl p-4 max-h-[300px] flex flex-col gap-3 overflow-y-auto w-[500px] scrollbar-hidden">
           <div>
             {jobs.length > 0 ? (
-              jobs.map((item) => <JobCardHorizontal key={item.id} jobData={item} />)
+              jobs.map((item) => (
+                <JobCardHorizontal key={item.id} jobData={item} />
+              ))
             ) : (
               <p className="text-gray-500 text-center">No results found</p>
             )}

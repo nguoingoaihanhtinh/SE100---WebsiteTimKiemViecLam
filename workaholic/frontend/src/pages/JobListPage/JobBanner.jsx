@@ -15,10 +15,10 @@ export default function Banner() {
                   <p className="font-serif text-4xl font-medium my-4 text-white">
                     Hello, Austine Robertson
                   </p>
-                  <p className="px-4 py-3 text-xl text-white mt-4 cursor-pointer transition-all flex justify-center items-center">
+                  <div className="px-4 py-3 text-xl text-white mt-4 cursor-pointer transition-all flex justify-center items-center">
                         <Link to="/" className="text-white text-xl">Home</Link> {/* Link to the home page */}
                         <p>/Technology</p>
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>
