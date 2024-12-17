@@ -1,11 +1,8 @@
-import React from "react";
 import { JobCard } from "../../components/Job/JobCard";
 import { Pagination } from "antd";
 
 const JobListContent = ({ jobs, totalJobs, page, setPage }) => {
   const validJobs = Array.isArray(jobs) ? jobs : [];
-
-  const totalPages = Math.ceil(totalJobs / 10); // Calculate total pages based on total jobs and limit
 
   const handlePageChange = (newPage) => {
     setPage(newPage); // This will update the page number in SearchPage component
