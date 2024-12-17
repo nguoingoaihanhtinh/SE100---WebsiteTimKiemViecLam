@@ -2,6 +2,7 @@ import { JobCard } from "../../components/Job/JobCard";
 import { Pagination } from "antd";
 
 const JobListContent = ({ jobs, totalJobs, page, setPage }) => {
+  console.log('content',jobs)
   const validJobs = Array.isArray(jobs) ? jobs : [];
 
   const handlePageChange = (newPage) => {
