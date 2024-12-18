@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Filter from "../../components/filter/Filter";
 import JobListContent from "./JobListContent";
 import JobBanner from "./JobBanner";
@@ -20,7 +20,7 @@ const JobListPage = () => {
 
   // Fetch jobs when filters or page changes
   const getAllJobs = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       const response = await jobApi.getAllJobs(page, 9, filters.selectedJobType);
       setJobs(response.data);
@@ -34,7 +34,7 @@ const JobListPage = () => {
 
   useEffect(() => {
     getAllJobs();
-    // console.log('job',jobs)
+    console.log("job", jobs);
   }, [filters.selectedJobType, page]); // Fetch jobs when filters or page changes
   // console.log('Selected Job Type:', filters.selectedJobType);
   // Filter jobs based only on the selected job type
@@ -43,7 +43,6 @@ const JobListPage = () => {
       ? job.type === filters.selectedJobType
       : true;
   });
-
 
   const handleFilterChange = (newFilters) => {
     if (JSON.stringify(filters) !== JSON.stringify(newFilters)) {
