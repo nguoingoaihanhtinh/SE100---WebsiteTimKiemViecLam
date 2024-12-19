@@ -17,6 +17,7 @@ import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import ManageNotification from "../pages/Employer/ManageNotification/ManageNotification";
 import NotificationPage from "../pages/Notification/NotificationPage";
 import Company from "../pages/Company/Company";
+import JobManagementPage from "../pages/Employer/JobPostingPage/JobManagentPage";
 
 const Router = () => {
   return (
@@ -35,6 +36,7 @@ const Router = () => {
           <Route path="company/:id" element={<Company />} />
         </Route>
         <Route path="employer" element={<EmployerLayout />}>
+          <Route path="jobs" element={<JobManagementPage />} /> 
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="joblist" element={<ManageJobs />} />
           <Route path="joblist/:id" element={<ManageApplication />} />

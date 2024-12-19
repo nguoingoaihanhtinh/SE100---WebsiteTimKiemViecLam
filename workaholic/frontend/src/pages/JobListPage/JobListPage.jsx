@@ -34,7 +34,7 @@ const JobListPage = () => {
 
   useEffect(() => {
     getAllJobs();
-    // console.log('job',jobs)
+    console.log("job", jobs);
   }, [filters.selectedJobType, page]); // Fetch jobs when filters or page changes
   // console.log('Selected Job Type:', filters.selectedJobType);
   // Filter jobs based only on the selected job type
