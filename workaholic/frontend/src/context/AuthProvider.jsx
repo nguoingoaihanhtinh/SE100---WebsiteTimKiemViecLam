@@ -29,6 +29,8 @@ function AuthProvider({ children }) {
       }
       if (user.user.role === "User" && location.pathname.startsWith("/employer")) {
         navigate("/");
+      } else if (user.user.role === "Admin" && !location.pathname.startsWith("/admin")) {
+        navigate("/");
       }
     }
   }, [user]);

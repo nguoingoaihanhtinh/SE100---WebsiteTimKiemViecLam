@@ -25,17 +25,17 @@ export const getAllJobs = async (req, res) => {
     const { rows: jobs, count: totalItems } = await Job.findAndCountAll({
       offset,
       limit: limitNumber,
-      order: [["createdAt", "DESC"]], // Order by newest jobs first
+      order: [["createdAt", "DESC"]],
       include: [
         {
           model: Company,
-          as: "company", // Alias for company (match with association alias)
-          attributes: ["id", "name", "feild", "description", "img", "user_id", "address"], // Select specific fields from company
+          as: "company",
+          attributes: ["id", "name", "feild", "description", "img", "user_id", "address"],
         },
         {
           model: JobType,
-          as: "jobType", // Alias for jobType (match with association alias)
-          attributes: ["id", "name"], // Select specific fields from jobType
+          as: "jobType",
+          attributes: ["id", "name"],
         },
       ],
     });
