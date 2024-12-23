@@ -20,17 +20,14 @@ function AuthProvider({ children }) {
     if (user && user?.user) {
       setUserData(user.user);
       login();
-      if (
-        user.user.role === "Employer" &&
-        !location.pathname.startsWith("/employer") &&
-        !location.pathname.startsWith("/login")
-      ) {
+      const role = user.user.role;
+      const currentPath = location.pathname;
+      if (role === "Employer" && !currentPath.startsWith("/employer") && !currentPath.startsWith("/login")) {
         navigate("/employer/dashboard");
-      }
-      if (user.user.role === "User" && location.pathname.startsWith("/employer")) {
+      } else if (role === "User" && currentPath.startsWith("/employer")) {
         navigate("/");
-      } else if (user.user.role === "Admin" && !location.pathname.startsWith("/admin")) {
-        navigate("/");
+      } else if (role === "Admin" && !currentPath.startsWith("/admin")) {
+        navigate("/admin");
       }
     }
   }, [user]);

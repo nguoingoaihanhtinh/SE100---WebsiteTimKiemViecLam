@@ -16,9 +16,7 @@ const TableRow = ({ rowValue }) => {
         <p className=" text-[#67748e]">{rowValue.field}</p>
       </td>
       <td className=" flex-row items-center justify-center w-40">
-        <p className="text-xs text-[#67748e] w-64 truncate overflow-hidden whitespace-nowrap">
-          {rowValue.description}
-        </p>
+        <p className="text-xs text-[#67748e] w-64 truncate overflow-hidden whitespace-nowrap">{rowValue.description}</p>
       </td>
       <td className="p-2 text-yellow-400 ">
         <i className="fa-solid fa-star"></i>
@@ -26,7 +24,6 @@ const TableRow = ({ rowValue }) => {
         <i className="fa-solid fa-star"></i>
         <i className="fa-solid fa-star"></i>
         <i className="fa-solid fa-star"></i>
-
       </td>
 
       {/* <td className="">

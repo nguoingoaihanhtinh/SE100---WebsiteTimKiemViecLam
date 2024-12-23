@@ -1,13 +1,18 @@
 import { useState } from "react";
 
 import { useGetAllJobsQuery } from "../../../redux/rtk/job.service";
-import { datas } from "../../../consants";
-import TableRow from "../../../components/Employer/TableRow";
+import { useGetAllCompaniesQuery } from "../../../redux/rtk/company.service";
+import CompanyTable from "../../../components/Admin/Tables/CompanyTable";
 
 const AdminDashBoard = () => {
   const tableHeaders = ["Image", "Name", "field", "description", "rating"];
   const [searchQuery, setSearchQuery] = useState("");
   const { data: jobsRes } = useGetAllJobsQuery();
+  const { data: companiesRes, isLoading, isError } = useGetAllCompaniesQuery();
+  const companies = companiesRes?.companies || [];
+  console.log("coma", companies);
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching companies!</div>;
   const jobs = jobsRes?.data || [];
   if (!jobs) return <></>;
   return (
@@ -60,8 +65,8 @@ const AdminDashBoard = () => {
             </thead>
 
             <tbody className="divide-y divide-gray-700 ">
-              {datas.map((company, index) => (
-                <TableRow key={index} rowValue={company} />
+              {companies.map((company, index) => (
+                <CompanyTable key={index} rowValue={company} />
               ))}
             </tbody>
           </table>
