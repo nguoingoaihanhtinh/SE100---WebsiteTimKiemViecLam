@@ -33,6 +33,44 @@ export const userRTKApi = baseApi.injectEndpoints({
         credentials: "include",
       }),
     }),
+    getAllUsers: build.query({
+      query: () => ({
+        url: "/user",
+        method: "GET",
+      }),
+    }),
+    getUserById: build.query({
+      query: (id) => ({
+        url: `/user/${id}`,
+        method: "GET",
+      }),
+    }),
+
+    updateUser: build.mutation({
+      query: ({ id, body }) => ({
+        url: `/user/${id}`,
+        method: "PUT",
+        body,
+        credentials: "include",
+      }),
+    }),
+
+    deleteUser: build.mutation({
+      query: (id) => ({
+        url: `/user/${id}`,
+        method: "DELETE",
+        credentials: "include",
+      }),
+    }),
   }),
 });
-export const { useLoginMutation, useCheckLoginQuery, useRegisterMutation, useLogoutMutation } = userRTKApi;
+export const {
+  useLoginMutation,
+  useCheckLoginQuery,
+  useRegisterMutation,
+  useLogoutMutation,
+  useGetAllUsersQuery,
+  useGetUserByIdQuery,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+} = userRTKApi;
