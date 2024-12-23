@@ -18,6 +18,8 @@ import ManageNotification from "../pages/Employer/ManageNotification/ManageNotif
 import NotificationPage from "../pages/Notification/NotificationPage";
 import Company from "../pages/Company/Company";
 import JobManagementPage from "../pages/Employer/JobPostingPage/JobManagentPage";
+import AdminLayout from "../layouts/AdminLayout";
+import AdminDashBoard from "../pages/Admin/DashBoard/DashBoard";
 
 const Router = () => {
   return (
@@ -36,13 +38,15 @@ const Router = () => {
           <Route path="company/:id" element={<Company />} />
         </Route>
         <Route path="employer" element={<EmployerLayout />}>
-          <Route path="jobs" element={<JobManagementPage />} /> 
+          <Route path="jobs" element={<JobManagementPage />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="joblist" element={<ManageJobs />} />
           <Route path="joblist/:id" element={<ManageApplication />} />
           <Route path="noti" element={<ManageNotification />} />
         </Route>
-
+        <Route path="admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<AdminDashBoard />} />
+        </Route>
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
       </Route>
