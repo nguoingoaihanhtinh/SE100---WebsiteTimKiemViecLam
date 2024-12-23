@@ -21,6 +21,8 @@ import JobManagementPage from "../pages/Employer/JobPostingPage/JobManagentPage"
 import AdminLayout from "../layouts/AdminLayout";
 import AdminDashBoard from "../pages/Admin/DashBoard/DashBoard";
 import ManageCompany from "../pages/Admin/ManageCompany/ManageCompany";
+import AdminManageJob from "../pages/Admin/ManageCompany/AdminManageJob";
+// import ManageUser from "../pages/Admin/ManageUser/ManageUser";
 
 const Router = () => {
   return (
@@ -48,6 +50,8 @@ const Router = () => {
         <Route path="admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashBoard />} />
           <Route path="companies" element={<ManageCompany />} />
+          <Route path="companies/:id" element={<AdminManageJob />} />
+          {/* <Route path="users" element={<ManageUser />} /> */}
         </Route>
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />

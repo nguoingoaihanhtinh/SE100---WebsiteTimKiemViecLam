@@ -1,12 +1,17 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CompanyTable = ({ rowValue, onEdit, onDelete }) => {
   const MAX_STARS = 5;
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const navigate = useNavigate();
   const stars = Array.from({ length: MAX_STARS }, (_, index) =>
     index < rowValue.rating ? "fa-solid fa-star text-yellow-400" : "fa-regular fa-star text-gray-400"
   );
+
+  const onJobs = () => {
+    navigate(`/admin/companies/${rowValue.id}`);
+  };
 
   return (
     <>
@@ -54,6 +59,12 @@ const CompanyTable = ({ rowValue, onEdit, onDelete }) => {
                   onClick={onDelete}
                 >
                   Delete
+                </button>
+                <button
+                  className="px-4 py-2 text-sm text-white bg-red-500 rounded-md hover:bg-red-600"
+                  onClick={onJobs}
+                >
+                  Checkout Jobs
                 </button>
               </div>
             </div>
