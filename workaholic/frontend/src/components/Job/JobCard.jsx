@@ -11,7 +11,7 @@ function formatCurrency(amount) {
   return new Intl.NumberFormat("vi-VN").format(amount) + " đ";
 }
 export const JobCard = ({ jobData }) => {
-  // console.log('job',jobData)
+  console.log("job", jobData);
   const { data: loginStatus, isLoading } = useCheckLoginQuery();
   const userData = loginStatus?.user;
   const navigate = useNavigate();

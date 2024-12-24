@@ -22,6 +22,7 @@ import AdminLayout from "../layouts/AdminLayout";
 import AdminDashBoard from "../pages/Admin/DashBoard/DashBoard";
 import ManageCompany from "../pages/Admin/ManageCompany/ManageCompany";
 import AdminManageJob from "../pages/Admin/ManageCompany/AdminManageJob";
+import BookmarkPage from "../pages/Bookmarks/BookmarkPage";
 // import ManageUser from "../pages/Admin/ManageUser/ManageUser";
 
 const Router = () => {
@@ -39,6 +40,7 @@ const Router = () => {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="noti" element={<NotificationPage />} />
           <Route path="company/:id" element={<Company />} />
+          <Route path="bookmarked" element={<BookmarkPage />} />
         </Route>
         <Route path="employer" element={<EmployerLayout />}>
           <Route path="jobs" element={<JobManagementPage />} />
