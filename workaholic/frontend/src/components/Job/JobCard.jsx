@@ -1,21 +1,26 @@
 import { FaBookmark, FaLocationPin } from "react-icons/fa6";
 import Rating from "../Rating/Rating";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import JobApplicationForm from "../../pages/Application/ApplicationForm";
 import { FaPaperPlane } from "react-icons/fa";
 import { useCheckLoginQuery } from "../../redux/rtk/user.service";
 import { useNavigate } from "react-router-dom";
+import { useRemoveSaveJobMutation, useSavedJobMutation } from "../../redux/rtk/job.service";
+import { AuthContext } from "../../context/AuthProvider";
 function formatCurrency(amount) {
   return new Intl.NumberFormat("vi-VN").format(amount) + " đ";
 }
 export const JobCard = ({ jobData }) => {
   // console.log('job',jobData)
-  const [isBookmarked, setIsBookmarked] = useState(false);
   const { data: loginStatus, isLoading } = useCheckLoginQuery();
   const userData = loginStatus?.user;
   const navigate = useNavigate();
   const [isFormVisible, setFormVisible] = useState(false);
-
+  const [saveJob] = useSavedJobMutation();
+  const [removeSaveJob] = useRemoveSaveJobMutation();
+  const { savedJobs, setSavedJobs } = useContext(AuthContext);
+  const savedJobsArr = savedJobs?.map((e) => e.job_id) || [];
+  const isSaved = savedJobsArr.includes(jobData.id);
   const showForm = () => {
     if (isLoading) {
       alert("Loading user status. Please wait.");
@@ -60,8 +65,16 @@ export const JobCard = ({ jobData }) => {
         return "bg-white"; // Default background if no match
     }
   };
-  const handleBookmarkClick = () => {
-    setIsBookmarked(!isBookmarked);
+  const handleBookmarkClick = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isSaved) {
+      saveJob({ job_id: jobData.id });
+      setSavedJobs((prev) => [...prev, { job_id: jobData.id }]);
+    } else {
+      removeSaveJob({ job_id: jobData.id });
+      setSavedJobs((prev) => prev.filter((job) => job.job_id !== jobData.id));
+    }
   };
   return (
     <>
@@ -81,9 +94,10 @@ export const JobCard = ({ jobData }) => {
                   className="mx-auto rounded-xl w-10 h-10 object-cover transition duration-700 hover:skew-x-2 "
                 />
               </div>
+
               <div
                 className={`save bg-white rounded-full w-10 h-10 flex justify-center items-center ${
-                  isBookmarked ? "text-yellow-500" : "text-gray-500"
+                  isSaved ? "text-yellow-500" : "text-gray-500"
                 }`}
                 onClick={handleBookmarkClick}
               >
