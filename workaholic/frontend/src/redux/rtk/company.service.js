@@ -9,9 +9,13 @@ export const companyRTKApi = baseApi.injectEndpoints({
       }),
     }),
     getAllCompanies: build.query({
-      query: () => ({
+      query: ({ page = 1, limit = 9, type = "" }) => ({
         url: `/company/`,
-        credentials: "include",
+        params: {
+          page,
+          limit,
+          type,
+        },
       }),
     }),
     getCompanyById: build.query({

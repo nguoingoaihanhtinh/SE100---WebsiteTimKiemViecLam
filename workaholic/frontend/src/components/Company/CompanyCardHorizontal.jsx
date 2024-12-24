@@ -12,6 +12,9 @@ export const CompanyCardHorizontal = ({ companyData }) => {
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold text-primary-color">{companyData.name}</h2>
         </div>
+        <div className="flex justify-between items-center">
+          <h2 className="text-md font-semibold text-gray-500">{companyData.feild}</h2>
+        </div>
         <div className="flex items-center gap-4 text-primary-color text-sm">
           <div className="flex items-center gap-1">
             <span>{companyData.type}</span>

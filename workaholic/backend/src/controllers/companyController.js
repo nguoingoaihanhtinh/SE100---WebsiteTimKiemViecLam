@@ -4,20 +4,23 @@ import { Company, User } from "../models/relation.js";
 
 export const getAllCompanies = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1; // Default page 1 if not provided
-    const limit = parseInt(req.query.limit) || 10; // Default limit 10 if not provided
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const type = req.query.type || null;
 
-    // Calculate the offset for pagination
     const offset = (page - 1) * limit;
+    const whereCondition = type ? { feild: type } : {};
+    //Loi chinh ta feild
 
-    // Get the companies with pagination
     const companies = await Company.findAll({
+      where: whereCondition,
       limit: limit,
       offset: offset,
     });
 
-    // Get the total count of companies for pagination purposes
-    const totalCompanies = await Company.count();
+    const totalCompanies = await Company.count({
+      where: whereCondition,
+    });
 
     res.json({
       currentPage: page,
