@@ -54,11 +54,11 @@ const JobListPage = () => {
       <div className="banner">
         <JobBanner />
       </div>
-      <div className="w-full flex gap-10">
+      <div className="w-full flex gap-6">
         <div className="filter w-1/4 items-center">
           <Filter />
         </div>
-        <div className="content w-3/4">
+        <div className="content ">
           {loading ? (
             <div>Loading...</div> // Show loading indicator while fetching
           ) : (

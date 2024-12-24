@@ -1,14 +1,13 @@
-import React from 'react'
-import Security from './Security'
-import FilterContent from './FilterContent'
+import Security from "./Security";
+import FilterContent from "./FilterContent";
 
 const Filter = () => {
   return (
-    <div className='flex flex-col mt-30 px-5'>
-        <Security/>
-        <FilterContent/>
+    <div className="flex flex-col mt-6 px-5 gap-7 mb-10">
+      <FilterContent />
+      <Security />
     </div>
-  )
-}
+  );
+};
 
-export default Filter
+export default Filter;

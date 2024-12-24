@@ -21,9 +21,9 @@ export default function Banner() {
           </div>
         </div>
         <div className="basis-[15%]">
-          <div className="bg-white h-full rounded-lg flex items-center flex-col">
+          <div className="bg-white h-full overflow-hidden rounded-[12px] flex items-center flex-col">
             <div
-              className="w-[250px] h-full bg-cover bg-center"
+              className="w-[250px]  h-full bg-cover bg-center"
               style={{
                 backgroundImage: `url(https://d1csarkz8obe9u.cloudfront.net/posterpreviews/we-are-hiring-job-recruitment-template-design-a030f332e681e930f999d63393c3bb65_screen.jpg?ts=1697979619)`,
               }}

@@ -30,8 +30,8 @@ const jobApi = {
       if (filters.salaryRange) {
         query += `&salary_from=${filters.salaryRange[0]}&salary_to=${filters.salaryRange[1]}`;
       }
-      if (filters.experience) {
-        query += `&experience=${filters.experience}`;
+      if (filters.selectedExperience) {
+        query += `&experience=${filters.selectedExperience.value}`;
       }
       if (filters.selectedLocation && filters.selectedLocation.latitude && filters.selectedLocation.longitude) {
         query += `&longitude=${filters.selectedLocation.latitude}&lattidue=${filters.selectedLocation.longitude}`;
