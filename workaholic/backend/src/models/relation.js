@@ -5,6 +5,7 @@ import JobType from "./JobTypeModel.js";
 import Application from "./ApplicationModel.js";
 import Company from "./CompanyModel.js";
 import Saved from "./SavedModel.js";
+import CV from "./CVModel.js";
 // For user
 User.hasMany(Notification, {
   foreignKey: "user_id", // Links Notification.user_id to User.id
@@ -23,6 +24,10 @@ User.hasMany(Application, {
   as: "applications",
 });
 User.hasOne(Company, { foreignKey: "user_id", as: "Company" });
+User.hasMany(CV, {
+  foreignKey: "user_id", // Links CV.user_id to User.id
+  as: "cvs", // Alias for the relation
+});
 // For Noti
 Notification.belongsTo(User, {
   foreignKey: "user_id", // Links Notification.user_id to User.id
@@ -69,5 +74,8 @@ Saved.belongsTo(Job, {
   foreignKey: "job_id",
   as: "job",
 });
-
-export { User, Notification, Job, JobType, Application, Company, Saved };
+CV.belongsTo(User, {
+  foreignKey: "user_id",
+  as: "user",
+});
+export { User, Notification, Job, JobType, Application, Company, Saved, CV };

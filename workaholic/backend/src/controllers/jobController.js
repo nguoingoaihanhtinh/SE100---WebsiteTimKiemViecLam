@@ -59,14 +59,11 @@ export const getAllJobs = async (req, res) => {
 };
 export const getAllJobsByCompanyId = async (req, res) => {
   try {
-    // Extract pagination parameters from query string
     const { company_id, page = 1, limit = 10, kw = "" } = req.query;
 
-    // Convert page and limit to integers
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
 
-    // Validate pagination parameters
     if (isNaN(pageNumber) || isNaN(limitNumber) || pageNumber < 1 || limitNumber < 1) {
       return res.status(400).json({
         success: false,
@@ -74,9 +71,7 @@ export const getAllJobsByCompanyId = async (req, res) => {
       });
     }
 
-    // Calculate offset for pagination
     const offset = (pageNumber - 1) * limitNumber;
-    // Define the search condition for the keyword
     const searchCondition = kw
       ? {
           [Op.or]: [
@@ -327,6 +322,7 @@ export const searchJob = async (req, res) => {
       salary_from = 0,
       salary_to = 100000000,
     } = req.query;
+    console.log("kw:", kw, "id:", jobType_id);
     const offset = (page - 1) * limit;
     const whereClause = {};
 
@@ -375,7 +371,7 @@ export const searchJob = async (req, res) => {
           model: Company,
           as: "company",
           required: true, // Only include jobs with a valid company
-          attributes: ["id", "name", "feild", "description", "img", "user_id", "address"], // Fetch relevant fields
+          attributes: ["name", "img", "longitude", "lattidue"], // Fetch relevant fields
         },
         {
           model: JobType,
@@ -387,6 +383,7 @@ export const searchJob = async (req, res) => {
       limit: parseInt(limit, 10),
       offset: parseInt(offset, 10),
     });
+    console.log(whereClause);
     const totalPages = Math.ceil(jobs.count / limit);
     // Return the jobs and pagination info
     res.json({
