@@ -23,6 +23,7 @@ import AdminDashBoard from "../pages/Admin/DashBoard/DashBoard";
 import ManageCompany from "../pages/Admin/ManageCompany/ManageCompany";
 import AdminManageJob from "../pages/Admin/ManageCompany/AdminManageJob";
 import BookmarkPage from "../pages/Bookmarks/BookmarkPage";
+import CompanyListPage from "../pages/CompanyListPage/CompanyListPage";
 // import ManageUser from "../pages/Admin/ManageUser/ManageUser";
 
 const Router = () => {
@@ -36,6 +37,7 @@ const Router = () => {
           <Route path="jobs/:id" element={<JobDetailPage />} />
           <Route path="application" element={<JobApplicationList />} />
           <Route path="cv" element={<CvPage />} />
+          <Route path="company" element={<CompanyListPage />} />
           <Route path="companydetail" element={<CompanyDetailPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="noti" element={<NotificationPage />} />

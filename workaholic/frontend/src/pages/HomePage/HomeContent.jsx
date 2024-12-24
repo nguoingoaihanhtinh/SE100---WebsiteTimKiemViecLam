@@ -7,6 +7,7 @@ import SmallBanner from "./SmallBanner";
 import jobApi from "../../api/jobApi";
 import { Link } from "react-router-dom";
 import { useGetAllCompaniesQuery } from "../../redux/rtk/company.service";
+import CompanyCarousel from "../../components/Company/CompanyCarousel";
 export const fakeCompany = [
   {
     id: 1,
@@ -50,8 +51,6 @@ const HomeContent = () => {
   const [total, setTotal] = useState(4);
   const [page, setPage] = useState(1);
 
-  const { data: companyData = [] } = useGetAllCompaniesQuery();
-  const companies = companyData.companies || [];
   const getAllJobType = async () => {
     const response = await jobApi.getAllJobTypes();
     setJobTypes(response.data);
@@ -93,38 +92,7 @@ const HomeContent = () => {
           <p>No jobs available</p>
         )}
       </div>
-      <div className="company rounded-xl shadow-md mt-10 border">
-        <div className="heading rounded-t-xl bg-blue-800 flex">
-          <div className="w-3/5 flex flex-col justify-center gap-5 text-left px-5">
-            <p className="text-3xl font-bold text-white">Thương hiệu lớn tiêu biểu</p>
-            <p className="text-white font-semibold">
-              Những thương hiệu tuyển dụng đã khẳng định được vị thế trên thị trường.
-            </p>
-          </div>
-          <div
-            className="w-2/5 bg-cover bg-center bg-no-repeat h-[140px] p-2"
-            style={{
-              backgroundImage: `url(https://media.tapchitaichinh.vn/w1480/images/upload/hoangthuviet/07292019/0_10-thuong-hieu-dan-dau-viet-nam-dat-gia-tri-gan-7.jpg)`,
-            }}
-          ></div>
-        </div>
-        <div className="category flex flex-wrap py-5 border-t gap-3 px-5">
-          <Button className="min-w-35 text-[16px]">All</Button>
-          {jobTypes.map((type) => (
-            <Button key={type.id} className="min-w-35 text-[16px]">
-              {type.name}
-            </Button>
-          ))}
-        </div>
-        <div className="companyCard grid grid-cols-3 gap-5 px-5">
-          {companies.map((company) => (
-            <CompanyCardHorizontal key={company.id} companyData={company} />
-          ))}
-        </div>
-        <Button className="bg-sky-800 text-white font-semibold text-lg h-[46px] rounded-[8px] p-5 m-5">
-          Tìm hiểu thêm về các công ty
-        </Button>
-      </div>
+      <CompanyCarousel />
       <div className="suitable mt-8">
         <div className="flex justify-between items-center w-full">
           <header className="font-serif text-4xl font-medium my-4 text-blue-950">Suitable for you!</header>
