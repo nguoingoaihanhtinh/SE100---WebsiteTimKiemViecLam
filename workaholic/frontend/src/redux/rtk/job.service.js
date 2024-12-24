@@ -49,6 +49,28 @@ export const jobRTKApi = baseApi.injectEndpoints({
         credentials: "include",
       }),
     }),
+    getJobsSaved: build.query({
+      query: () => ({
+        url: `/save?page=1&limit=10000`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+    savedJob: build.mutation({
+      query: ({ job_id }) => ({
+        url: `/save`,
+        method: "POST",
+        body: { job_id },
+        credentials: "include",
+      }),
+    }),
+    removeSaveJob: build.mutation({
+      query: ({ job_id }) => ({
+        url: `/save/${job_id}`,
+        method: "DELETE",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 export const {
@@ -57,7 +79,10 @@ export const {
   useLazyGetAllJobsByCompanyIdQuery,
   useGetByIdQuery,
   useUpdateJobMutation,
+  useRemoveSaveJobMutation,
   useGetAllJobTypesQuery,
+  useLazyGetJobsSavedQuery,
   useDeleteJobMutation,
   useCreateJobMutation,
+  useSavedJobMutation,
 } = jobRTKApi;

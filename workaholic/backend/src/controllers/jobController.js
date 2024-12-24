@@ -327,7 +327,6 @@ export const searchJob = async (req, res) => {
       salary_from = 0,
       salary_to = 100000000,
     } = req.query;
-    console.log("kw:", kw, "id:", jobType_id);
     const offset = (page - 1) * limit;
     const whereClause = {};
 
@@ -376,7 +375,7 @@ export const searchJob = async (req, res) => {
           model: Company,
           as: "company",
           required: true, // Only include jobs with a valid company
-          attributes: ["name", "img", "longitude", "lattidue"], // Fetch relevant fields
+          attributes: ["id", "name", "feild", "description", "img", "user_id", "address"], // Fetch relevant fields
         },
         {
           model: JobType,
@@ -388,7 +387,6 @@ export const searchJob = async (req, res) => {
       limit: parseInt(limit, 10),
       offset: parseInt(offset, 10),
     });
-    console.log(whereClause);
     const totalPages = Math.ceil(jobs.count / limit);
     // Return the jobs and pagination info
     res.json({

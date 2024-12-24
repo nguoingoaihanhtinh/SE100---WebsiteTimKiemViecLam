@@ -5,7 +5,7 @@ import CategorySection from "./CategorySection";
 
 const HomePage = () => {
   return (
-    <div className="w-full flex flex-col justify-center gap-5 mt-60 ">
+    <div className="w-full flex flex-col justify-center gap-5">
       <div className="banner">
         <Banner />
       </div>
