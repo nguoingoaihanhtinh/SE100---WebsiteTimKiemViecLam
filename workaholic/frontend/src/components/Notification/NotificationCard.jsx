@@ -1,5 +1,3 @@
-import React from "react";
-
 const NotificationCard = ({ notification }) => {
   const { header, content, user_id, is_global, date } = notification;
 

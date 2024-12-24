@@ -15,7 +15,7 @@ const SearchPage = () => {
       name: "",
     },
     selectedLocation: "Location",
-    selectedExperience: "Experience",
+    selectedExperience: { label: "Experience", value: 0 },
     selectedPayment: "Payment",
   });
 
@@ -41,11 +41,8 @@ const SearchPage = () => {
     try {
       setLoading(true);
       let response = null;
-      if (query !== "" || filters.selectedJobType.id) {
-        response = await jobApi.searchJob(page, 11, query, filters);
-      } else {
-        response = await jobApi.getAllJobs(page, 10);
-      }
+      response = await jobApi.searchJob(page, 11, query, filters);
+
       setJobs(response.data);
       setTotalJobs(response.pagination.totalJobs);
     } catch (error) {
@@ -65,7 +62,7 @@ const SearchPage = () => {
       setSearchQuery(query2);
     }
     if (query) {
-      setFilters((prev) => ({ ...prev, selectedJobType: { id: query } })); // Update searchQuery with the value from the URL
+      setFilters((prev) => ({ ...prev, selectedJobType: { id: query } }));
     } else {
       setFilters(null);
     }
@@ -80,11 +77,11 @@ const SearchPage = () => {
   };
   return (
     <div className="w-full flex flex-col justify-center gap-5 px-20">
-      <div className="bg-primary-color w-full p-5">
-        <SortBar onFilterChange={handleFilterChange} />
-      </div>
       <div className="banner">
         <Banner />
+      </div>
+      <div className="bg-primary-color w-full p-3 rounded-[12px]">
+        <SortBar onFilterChange={handleFilterChange} />
       </div>
       <div className="w-full flex gap-10">
         <div className="filter w-1/4 items-center">
