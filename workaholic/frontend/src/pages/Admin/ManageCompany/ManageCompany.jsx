@@ -2,10 +2,18 @@ import { useState } from "react";
 import { useGetAllCompaniesQuery, useDeleteCompanyMutation } from "../../../redux/rtk/company.service";
 import CompanyTable from "../../../components/Admin/Tables/CompanyTable";
 import AddCompanyForm from "./AddCompany/AddCompany";
-
 const ManageCompany = () => {
   const tableHeaders = ["Image", "Name", "Field", "Description", "Rating"];
-  const { data: companiesRes, isLoading, isError } = useGetAllCompaniesQuery();
+  const [page, setPage] = useState(1);
+  const {
+    data: companiesRes,
+    isLoading,
+    isError,
+  } = useGetAllCompaniesQuery({
+    page,
+    limit: 9,
+    type: "",
+  });
   const [deleteCompany] = useDeleteCompanyMutation();
   const companies = companiesRes?.companies || [];
   const [showAddCompanyForm, setShowAddCompanyForm] = useState(false);
