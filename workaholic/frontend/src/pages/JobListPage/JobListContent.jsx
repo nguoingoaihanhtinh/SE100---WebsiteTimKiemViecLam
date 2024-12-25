@@ -5,7 +5,7 @@ const JobListContent = ({ jobs, totalJobs, page, setPage }) => {
   const validJobs = Array.isArray(jobs) ? jobs : [];
 
   const handlePageChange = (newPage) => {
-    setPage(newPage); // This will update the page number in SearchPage component
+    setPage(newPage);
   };
 
   return (
@@ -18,7 +18,7 @@ const JobListContent = ({ jobs, totalJobs, page, setPage }) => {
         )}
       </div>
       <div className="flex justify-center p-2">
-        <Pagination current={page} total={totalJobs} pageSize={9} onChange={handlePageChange} />
+        <Pagination current={page} total={totalJobs} pageSize={6} onChange={handlePageChange} />
       </div>
     </div>
   );

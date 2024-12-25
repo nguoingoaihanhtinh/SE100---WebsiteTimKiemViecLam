@@ -3,8 +3,8 @@ import { baseApi } from "./base.service";
 export const savedRTKApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getSavedJobs: build.query({
-      query: () => ({
-        url: `/save/`,
+      query: (params) => ({
+        url: `/save?page=${params.page}&limit=${params.limit}&order=${params.order}`,
         credentials: "include",
       }),
     }),
@@ -26,8 +26,4 @@ export const savedRTKApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useGetSavedJobsQuery,
-  useSaveJobMutation,
-  useRemoveSavedJobMutation,
-} = savedRTKApi;
+export const { useGetSavedJobsQuery, useSaveJobMutation, useRemoveSavedJobMutation } = savedRTKApi;

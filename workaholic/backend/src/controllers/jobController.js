@@ -360,8 +360,8 @@ export const searchJob = async (req, res) => {
       lattidue, // Assuming you meant latitude
       salary_from = 0,
       salary_to = 100000000,
+      order = "createdAt",
     } = req.query;
-    console.log("kw:", kw, "id:", jobType_id);
     const offset = (page - 1) * limit;
     const whereClause = {};
 
@@ -401,7 +401,17 @@ export const searchJob = async (req, res) => {
       // Add the distance condition to the query pipeline
       whereClause[Op.and] = [Sequelize.where(distanceCondition, true)];
     }
+    // Parse the order parameter
+    let orderBy = [];
+    if (order) {
+      const isDescending = order.startsWith("-");
+      const fieldName = isDescending ? order.slice(1) : order;
 
+      const validFields = ["createdAt", "title", "salary_from"];
+      if (validFields.includes(fieldName)) {
+        orderBy.push([fieldName, isDescending ? "DESC" : "ASC"]);
+      }
+    }
     // Fetch jobs with pagination
     const jobs = await Job.findAndCountAll({
       where: whereClause,
@@ -421,8 +431,8 @@ export const searchJob = async (req, res) => {
       ],
       limit: parseInt(limit, 10),
       offset: parseInt(offset, 10),
+      order: orderBy.length > 0 ? orderBy : [["createdAt", "ASC"]],
     });
-    console.log(whereClause);
     const totalPages = Math.ceil(jobs.count / limit);
     // Return the jobs and pagination info
     res.json({
