@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaHome, FaBookmark } from "react-icons/fa";
 import SortBar from "../../components/filter/SortBar";
 import Filter from "../../components/filter/Filter";
@@ -42,6 +42,7 @@ const CompanyDetailTabs = () => {
       setPage(1);
     }
   };
+
   return (
     <div className="h-screen flex flex-col">
       {/* Sticky Header */}
@@ -51,17 +52,14 @@ const CompanyDetailTabs = () => {
           <>
             {/* Home Button */}
             <button className="flex items-center space-x-2 hover:text-gray-300">
-              <FaHome className="w-5 h-5 text-black" />{" "}
-              {/* Icon with distinct color */}
+              <FaHome className="w-5 h-5 text-black" /> {/* Icon with distinct color */}
               <span className="text-lg font-semibold text-black">Home</span>
             </button>
 
             {/* Bookmark Button */}
             <button className="flex items-center space-x-2 hover:text-gray-300">
               <FaBookmark className="w-5 h-5 text-black" />
-              <span className="text-lg font-semibold text-black">
-                Bookmark Company
-              </span>
+              <span className="text-lg font-semibold text-black">Bookmark Company</span>
             </button>
           </>
         )}
@@ -77,9 +75,7 @@ const CompanyDetailTabs = () => {
       <div className="flex justify-center border-b">
         <button
           className={`px-6 py-2 text-lg font-bold ${
-            activeTab === "about"
-              ? "border-b-4 border-blue-500 text-blue-500"
-              : "text-gray-500 hover:text-blue-500"
+            activeTab === "about" ? "border-b-4 border-blue-500 text-blue-500" : "text-gray-500 hover:text-blue-500"
           }`}
           onClick={() => setActiveTab("about")}
         >
@@ -87,9 +83,7 @@ const CompanyDetailTabs = () => {
         </button>
         <button
           className={`px-6 py-2 text-lg font-bold ${
-            activeTab === "jobs"
-              ? "border-b-4 border-blue-500 text-blue-500"
-              : "text-gray-500 hover:text-blue-500"
+            activeTab === "jobs" ? "border-b-4 border-blue-500 text-blue-500" : "text-gray-500 hover:text-blue-500"
           }`}
           onClick={() => setActiveTab("jobs")}
         >
@@ -103,25 +97,18 @@ const CompanyDetailTabs = () => {
           <div className="text-center">
             {/* Company Logo */}
             <div className="w-40 h-40 mx-auto mb-4">
-              <img
-                src="/picture/google.png"
-                alt="Company Logo"
-                className="w-full h-full object-contain rounded-full"
-              />
+              <img src="/picture/google.png" alt="Company Logo" className="w-full h-full object-contain rounded-full" />
             </div>
 
             {/* Company Name */}
-            <h2 className="text-2xl font-bold mb-2">
-              Company name: Google LLC
-            </h2>
+            <h2 className="text-2xl font-bold mb-2">Company name: Google LLC</h2>
 
             {/* About Section */}
             <div className="mt-4">
               <h3 className="text-lg font-bold text-gray-700">About:</h3>
               <p className="text-gray-600 mt-1">
-                Google is a multinational technology company that provides
-                Internet-related products and services, such as search,
-                advertising, cloud computing, and software.
+                Google is a multinational technology company that provides Internet-related products and services, such
+                as search, advertising, cloud computing, and software.
               </p>
             </div>
 
@@ -135,9 +122,7 @@ const CompanyDetailTabs = () => {
                 </a>
               </p>
               <p className="text-gray-600">Email: contact@google.com</p>
-              <p className="text-gray-600">
-                Address: 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
-              </p>
+              <p className="text-gray-600">Address: 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA</p>
             </div>
           </div>
         )}
@@ -155,12 +140,7 @@ const CompanyDetailTabs = () => {
                 {loading ? (
                   <div className="text-center">Loading...</div>
                 ) : (
-                  <JobListContent
-                    jobs={jobs}
-                    totalJobs={totalJobs}
-                    page={page}
-                    setPage={setPage}
-                  />
+                  <JobListContent jobs={jobs} totalJobs={totalJobs} page={page} setPage={setPage} />
                 )}
               </div>
             </div>

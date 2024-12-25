@@ -5,6 +5,7 @@ import { useGetAllJobsByCompanyIdQuery } from "../../redux/rtk/job.service";
 import { JobCardHorizontal } from "../../components/Job/JobCarHorizontal";
 import { FaBuilding, FaLocationDot } from "react-icons/fa6";
 import { useGetCompanyByIdQuery } from "../../redux/rtk/company.service";
+import CompanyRating from "../../components/Rating/CompanyRating";
 
 export default function Company() {
   const { id } = useParams();
@@ -96,6 +97,7 @@ export default function Company() {
               <Pagination defaultCurrent={page} total={totalItems} onChange={(e) => setPage(e)} pageSize={2} />
             </div>
           </div>
+          <CompanyRating companyId={company.id} />
         </div>
         <div className="basis-[35%]">
           <div className="border-[1px] rounded-[12px] overflow-hidden">
