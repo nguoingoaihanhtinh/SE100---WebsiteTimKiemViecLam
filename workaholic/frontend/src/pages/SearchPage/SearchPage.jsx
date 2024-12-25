@@ -8,6 +8,8 @@ import Filter from "../../components/filter/Filter";
 import JobListContent from "../JobListPage/JobListContent";
 
 const SearchPage = () => {
+  const [sortBy, setSortBy] = useState("createdAt");
+
   const [filters, setFilters] = useState({
     salaryRange: [0, 200000000],
     selectedJobType: {
@@ -37,11 +39,13 @@ const SearchPage = () => {
     return params.get("query") || "";
   };
   const getSearchedJobs = async () => {
+    console.log(2);
     const query = searchQuery || getQueryParams2();
+    const newFilter = { ...filters, order: sortBy };
     try {
       setLoading(true);
       let response = null;
-      response = await jobApi.searchJob(page, 11, query, filters);
+      response = await jobApi.searchJob(page, 6, query, newFilter);
 
       setJobs(response.data);
       setTotalJobs(response.pagination.totalJobs);
@@ -53,7 +57,7 @@ const SearchPage = () => {
   };
   useEffect(() => {
     getSearchedJobs();
-  }, [searchQuery, filters]); // Trigger when searchQuery or location.search changes
+  }, [searchQuery, filters, sortBy, page]); // Trigger when searchQuery or location.search changes
 
   useEffect(() => {
     const query = getQueryParams();
@@ -85,7 +89,7 @@ const SearchPage = () => {
       </div>
       <div className="w-full flex gap-10">
         <div className="filter w-1/4 items-center">
-          <Filter />
+          <Filter setSortBy={setSortBy} />
         </div>
         <div className="content w-3/4">
           {searchQuery && (

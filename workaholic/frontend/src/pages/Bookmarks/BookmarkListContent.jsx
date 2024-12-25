@@ -1,9 +1,7 @@
-import React from "react";
 import { JobCard } from "../../components/Job/JobCard";
 import { Pagination, Empty } from "antd";
 
 const BookmarkListContent = ({ jobs, totalJobs, page, setPage }) => {
-  console.log("content", jobs);
   const validJobs = Array.isArray(jobs) ? jobs : [];
 
   const handlePageChange = (newPage) => {
@@ -23,7 +21,7 @@ const BookmarkListContent = ({ jobs, totalJobs, page, setPage }) => {
         )}
       </div>
       <div className="flex justify-center p-4">
-        <Pagination current={page} total={totalJobs} pageSize={9} onChange={handlePageChange} showSizeChanger={false} />
+        <Pagination current={page} total={totalJobs} pageSize={5} onChange={handlePageChange} showSizeChanger={false} />
       </div>
     </div>
   );

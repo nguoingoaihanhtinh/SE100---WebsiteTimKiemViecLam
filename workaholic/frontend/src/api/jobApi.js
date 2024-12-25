@@ -35,7 +35,7 @@ const jobApi = {
       query += `&kw=${keyword}`;
     }
     if (filters) {
-      if (filters.selectedJobType.id) {
+      if (filters?.selectedJobType?.id) {
         query += `&jobType_id=${filters.selectedJobType.id}`;
       }
       if (filters.salaryRange) {
@@ -46,6 +46,9 @@ const jobApi = {
       }
       if (filters.selectedLocation && filters.selectedLocation.latitude && filters.selectedLocation.longitude) {
         query += `&longitude=${filters.selectedLocation.latitude}&lattidue=${filters.selectedLocation.longitude}`;
+      }
+      if (filters.order) {
+        query += `&order=${filters.order}`;
       }
     }
     const response = await request.get(query);
