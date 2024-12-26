@@ -76,7 +76,7 @@ const HomeContent = () => {
     <div className="mt-12 w-full">
       <div className="flex justify-between items-center w-full">
         <header className="font-serif text-4xl font-medium my-4 text-blue-950">Recommended Jobs</header>
-        <Link to={"/category"}>
+        <Link to={"/jobs"}>
           <div className="group flex items-center gap-4 cursor-pointer">
             <p className="font-semibold group-hover:underline transition-all text-primary-color">View all</p>
             <div className="px-2 py-2 rounded-full cursor-pointer group-hover:bg-orange-600 transition-all bg-primary-color text-white">

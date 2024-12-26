@@ -77,7 +77,7 @@ const SearchPage = () => {
     setPage(1);
   };
   const handleCancelClick = () => {
-    navigate("/category"); // Redirect to /category page
+    navigate("/jobs"); // Redirect to /category page
   };
   return (
     <div className="w-full flex flex-col justify-center gap-5 px-20">

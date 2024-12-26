@@ -1,4 +1,4 @@
-import { Rating, User } from "../models/relation.js";
+import { Company, Rating, User } from "../models/relation.js";
 
 export const getRatingsByUserId = async (req, res) => {
   try {
@@ -83,7 +83,15 @@ export const createRating = async (req, res) => {
       Content,
       RatingValue,
     });
+    const ratings = await Rating.findAll({ where: { CompanyId } });
+    const totalRating = ratings.reduce((sum, r) => sum + parseFloat(r.RatingValue), 0);
+    const averageRating = ratings.length > 0 ? totalRating / ratings.length : 0;
 
+    const company = await Company.findByPk(CompanyId);
+    await company.update({
+      rating: averageRating,
+      number_rating: ratings.length,
+    });
     return res.status(201).json({
       message: "Rating created successfully",
       data: newRating,
@@ -108,6 +116,15 @@ export const updateRating = async (req, res) => {
     }
 
     await rating.update({ Content, RatingValue });
+
+    const ratings = await Rating.findAll({ where: { CompanyId: rating.CompanyId } });
+    const totalRating = ratings.reduce((sum, r) => sum + parseFloat(r.RatingValue), 0);
+    const averageRating = ratings.length > 0 ? totalRating / ratings.length : 0;
+    const company = await Company.findByPk(rating.CompanyId);
+    await company.update({
+      rating: averageRating,
+      number_rating: ratings.length,
+    });
     return res.status(200).json({
       message: "Rating updated successfully",
       data: rating,
@@ -131,6 +148,15 @@ export const deleteRating = async (req, res) => {
     }
 
     await rating.destroy();
+    const ratings = await Rating.findAll({ where: { CompanyId: companyId } });
+    const totalRating = ratings.reduce((sum, r) => sum + parseFloat(r.RatingValue), 0);
+    const averageRating = ratings.length > 0 ? totalRating / ratings.length : 0;
+
+    const company = await Company.findByPk(companyId);
+    await company.update({
+      rating: averageRating,
+      number_rating: ratings.length,
+    });
     return res.status(200).json({ message: "Rating deleted successfully" });
   } catch (error) {
     return res.status(500).json({

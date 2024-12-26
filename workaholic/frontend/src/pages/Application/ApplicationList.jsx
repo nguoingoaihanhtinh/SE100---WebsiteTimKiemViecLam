@@ -3,6 +3,7 @@ import { FaUser, FaEnvelope, FaBriefcase, FaPaperPlane, FaChevronDown, FaChevron
 import { useGetUserApplicationQuery, useDeleteApplicationMutation } from "../../redux/rtk/application.service";
 import { useCheckLoginQuery } from "../../redux/rtk/user.service";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const JobApplicationList = () => {
   const [expandedApplication, setExpandedApplication] = useState(null);
@@ -14,13 +15,8 @@ const JobApplicationList = () => {
   console.log("app", applications);
 
   useEffect(() => {
-    if (isLoading) {
-      alert("Loading user status. Please wait.");
-      return;
-    }
-
     if (!loginStatus?.user?.id) {
-      alert("You must be logged in to apply for a job.");
+      toast.error("You must be logged in to apply for a job.");
       window.location.href = "/login"; // Redirect to login page
       return;
     }
@@ -68,11 +64,11 @@ const JobApplicationList = () => {
   const handleDelete = async (id) => {
     try {
       await deleteApplication(id);
-      setDeleteMessage("Application deleted successfully.");
+      toast.success("Application deleted successfully.");
       // Reload the page after successful deletion
       window.location.reload();
     } catch (error) {
-      setDeleteMessage("Error deleting application.");
+      toast.error("Error deleting application.");
       console.error("Error deleting application:", error);
     }
   };

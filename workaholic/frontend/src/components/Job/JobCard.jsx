@@ -7,10 +7,12 @@ import { useCheckLoginQuery } from "../../redux/rtk/user.service";
 import { useNavigate } from "react-router-dom";
 import { useRemoveSaveJobMutation, useSavedJobMutation } from "../../redux/rtk/job.service";
 import { AuthContext } from "../../context/AuthProvider";
+import toast from "react-hot-toast";
 function formatCurrency(amount) {
   return new Intl.NumberFormat("vi-VN").format(amount) + " đ";
 }
 export const JobCard = ({ jobData }) => {
+  console.log("job", jobData);
   const { data: loginStatus, isLoading } = useCheckLoginQuery();
   const userData = loginStatus?.user;
   const navigate = useNavigate();
@@ -21,13 +23,8 @@ export const JobCard = ({ jobData }) => {
   const savedJobsArr = savedJobs?.map((e) => e.job_id) || [];
   const isSaved = savedJobsArr.includes(jobData.id);
   const showForm = () => {
-    if (isLoading) {
-      alert("Loading user status. Please wait.");
-      return;
-    }
-
     if (!loginStatus?.user?.id) {
-      alert("You must be logged in to apply for a job.");
+      toast.error("You must be logged in to apply for a job.");
       window.location.href = "/login"; // Redirect to login page
       return;
     }
@@ -38,10 +35,8 @@ export const JobCard = ({ jobData }) => {
   const closeForm = () => {
     setFormVisible(false);
   };
-  // Function to determine background color based on job type (industry/field)
   const getJobCardBackground = (jobType) => {
     if (!jobType || !jobType.name) {
-      // console.log("Invalid jobType:", jobType); // Logging invalid jobType values
       return "bg-white"; // Return default if jobType or name is missing
     }
 
@@ -67,12 +62,20 @@ export const JobCard = ({ jobData }) => {
   const handleBookmarkClick = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!loginStatus?.user?.id) {
+      toast.error("You must be logged in to bookmark a job.");
+      return;
+    }
+
     if (!isSaved) {
-      saveJob({ job_id: jobData.id });
+      await saveJob({ job_id: jobData.id });
       setSavedJobs((prev) => [...prev, { job_id: jobData.id }]);
+      toast.success("Job bookmarked successfully!");
     } else {
-      removeSaveJob({ job_id: jobData.id });
+      await removeSaveJob({ job_id: jobData.id });
       setSavedJobs((prev) => prev.filter((job) => job.job_id !== jobData.id));
+      toast.success("Job removed from bookmarks!");
     }
   };
   return (
@@ -107,9 +110,9 @@ export const JobCard = ({ jobData }) => {
               <p className="text-lg text-primary-color text-left font-bold">{jobData.title}</p>
               <div className="rating flex justify-between items-center gap-3">
                 <span className="mb-[2px] text-xl">
-                  <Rating className={"text-lg"} rating={jobData.rating} />
+                  <Rating className={"text-lg"} rating={jobData.company.rating} />
                 </span>
-                <h1 className="text-sm text-primary-color"> ( {jobData.number_rating} reviews) </h1>
+                <h1 className="text-sm text-primary-color"> ( {jobData.company.number_rating} reviews) </h1>
               </div>
               <div className="location flex gap-2 text-primary-color items-center text-lg">
                 <FaLocationPin />
