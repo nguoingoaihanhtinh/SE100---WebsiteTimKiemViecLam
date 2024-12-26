@@ -40,7 +40,19 @@ export const getSavedJobs = async (req, res) => {
             {
               model: Company,
               as: "company",
-              attributes: ["id", "name", "feild", "description", "img", "user_id", "address", "longitude", "lattidue"],
+              attributes: [
+                "id",
+                "name",
+                "feild",
+                "description",
+                "img",
+                "user_id",
+                "address",
+                "longitude",
+                "lattidue",
+                "number_rating",
+                "rating",
+              ],
             },
             {
               model: JobType,

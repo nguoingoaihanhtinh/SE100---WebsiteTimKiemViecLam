@@ -57,7 +57,7 @@ const CompanyCarousel = () => {
     { id: 11, name: "Renewable Energy" },
   ];
   return (
-    <div className="company rounded-xl shadow-md mt-10 border mx-20">
+    <div className="company rounded-xl shadow-md mt-10 border ">
       <div className="heading rounded-t-xl bg-blue-800 flex">
         <div className="w-3/5 flex flex-col justify-center gap-5 text-left px-5">
           <p className="text-3xl font-bold text-white">Thương hiệu lớn tiêu biểu</p>
@@ -72,7 +72,7 @@ const CompanyCarousel = () => {
           }}
         ></div>
       </div>
-      <div className="category flex flex-wrap py-5 border-t gap-3 px-5 mx-20 w-full">
+      <div className="category flex flex-wrap py-5 border-t gap-3 px-5 justify-between   w-full">
         {jobTypes.map((type) => (
           <Button
             key={type.id}

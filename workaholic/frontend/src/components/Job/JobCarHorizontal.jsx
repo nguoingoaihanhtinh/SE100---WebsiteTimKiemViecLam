@@ -4,6 +4,7 @@ import { FaBookmark, FaLocationPin, FaUserTie } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { useRemoveSaveJobMutation, useSavedJobMutation } from "../../redux/rtk/job.service";
 import { AuthContext } from "../../context/AuthProvider";
+import toast from "react-hot-toast";
 
 export const JobCardHorizontal = ({ jobData }) => {
   const navigate = useNavigate();
@@ -12,12 +13,16 @@ export const JobCardHorizontal = ({ jobData }) => {
   }
   const [saveJob] = useSavedJobMutation();
   const [removeSaveJob] = useRemoveSaveJobMutation();
-  const { savedJobs, setSavedJobs } = useContext(AuthContext);
+  const { savedJobs, setSavedJobs, loginStatus } = useContext(AuthContext);
   const savedJobsArr = savedJobs?.map((e) => e.job_id) || [];
   const isSaved = savedJobsArr.includes(jobData.id);
   const handleBookmarkClick = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!loginStatus?.user?.id) {
+      toast.error("You must be logged in to bookmark a job.");
+      return;
+    }
     if (!isSaved) {
       saveJob({ job_id: jobData.id });
       setSavedJobs((prev) => [...prev, { job_id: jobData.id }]);

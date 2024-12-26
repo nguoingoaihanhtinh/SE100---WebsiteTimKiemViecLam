@@ -48,11 +48,11 @@ const JobListPage = () => {
 
   return (
     <div className="w-full flex flex-col justify-center gap-5 px-20">
-      <div className="bg-primary-color w-full p-5">
-        <SortBar onFilterChange={handleFilterChange} />
-      </div>
       <div className="banner">
         <JobBanner />
+      </div>
+      <div className="bg-primary-color w-full p-5">
+        <SortBar onFilterChange={handleFilterChange} />
       </div>
       <div className="w-full flex gap-6">
         <div className="filter w-1/4 items-center">

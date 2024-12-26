@@ -66,7 +66,19 @@ export const getAllJobs = async (req, res) => {
         {
           model: Company,
           as: "company",
-          attributes: ["id", "name", "feild", "description", "img", "user_id", "address", "longitude", "lattidue"],
+          attributes: [
+            "id",
+            "name",
+            "feild",
+            "description",
+            "img",
+            "user_id",
+            "address",
+            "longitude",
+            "lattidue",
+            "number_rating",
+            "rating",
+          ],
         },
         {
           model: JobType,
@@ -298,7 +310,7 @@ export const getJobById = async (req, res) => {
         {
           model: Company,
           as: "company", // Alias for company (match with association alias)
-          attributes: ["id", "name", "feild", "description", "img", "user_id", "address"], // Select specific fields from company
+          attributes: ["id", "name", "feild", "description", "img", "user_id", "address", "number_rating", "rating"], // Select specific fields from company
         },
         {
           model: JobType,
@@ -420,7 +432,7 @@ export const searchJob = async (req, res) => {
           model: Company,
           as: "company",
           required: true, // Only include jobs with a valid company
-          attributes: ["name", "img", "longitude", "lattidue"], // Fetch relevant fields
+          attributes: ["name", "img", "longitude", "lattidue", "address", "number_rating", "rating"], // Fetch relevant fields
         },
         {
           model: JobType,

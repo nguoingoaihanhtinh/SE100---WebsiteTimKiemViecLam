@@ -33,7 +33,7 @@ const CompanyRating = ({ companyId }) => {
 
   const handleRatingSubmit = async () => {
     if (!content || !ratingPoint) {
-      toast.error("Content and rating value are required!"); // Show toast if missing
+      toast.error("Content and rating value are required!");
       return;
     }
 
