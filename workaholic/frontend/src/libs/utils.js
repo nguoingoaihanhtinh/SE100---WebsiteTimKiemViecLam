@@ -21,3 +21,8 @@ export function formatDate(dateString) {
     "0"
   )}/${String(month).padStart(2, "0")}/${year}`;
 }
+
+export const stripHtml = (html) => {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  return doc.body.textContent || "";
+};

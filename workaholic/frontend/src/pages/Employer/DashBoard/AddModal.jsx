@@ -7,8 +7,8 @@ import { FaChevronLeft } from "react-icons/fa6";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 
-import { useCreateCompanyMutation, useUpdateCompanyMutation } from "../../../../redux/rtk/company.service";
-import { stripHtml } from "../../../../libs/utils";
+import { useCreateCompanyMutation, useUpdateCompanyMutation } from "../../../redux/rtk/company.service";
+import { stripHtml } from "../../../libs/utils";
 import toast from "react-hot-toast";
 
 const companySchema = z.object({
@@ -24,9 +24,8 @@ const companySchema = z.object({
   user_id: z.coerce.number({ invalid_type_error: "Enter valid number" }).min(1, "User ID is required"),
 });
 
-export default function AddCompanyForm({ onClose, refetch, editCompany }) {
+export default function AddModal({ onClose, refetch, userId }) {
   const [createCompany] = useCreateCompanyMutation();
-  const [updateCompany] = useUpdateCompanyMutation();
   const [text, setText] = useState("");
 
   const initialValues = {
@@ -39,7 +38,7 @@ export default function AddCompanyForm({ onClose, refetch, editCompany }) {
     longitude: 0,
     lattidue: 0,
     address: "",
-    user_id: null,
+    user_id: "",
   };
 
   const {
@@ -57,41 +56,25 @@ export default function AddCompanyForm({ onClose, refetch, editCompany }) {
 
     const payload = { ...data, description: cleanDescription || "Empty" };
 
-    if (editCompany) {
-      const res = await updateCompany({ id: editCompany.id, updatedCompany: payload });
-      if (res) {
-        toast.success("Update company success");
-        refetch();
-        onClose();
-      }
-    } else {
-      const res = await createCompany(payload);
-      if (res) {
-        toast.success("Add company success");
-        refetch();
-        onClose();
-      }
+    const res = await createCompany(payload);
+    if (res) {
+      toast.success("Add company success");
+      refetch();
+      onClose();
     }
   };
-
   useEffect(() => {
-    if (editCompany) {
-      Object.keys(editCompany).forEach((key) => {
-        if (key in initialValues) {
-          setValue(key, editCompany[key]);
-        }
-      });
-      setText(editCompany.description);
+    if (userId) {
+      setValue("user_id", userId);
     }
-  }, [editCompany]);
-
+  }, [userId]);
   return (
     <div className="w-full mx-auto p-4 bg-white rounded-lg shadow-md text-white">
       <div className="flex items-center gap-2 mb-4">
         <div onClick={onClose} className="flex items-center cursor-pointer w-[40px] h-[40px] justify-center">
           <FaChevronLeft />
         </div>
-        <h2 className="text-2xl font-bold">{editCompany ? "Update Company" : "Add Company"}</h2>
+        <h2 className="text-2xl font-bold">{"Add Company"}</h2>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="gap-8 grid grid-cols-2">
         <div>
@@ -167,12 +150,12 @@ export default function AddCompanyForm({ onClose, refetch, editCompany }) {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">User ID</label>
-          <input {...register("user_id")} type="number" className="mt-1 block w-full p-2 border rounded-md" />
+          <div className="mt-1 block w-full p-2 border rounded-md bg-primary-color text-white">{userId}</div>
           {errors.user_id && <span className="text-red-500 text-sm">{errors.user_id.message}</span>}
         </div>
         <div className="col-span-2">
           <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
-            {editCompany ? "Update" : "Submit"}
+            {"Submit"}
           </button>
         </div>
       </form>

@@ -25,6 +25,7 @@ import AdminManageJob from "../pages/Admin/ManageCompany/AdminManageJob";
 import BookmarkPage from "../pages/Bookmarks/BookmarkPage";
 import CompanyListPage from "../pages/CompanyListPage/CompanyListPage";
 import ManageUser from "../pages/Admin/ManageUser/ManageUser";
+import EmployerDashboard from "../pages/Employer/DashBoard/EmployerDashboard";
 
 const Router = () => {
   return (
@@ -46,7 +47,7 @@ const Router = () => {
         </Route>
         <Route path="employer" element={<EmployerLayout />}>
           <Route path="jobs" element={<JobManagementPage />} />
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<EmployerDashboard />} />
           <Route path="joblist" element={<ManageJobs />} />
           <Route path="joblist/:id" element={<ManageApplication />} />
           <Route path="noti" element={<ManageNotification />} />
