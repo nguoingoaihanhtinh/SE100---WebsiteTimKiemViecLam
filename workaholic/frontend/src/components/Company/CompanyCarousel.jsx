@@ -52,9 +52,7 @@ const CompanyCarousel = () => {
     { id: 6, name: "Finance" },
     { id: 7, name: "Environmental Services" },
     { id: 8, name: "Logistics" },
-    { id: 9, name: "Smart Cities" },
-    { id: 10, name: "Media" },
-    { id: 11, name: "Renewable Energy" },
+    { id: 9, name: "Media" },
   ];
   return (
     <div className="company rounded-xl shadow-md mt-10 border ">
@@ -76,13 +74,13 @@ const CompanyCarousel = () => {
         {jobTypes.map((type) => (
           <Button
             key={type.id}
-            className="min-w-[calc(100%/7)] text-[16px]"
+            className="min-w-[calc(100%/6)] text-[16px]"
             onClick={() => handleTypeClick(type.name)} // Pass type name to filter
           >
             {type.name}
           </Button>
         ))}
-        <Button className="min-w-[calc(100%/7)] text-[16px]" onClick={() => handleTypeClick("")}>
+        <Button className="min-w-[calc(100%/6)] text-[16px]" onClick={() => handleTypeClick("")}>
           All
         </Button>
       </div>

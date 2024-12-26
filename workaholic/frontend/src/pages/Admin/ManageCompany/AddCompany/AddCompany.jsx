@@ -51,7 +51,9 @@ export default function AddCompanyForm({ onClose, refetch, editCompany }) {
   });
 
   const onSubmit = async (data) => {
-    const payload = { ...data, description: text || "Empty" };
+    const cleanDescription = stripHtml(text);
+
+    const payload = { ...data, description: cleanDescription || "Empty" };
 
     if (editCompany) {
       const res = await updateCompany({ id: editCompany.id, updatedCompany: payload });
@@ -69,7 +71,10 @@ export default function AddCompanyForm({ onClose, refetch, editCompany }) {
       }
     }
   };
-
+  const stripHtml = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
+  };
   useEffect(() => {
     if (editCompany) {
       Object.keys(editCompany).forEach((key) => {
@@ -133,14 +138,25 @@ export default function AddCompanyForm({ onClose, refetch, editCompany }) {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Longitude</label>
-          <input {...register("longitude")} type="number" className="mt-1 block w-full p-2 border rounded-md" />
+          <input
+            {...register("longitude")}
+            type="number"
+            step="any" // Allows decimal values
+            className="mt-1 block w-full p-2 border rounded-md"
+          />
           {errors.longitude && <span className="text-red-500 text-sm">{errors.longitude.message}</span>}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Latitude</label>
-          <input {...register("lattidue")} type="number" className="mt-1 block w-full p-2 border rounded-md" />
+          <input
+            {...register("lattidue")}
+            type="number"
+            step="any" // Allows decimal values
+            className="mt-1 block w-full p-2 border rounded-md"
+          />
           {errors.lattidue && <span className="text-red-500 text-sm">{errors.lattidue.message}</span>}
         </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700">Address</label>
           <input

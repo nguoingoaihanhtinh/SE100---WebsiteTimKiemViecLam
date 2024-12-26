@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useGetAllCompaniesQuery, useDeleteCompanyMutation } from "../../../redux/rtk/company.service";
 import CompanyTable from "../../../components/Admin/Tables/CompanyTable";
 import AddCompanyForm from "./AddCompany/AddCompany";
+import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
 const ManageCompany = () => {
   const tableHeaders = ["Image", "Name", "Field", "Description", "Rating"];
   const [page, setPage] = useState(1);
+  const [sortOption, setSortOption] = useState("name-asc");
   const {
     data: companiesRes,
     isLoading,
@@ -23,13 +25,37 @@ const ManageCompany = () => {
     setEditCompanyIndex(index);
     setShowAddCompanyForm(!showAddCompanyForm);
   };
+  const sortCompanies = (companies, option) => {
+    switch (option) {
+      case "name-asc":
+        return [...companies].sort((a, b) => a.name.localeCompare(b.name));
+      case "name-desc":
+        return [...companies].sort((a, b) => b.name.localeCompare(a.name));
+      case "rating-asc":
+        return [...companies].sort((a, b) => a.rating - b.rating);
+      case "rating-desc":
+        return [...companies].sort((a, b) => b.rating - a.rating);
+      default:
+        return companies;
+    }
+  };
+
+  const sortedCompanies = sortCompanies(companies, sortOption);
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this company?")) {
       await deleteCompany(id);
     }
   };
-
+  const handleSort = (field) => {
+    setSortOption((prev) => {
+      const [currentField, direction] = prev.split("-");
+      if (currentField === field) {
+        return direction === "asc" ? `${field}-desc` : `${field}-asc`;
+      }
+      return `${field}-asc`;
+    });
+  };
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching companies!</div>;
 
@@ -57,15 +83,36 @@ const ManageCompany = () => {
                   {tableHeaders.map((header) => (
                     <th
                       key={header}
-                      className="px-6 py-3 text-left text-md font-medium text-[#8392a8] uppercase tracking-wider"
+                      className="px-6 py-3 text-left text-md font-medium text-[#8392a8] uppercase tracking-wider cursor-pointer"
+                      onClick={
+                        header === "Name"
+                          ? () => handleSort("name")
+                          : header === "Rating"
+                          ? () => handleSort("rating")
+                          : null
+                      }
                     >
                       {header}
+                      {["Name", "Rating"].includes(header) && (
+                        <>
+                          {sortOption.startsWith(header.toLowerCase()) ? (
+                            sortOption.endsWith("asc") ? (
+                              <FaAngleUp className="ml-2 text-sm inline-block" />
+                            ) : (
+                              <FaAngleDown className="ml-2 text-sm inline-block" />
+                            )
+                          ) : (
+                            // Default state icon
+                            <FaAngleDown className="ml-2 text-sm inline-block opacity-50" />
+                          )}
+                        </>
+                      )}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700">
-                {companies.map((company, index) => (
+                {sortedCompanies.map((company, index) => (
                   <CompanyTable
                     key={index}
                     rowValue={company}
@@ -83,7 +130,7 @@ const ManageCompany = () => {
       {showAddCompanyForm && (
         <AddCompanyForm
           onClose={() => toggleForm()}
-          editCompany={editCompanyIndex !== null ? companies[editCompanyIndex] : null}
+          editCompany={editCompanyIndex !== null ? sortedCompanies[editCompanyIndex] : null}
           refetch={() => setEditCompanyIndex(null)}
         />
       )}

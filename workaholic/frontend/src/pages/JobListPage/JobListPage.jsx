@@ -25,7 +25,7 @@ const JobListPage = () => {
   const getFilteredJobs = async () => {
     try {
       setLoading(true);
-      const response = await jobApi.getAllJobs(page, 10, filters);
+      const response = await jobApi.getAllJobs(page, 9, filters);
       setJobs(response.data);
       setTotalJobs(response.pagination.totalItems);
     } catch (error) {
