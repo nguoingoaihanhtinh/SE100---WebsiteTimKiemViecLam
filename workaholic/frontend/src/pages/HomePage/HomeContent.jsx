@@ -60,7 +60,7 @@ const HomeContent = () => {
   }, []);
   const getAllJobs = async () => {
     try {
-      const response = await jobApi.getAllJobs(page, 4);
+      const response = await jobApi.getAllJobs(page, 9);
       setJobs(response.data);
       setTotal(response.pagination.totalItems);
     } catch (error) {

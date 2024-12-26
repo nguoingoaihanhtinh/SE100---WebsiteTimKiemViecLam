@@ -158,7 +158,7 @@ export const checkUserSession = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: ["id", "user_name", "email", "role"],
+      attributes: ["id", "user_name", "email", "role", "avatar"],
     });
 
     res.status(200).json({
