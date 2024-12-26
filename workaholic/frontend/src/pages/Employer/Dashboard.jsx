@@ -2,16 +2,10 @@ import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { useGetAllJobsQuery } from "../../redux/rtk/job.service";
 import { datas } from "../../consants";
-import TableRow from "../../components/Employer/TableRow"; 
+import TableRow from "../../components/Employer/TableRow";
 
 const DashBoard = () => {
-  const tableHeaders = [
-    "Image",
-    "Name",
-    "field",
-    "description",
-    "rating",
-  ];
+  const tableHeaders = ["Image", "Name", "field", "description", "rating"];
   const [searchQuery, setSearchQuery] = useState("");
   const { data: jobsRes } = useGetAllJobsQuery();
   const jobs = jobsRes?.data || [];
@@ -25,15 +19,15 @@ const DashBoard = () => {
         </div>
 
         {/* BODY */}
-        <div className="overflow-x-auto bg-white rounded-[10px] shadow-lg"> 
+        <div className="overflow-x-auto bg-white rounded-[10px] shadow-lg">
           <table className="min-w-full divide-y divide-gray-700  ">
             <thead>
               <tr>
                 {tableHeaders.map((header, index) => (
                   <th
-                    key={header}    
+                    key={header}
                     className="px-6 py-3 text-left text-md font-medium text-[#8392a8] uppercase 
-                  tracking-wider hover:cursor-pointer" 
+                  tracking-wider hover:cursor-pointer"
                   >
                     <div className="flex flex-row">
                       {header}
@@ -66,10 +60,10 @@ const DashBoard = () => {
             </thead>
 
             <tbody className="divide-y divide-gray-700 ">
-                {datas.map((company,index) => (
-                    <TableRow key={index} rowValue={company} />
-                ))}
-              </tbody>
+              {datas.map((company, index) => (
+                <TableRow key={index} rowValue={company} />
+              ))}
+            </tbody>
           </table>
         </div>
       </div>

@@ -1,12 +1,13 @@
 import { useForm } from "react-hook-form";
-import { z } from 'zod'; // Import Zod
-import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from "zod"; // Import Zod
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateJobMutation, useGetAllJobTypesQuery, useUpdateJobMutation } from "../../redux/rtk/job.service";
 import { Select } from "antd";
 import { useEffect, useState } from "react";
 import { FaChevronLeft } from "react-icons/fa6";
 import ReactQuill from "react-quill-new";
-import 'react-quill-new/dist/quill.snow.css'
+import "react-quill-new/dist/quill.snow.css";
+import toast from "react-hot-toast";
 const jobSchema = z.object({
   title: z.string().min(1, "Title is required"),
   position: z.string().min(1, "Position is required"),
@@ -67,14 +68,14 @@ export default function AddJobForm({ onClose, companyId, refetch, editJob }) {
     if (editJob) {
       const res = await updateJob({ payload, id: editJob.id });
       if (res) {
-        window.alert("Update job success");
+        toast.success("Update job success");
         refetch();
         onClose();
       }
     } else {
       const res = await createJob(payload);
       if (res) {
-        window.alert("Add job success");
+        toast.success("Add job success");
         refetch();
         onClose();
       }

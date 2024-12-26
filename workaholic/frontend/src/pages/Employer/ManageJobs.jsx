@@ -6,6 +6,7 @@ import { useGetCompanyByUserIdQuery } from "../../redux/rtk/company.service";
 import { useNavigate } from "react-router";
 import AddJobForm from "./AddJobForm";
 import { FaRegPenToSquare, FaRegTrashCan } from "react-icons/fa6";
+import toast from "react-hot-toast";
 const formatNumber = (number) => {
   return new Intl.NumberFormat("en-US").format(number);
 };
@@ -33,7 +34,7 @@ const ManageJobs = () => {
   };
   const handleDeleteJobs = async (id) => {
     await deleteJob(id);
-    window.alert("Delete job success");
+    toast.success("Delete job success");
     getJobs();
   };
   useEffect(() => {

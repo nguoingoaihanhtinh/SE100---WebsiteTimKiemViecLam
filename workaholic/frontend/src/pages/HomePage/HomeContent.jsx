@@ -8,6 +8,7 @@ import jobApi from "../../api/jobApi";
 import { Link } from "react-router-dom";
 import { useGetAllCompaniesQuery } from "../../redux/rtk/company.service";
 import CompanyCarousel from "../../components/Company/CompanyCarousel";
+import toast from "react-hot-toast";
 export const fakeCompany = [
   {
     id: 1,
@@ -64,7 +65,7 @@ const HomeContent = () => {
       setJobs(response.data);
       setTotal(response.pagination.totalItems);
     } catch (error) {
-      console.error("Error fetching jobs:", error);
+      toast.error("Error fetching jobs:", error);
     }
   };
 
