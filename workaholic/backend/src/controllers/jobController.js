@@ -3,70 +3,106 @@ import { Op, Sequelize } from "sequelize";
 
 export const getAllJobs = async (req, res) => {
   try {
-    // Extract pagination parameters from query string
-    const { page = 1, limit = 10 } = req.query;
+    // Extract query parameters
+    const {
+      page = 1,
+      limit = 10,
+      kw = "",
+      jobType_id = null,
+      experience = 0,
+      longitude,
+      lattidue, // Assuming you meant latitude
+      salary_from = 0,
+      salary_to = 100000000,
+    } = req.query;
 
-    // Convert page and limit to integers
-    const pageNumber = parseInt(page, 10);
-    const limitNumber = parseInt(limit, 10);
+    const offset = (page - 1) * limit;
+    const whereClause = {};
 
-    // Validate pagination parameters
-    if (isNaN(pageNumber) || isNaN(limitNumber) || pageNumber < 1 || limitNumber < 1) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid pagination parameters. 'page' and 'limit' must be positive integers.",
-      });
+    // Add filters for title (kw)
+    if (kw) {
+      whereClause.title = { [Op.like]: `%${kw}%` };
     }
 
-    // Calculate offset for pagination
-    const offset = (pageNumber - 1) * limitNumber;
+    // Add experience filter
+    if (experience) {
+      whereClause.experience = { [Op.gte]: parseInt(experience, 10) };
+    }
 
-    // Fetch jobs with pagination and include related models
+    // Add jobType_id filter
+    if (jobType_id !== NaN && jobType_id) {
+      whereClause.jobType_id = Number(jobType_id);
+    }
+
+    // Add salary range filter
+    whereClause.salary_from = { [Op.gte]: parseInt(salary_from, 10) };
+    whereClause.salary_to = { [Op.lte]: parseInt(salary_to, 10) };
+
+    // Add location filter using Haversine formula
+    if (longitude && lattidue) {
+      const radiusKm = 60; // 60 km radius
+      const earthRadius = 6371; // Earth's radius in km
+
+      const distanceCondition = Sequelize.literal(`
+        (
+          ${earthRadius} * acos(
+            cos(radians(${lattidue})) * cos(radians(company.lattidue)) *
+            cos(radians(company.longitude) - radians(${longitude})) +
+            sin(radians(${lattidue})) * sin(radians(company.lattidue))
+          )
+        ) <= ${radiusKm}
+      `);
+
+      whereClause[Op.and] = [Sequelize.where(distanceCondition, true)];
+    }
+
+    // Fetch jobs with pagination and filters
     const { rows: jobs, count: totalItems } = await Job.findAndCountAll({
+      where: whereClause,
       offset,
-      limit: limitNumber,
-      order: [["createdAt", "DESC"]], // Order by newest jobs first
+      limit: parseInt(limit, 10),
+      order: [["createdAt", "DESC"]],
       include: [
         {
           model: Company,
-          as: "company", // Alias for company (match with association alias)
-          attributes: ["id", "name", "feild", "description", "img", "user_id", "address"], // Select specific fields from company
+          as: "company",
+          attributes: ["id", "name", "feild", "description", "img", "user_id", "address", "longitude", "lattidue"],
         },
         {
           model: JobType,
-          as: "jobType", // Alias for jobType (match with association alias)
-          attributes: ["id", "name"], // Select specific fields from jobType
+          as: "jobType",
+          attributes: ["id", "name"],
         },
       ],
     });
+
     // Prepare the response with pagination metadata
     res.status(200).json({
       success: true,
       data: jobs,
       pagination: {
         totalItems,
-        currentPage: pageNumber,
-        totalPages: Math.ceil(totalItems / limitNumber),
-        itemsPerPage: limitNumber,
+        currentPage: parseInt(page, 10),
+        totalPages: Math.ceil(totalItems / limit),
+        itemsPerPage: parseInt(limit, 10),
       },
     });
   } catch (error) {
+    console.error("Error fetching all jobs:", error);
     res.status(500).json({
       success: false,
       message: "An error occurred while fetching jobs.",
     });
   }
 };
+
 export const getAllJobsByCompanyId = async (req, res) => {
   try {
-    // Extract pagination parameters from query string
     const { company_id, page = 1, limit = 10, kw = "" } = req.query;
 
-    // Convert page and limit to integers
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
 
-    // Validate pagination parameters
     if (isNaN(pageNumber) || isNaN(limitNumber) || pageNumber < 1 || limitNumber < 1) {
       return res.status(400).json({
         success: false,
@@ -74,9 +110,7 @@ export const getAllJobsByCompanyId = async (req, res) => {
       });
     }
 
-    // Calculate offset for pagination
     const offset = (pageNumber - 1) * limitNumber;
-    // Define the search condition for the keyword
     const searchCondition = kw
       ? {
           [Op.or]: [
@@ -326,8 +360,8 @@ export const searchJob = async (req, res) => {
       lattidue, // Assuming you meant latitude
       salary_from = 0,
       salary_to = 100000000,
+      order = "createdAt",
     } = req.query;
-    console.log("kw:", kw, "id:", jobType_id);
     const offset = (page - 1) * limit;
     const whereClause = {};
 
@@ -367,7 +401,17 @@ export const searchJob = async (req, res) => {
       // Add the distance condition to the query pipeline
       whereClause[Op.and] = [Sequelize.where(distanceCondition, true)];
     }
+    // Parse the order parameter
+    let orderBy = [];
+    if (order) {
+      const isDescending = order.startsWith("-");
+      const fieldName = isDescending ? order.slice(1) : order;
 
+      const validFields = ["createdAt", "title", "salary_from"];
+      if (validFields.includes(fieldName)) {
+        orderBy.push([fieldName, isDescending ? "DESC" : "ASC"]);
+      }
+    }
     // Fetch jobs with pagination
     const jobs = await Job.findAndCountAll({
       where: whereClause,
@@ -387,8 +431,8 @@ export const searchJob = async (req, res) => {
       ],
       limit: parseInt(limit, 10),
       offset: parseInt(offset, 10),
+      order: orderBy.length > 0 ? orderBy : [["createdAt", "ASC"]],
     });
-    console.log(whereClause);
     const totalPages = Math.ceil(jobs.count / limit);
     // Return the jobs and pagination info
     res.json({

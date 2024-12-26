@@ -1,13 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
-import {
-  FaHome,
-  FaSignInAlt,
-  FaFileAlt,
-  FaBriefcase,
-  FaBookmark,
-  FaCog,
-} from "react-icons/fa";
+import { FaHome, FaSignInAlt, FaFileAlt, FaBriefcase, FaBookmark, FaCog } from "react-icons/fa";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -36,10 +29,10 @@ const ProfilePage = () => {
           <div className="w-40 h-40 rounded-full bg-gray-300 overflow-hidden">
             {/* Replace with user image */}
             <img
-            src="/picture/Avatar.jpg" // Replace this with the correct path to your image
-            alt="User Avatar"
-            className="w-full h-full object-cover"
-           />
+              src="/picture/Avatar.jpg" // Replace this with the correct path to your image
+              alt="User Avatar"
+              className="w-full h-full object-cover"
+            />
           </div>
           <p className="text-xl font-semibold mt-4">User Name</p>
           <p className="text-gray-600">user@example.com</p>
@@ -47,8 +40,9 @@ const ProfilePage = () => {
 
         {/* Buttons */}
         <div className="grid grid-cols-2 gap-6 w-64">
-          <button className="bg-purple-500 flex flex-col items-center text-white py-3 rounded-lg shadow-md hover:bg-purple-600"
-            onClick={() => navigate("/cv")} 
+          <button
+            className="bg-purple-500 flex flex-col items-center text-white py-3 rounded-lg shadow-md hover:bg-purple-600"
+            onClick={() => navigate("/cv")}
           >
             <FaFileAlt className="text-yellow-200 mb-1" /> {/* Icon with contrasting color */}
             My CVs
@@ -60,7 +54,10 @@ const ProfilePage = () => {
             <FaBriefcase className="text-yellow-200 mb-1" />
             Applications
           </button>
-          <button className="bg-green-500 flex flex-col items-center text-white py-3 rounded-lg shadow-md hover:bg-green-600">
+          <button
+            onClick={() => navigate("/bookmarked")}
+            className="bg-green-500 flex flex-col items-center text-white py-3 rounded-lg shadow-md hover:bg-green-600"
+          >
             <FaBookmark className="text-yellow-200 mb-1" />
             Bookmarks
           </button>

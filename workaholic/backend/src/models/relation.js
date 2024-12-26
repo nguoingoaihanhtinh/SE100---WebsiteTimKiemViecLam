@@ -5,6 +5,8 @@ import JobType from "./JobTypeModel.js";
 import Application from "./ApplicationModel.js";
 import Company from "./CompanyModel.js";
 import Saved from "./SavedModel.js";
+import CV from "./CVModel.js";
+import Rating from "./RatingModel.js";
 // For user
 User.hasMany(Notification, {
   foreignKey: "user_id", // Links Notification.user_id to User.id
@@ -23,6 +25,15 @@ User.hasMany(Application, {
   as: "applications",
 });
 User.hasOne(Company, { foreignKey: "user_id", as: "Company" });
+User.hasMany(CV, {
+  foreignKey: "user_id", // Links CV.user_id to User.id
+  as: "cvs", // Alias for the relation
+});
+User.hasMany(Rating, {
+  foreignKey: "UserId", // Links Rating.UserId to User.id
+  as: "ratings", // Alias for the relation
+});
+
 // For Noti
 Notification.belongsTo(User, {
   foreignKey: "user_id", // Links Notification.user_id to User.id
@@ -49,7 +60,10 @@ Job.hasMany(Application, {
 // Company
 Company.hasMany(Job, { foreignKey: "company_id", as: "jobs" });
 Company.belongsTo(User, { foreignKey: "user_id", as: "Employer" });
-
+Company.hasMany(Rating, {
+  foreignKey: "CompanyId", // Links Rating.CompanyId to Company.id
+  as: "ratings", // Alias for the relation
+});
 //Application
 Application.belongsTo(User, {
   foreignKey: "user_id",
@@ -69,5 +83,17 @@ Saved.belongsTo(Job, {
   foreignKey: "job_id",
   as: "job",
 });
+CV.belongsTo(User, {
+  foreignKey: "user_id",
+  as: "user",
+});
+Rating.belongsTo(User, {
+  foreignKey: "UserId",
+  as: "user",
+});
+Rating.belongsTo(Company, {
+  foreignKey: "CompanyId",
+  as: "company",
+});
 
-export { User, Notification, Job, JobType, Application, Company, Saved };
+export { User, Notification, Job, JobType, Application, Company, Saved, CV, Rating };

@@ -2,6 +2,7 @@ import { Button, Dropdown, Slider } from "antd";
 import { useEffect, useState } from "react";
 import { FaBriefcase, FaCaretDown, FaMapLocation, FaUserTie } from "react-icons/fa6";
 import jobApi from "../../api/jobApi";
+import { useSearchParams } from "react-router-dom";
 
 const place = [
   { name: "An Giang", latitude: 10.521583, longitude: 105.125897 },
@@ -61,19 +62,23 @@ const place = [
   { name: "Yen Bai", latitude: 21.723866, longitude: 104.911328 },
 ];
 
-const experience = ["graduated", "1 year", "2+ years"];
+const experience = [
+  { label: "Experience", value: 0 },
+  { label: "1 Year+", value: 1 },
+  { label: "2 Year+", value: 2 },
+];
 
 const SortBar = ({ onFilterChange }) => {
   const [salaryRange, setSalaryRange] = useState([0, 100000000]);
+  const [searchParams] = useSearchParams();
   const [selectedJobType, setSelectedJobType] = useState({
-    id: null,
+    id: searchParams.get("jobType_id"),
     name: "",
   });
   const [selectedLocation, setSelectedLocation] = useState({
     name: "Location",
   });
-  const [selectedExperience, setSelectedExperience] = useState("Experience");
-  const [selectedPayment, setSelectedPayment] = useState("Payment");
+  const [selectedExperience, setSelectedExperience] = useState({ label: "Experience", value: 0 });
   const [jobTypes, setJobTypes] = useState([]);
   useEffect(() => {
     if (onFilterChange) {
@@ -106,12 +111,6 @@ const SortBar = ({ onFilterChange }) => {
     setSalaryRange(value); // Update salary range when slider is changed
   };
 
-  const setSelectedItem = (item, label) => {
-    if (label === "Job Type" && item !== selectedJobType) setSelectedJobType(item);
-    if (label === "Experience" && item !== selectedExperience) setSelectedExperience(item);
-    if (label === "Payment" && item !== selectedPayment) setSelectedPayment(item);
-  };
-
   return (
     <div className="flex gap-12 items-center">
       {/* Job Type Dropdown */}
@@ -131,7 +130,7 @@ const SortBar = ({ onFilterChange }) => {
         }}
         trigger={["click"]}
       >
-        <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[18%] border-r-2 pr-4">
+        <Button className="flex items-center gap-2 text-lg min-h-[50px] basis-[18%] border-r-2 pr-4">
           <FaUserTie />
           {selectedJobType.name || "Job Type"} {/* Display blank if no job type selected */}
           <FaCaretDown className="ml-2" />
@@ -148,7 +147,7 @@ const SortBar = ({ onFilterChange }) => {
         }}
         trigger={["click"]}
       >
-        <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[18%] border-r-2 pr-4">
+        <Button className="flex items-center gap-2 text-lg min-h-[50px] basis-[18%] border-r-2 pr-4">
           <FaMapLocation />
           {selectedLocation?.name}
           <FaCaretDown className="ml-2" />
@@ -158,15 +157,15 @@ const SortBar = ({ onFilterChange }) => {
       {/* Experience Dropdown */}
       <Dropdown
         menu={{
-          items: experience.map((item) => ({ label: item, key: item })),
-          onClick: ({ key }) => setSelectedItem(key, "Experience"),
+          items: experience.map((item) => ({ label: item.label, key: JSON.stringify(item) })),
+          onClick: (item) => setSelectedExperience(JSON.parse(item.key)),
         }}
         //  overlay={createMenu(experience, setSelectedItem, 'Experience')}
         trigger={["click"]}
       >
-        <Button className="flex items-center gap-2 text-2xl min-h-[60px] basis-[18%] border-r-2 pr-4">
+        <Button className="flex items-center gap-2 text-lg min-h-[50px] basis-[18%] border-r-2 pr-4">
           <FaBriefcase />
-          {selectedExperience}
+          {selectedExperience.label}
           <FaCaretDown className="ml-2" />
         </Button>
       </Dropdown>
@@ -186,7 +185,7 @@ const SortBar = ({ onFilterChange }) => {
               formatter: (value) => `${value.toLocaleString()} VND`,
             }}
           />
-          <div className="text-gray-400 mt-2">
+          <div className="text-white font-semibold mt-2">
             {salaryRange[0].toLocaleString()} VND - {salaryRange[1].toLocaleString()} VND
           </div>
         </div>

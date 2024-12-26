@@ -2,8 +2,6 @@ import { useState } from "react";
 import { useCreateApplicationMutation } from "../../redux/rtk/application.service";
 
 const JobApplicationForm = ({ JobData, closeForm, user }) => {
-  console.log("job", JobData);
-  console.log("user", user);
   const [formData, setFormData] = useState({
     jobName: JobData.title,
     name: user ? user.user_name : "",

@@ -7,10 +7,14 @@ import jobApi from "../../api/jobApi"; // Assuming you're fetching jobs from thi
 
 const JobListPage = () => {
   const [filters, setFilters] = useState({
-    salaryRange: [0, 1000000],
-    selectedJobType: "", // Default to "All" for job type
+    salaryRange: [0, 200000000],
+    selectedJobType: {
+      id: null,
+      name: "",
+    },
     selectedLocation: "Location",
     selectedExperience: "Experience",
+    selectedPayment: "Payment",
   });
 
   const [jobs, setJobs] = useState([]);
@@ -18,36 +22,27 @@ const JobListPage = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false); // For handling loading state
 
-  // Fetch jobs when filters or page changes
-  const getAllJobs = async () => {
-    setLoading(true);
+  const getFilteredJobs = async () => {
     try {
-      const response = await jobApi.getAllJobs(page, 9, filters.selectedJobType);
+      setLoading(true);
+      const response = await jobApi.getAllJobs(page, 10, filters);
       setJobs(response.data);
       setTotalJobs(response.pagination.totalItems);
     } catch (error) {
       console.error("Error fetching jobs:", error);
     } finally {
-      setLoading(false); // Stop loading after data is fetched
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    getAllJobs();
-    console.log("job", jobs);
-  }, [filters.selectedJobType, page]); // Fetch jobs when filters or page changes
-  // console.log('Selected Job Type:', filters.selectedJobType);
-  // Filter jobs based only on the selected job type
-  const jobTypeFilteredJobs = jobs.filter((job) => {
-    return filters.selectedJobType && filters.selectedJobType !== "" && filters.selectedJobType !== "Job Type"
-      ? job.type === filters.selectedJobType
-      : true;
-  });
+    getFilteredJobs();
+  }, [filters, page]); // Trigger fetch when filters or page changes
 
   const handleFilterChange = (newFilters) => {
     if (JSON.stringify(filters) !== JSON.stringify(newFilters)) {
       setFilters(newFilters);
-      setPage(1);
+      setPage(1); // Reset to the first page on filter change
     }
   };
 
@@ -59,15 +54,15 @@ const JobListPage = () => {
       <div className="banner">
         <JobBanner />
       </div>
-      <div className="w-full flex gap-10">
+      <div className="w-full flex gap-6">
         <div className="filter w-1/4 items-center">
           <Filter />
         </div>
-        <div className="content w-3/4">
+        <div className="content ">
           {loading ? (
             <div>Loading...</div> // Show loading indicator while fetching
           ) : (
-            <JobListContent jobs={jobTypeFilteredJobs} totalJobs={totalJobs} page={page} setPage={setPage} />
+            <JobListContent jobs={jobs} totalJobs={totalJobs} page={page} setPage={setPage} />
           )}
         </div>
       </div>

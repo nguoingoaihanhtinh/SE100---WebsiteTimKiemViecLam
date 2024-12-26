@@ -8,6 +8,8 @@ import Filter from "../../components/filter/Filter";
 import JobListContent from "../JobListPage/JobListContent";
 
 const SearchPage = () => {
+  const [sortBy, setSortBy] = useState("createdAt");
+
   const [filters, setFilters] = useState({
     salaryRange: [0, 200000000],
     selectedJobType: {
@@ -15,7 +17,7 @@ const SearchPage = () => {
       name: "",
     },
     selectedLocation: "Location",
-    selectedExperience: "Experience",
+    selectedExperience: { label: "Experience", value: 0 },
     selectedPayment: "Payment",
   });
 
@@ -37,15 +39,14 @@ const SearchPage = () => {
     return params.get("query") || "";
   };
   const getSearchedJobs = async () => {
+    console.log(2);
     const query = searchQuery || getQueryParams2();
+    const newFilter = { ...filters, order: sortBy };
     try {
       setLoading(true);
       let response = null;
-      if (query !== "" || filters.selectedJobType.id) {
-        response = await jobApi.searchJob(page, 11, query, filters);
-      } else {
-        response = await jobApi.getAllJobs(page, 10);
-      }
+      response = await jobApi.searchJob(page, 6, query, newFilter);
+
       setJobs(response.data);
       setTotalJobs(response.pagination.totalJobs);
     } catch (error) {
@@ -56,7 +57,7 @@ const SearchPage = () => {
   };
   useEffect(() => {
     getSearchedJobs();
-  }, [searchQuery, filters]); // Trigger when searchQuery or location.search changes
+  }, [searchQuery, filters, sortBy, page]); // Trigger when searchQuery or location.search changes
 
   useEffect(() => {
     const query = getQueryParams();
@@ -65,7 +66,7 @@ const SearchPage = () => {
       setSearchQuery(query2);
     }
     if (query) {
-      setFilters((prev) => ({ ...prev, selectedJobType: { id: query } })); // Update searchQuery with the value from the URL
+      setFilters((prev) => ({ ...prev, selectedJobType: { id: query } }));
     } else {
       setFilters(null);
     }
@@ -80,15 +81,15 @@ const SearchPage = () => {
   };
   return (
     <div className="w-full flex flex-col justify-center gap-5 px-20">
-      <div className="bg-primary-color w-full p-5">
-        <SortBar onFilterChange={handleFilterChange} />
-      </div>
       <div className="banner">
         <Banner />
       </div>
+      <div className="bg-primary-color w-full p-3 rounded-[12px]">
+        <SortBar onFilterChange={handleFilterChange} />
+      </div>
       <div className="w-full flex gap-10">
         <div className="filter w-1/4 items-center">
-          <Filter />
+          <Filter setSortBy={setSortBy} />
         </div>
         <div className="content w-3/4">
           {searchQuery && (
