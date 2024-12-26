@@ -64,4 +64,17 @@ const Router = () => {
     </Routes>
   );
 };
+const AppRouter = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<AdminDashboard />} />
+          {/* Các route khác */}
+        </Route>
+        {/* Các route khác */}
+      </Routes>
+    </Router>
+  );
+};
 export default Router;

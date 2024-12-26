@@ -1,78 +1,97 @@
-import { useState } from "react";
-
-import { useGetAllJobsQuery } from "../../../redux/rtk/job.service";
+import React from "react";
+import { Box, Grid, Typography, useTheme } from "@mui/material";
+import { tokens } from "../../../theme";
+import StatBox from "../../../components/Admin/Charts/StatBox";
+import LineChart from "../../../components/Admin/Charts/LineChart";
+import BarChart from "../../../components/Admin/Charts/BarChart";
+import { useGetAllUsersQuery } from "../../../redux/rtk/user.service";
 import { useGetAllCompaniesQuery } from "../../../redux/rtk/company.service";
-import CompanyTable from "../../../components/Admin/Tables/CompanyTable";
 
 const AdminDashBoard = () => {
-  const tableHeaders = ["Image", "Name", "field", "description", "rating"];
-  const [searchQuery, setSearchQuery] = useState("");
-  const { data: jobsRes } = useGetAllJobsQuery();
-  const { data: companiesRes, isLoading, isError } = useGetAllCompaniesQuery();
-  const companies = companiesRes?.companies || [];
-  console.log("coma", companies);
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error fetching companies!</div>;
-  const jobs = jobsRes?.data || [];
-  if (!jobs) return <></>;
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
+  // Fetch data from Redux RTK
+  const { data: usersData, isLoading: isLoadingUsers } = useGetAllUsersQuery();
+  const { data: companiesData, isLoading: isLoadingCompanies } = useGetAllCompaniesQuery();
+
+  // Calculate metrics
+  const totalUsers = usersData?.length || 0;
+  const totalCompanies = companiesData?.companies?.length || 0;
+  const activeJobs = companiesData?.companies
+    ?.reduce((acc, company) => acc + (company.activeJobs || 0), 0) || 0;
+  const applicationSuccessRate = ((activeJobs / totalUsers) * 100).toFixed(2) || 0;
+
+  if (isLoadingUsers || isLoadingCompanies) {
+    return <Typography>Loading...</Typography>;
+  }
+
   return (
-    <div className="min-h-screen bg-gray-100 p-8 text-black">
-      <div className="max-w-7xl mx-auto">
-        {/* HEADER */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">DASH BOARD</h1>
-        </div>
+    <Box p={2}>
+      <Typography variant="h4" fontWeight="bold" color={colors.gray[100]}>
+        Admin Dashboard
+      </Typography>
 
-        {/* BODY */}
-        <div className="overflow-x-auto bg-white rounded-[10px] shadow-lg">
-          <table className="min-w-full divide-y divide-gray-700  ">
-            <thead>
-              <tr>
-                {tableHeaders.map((header, index) => (
-                  <th
-                    key={header}
-                    className="px-6 py-3 text-left text-md font-medium text-[#8392a8] uppercase 
-                  tracking-wider hover:cursor-pointer"
-                  >
-                    <div className="flex flex-row">
-                      {header}
-                      {/* {header != "Actions" && (
-                        <div className="flex flex-col gap-y-[6px] mt-1">
-                          <i
-                            className={`ml-2 fa-solid fa-caret-up fa-xs ${
-                              currentCategorySorted &&
-                              currentCategorySorted[0] == header &&
-                              currentCategorySorted[1] == 0 &&
-                              "text-gray-600 fa-sm opacity-80"
-                            } 
-                           `}
-                          />
-                          <i
-                            className={`ml-2 fa-solid fa-caret-down fa-xs ${
-                              currentCategorySorted &&
-                              currentCategorySorted[0] == header &&
-                              currentCategorySorted[1] == 1 &&
-                              "text-gray-600 fa-sm"
-                            } 
-                           `}
-                          />
-                        </div>
-                      )} */}
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
+      {/* Metrics Grid */}
+      <Grid container spacing={3} mt={2}>
+        <Grid item xs={12} md={6} lg={3}>
+          <StatBox
+            title={totalUsers.toString()}
+            subtitle="Total Users"
+            progress={0.8}
+            increase="+10%"
+            icon={<i className="fa fa-users text-green-500" />}
+          />
+        </Grid>
+        <Grid item xs={12} md={6} lg={3}>
+          <StatBox
+            title={totalCompanies.toString()}
+            subtitle="Verified Companies"
+            progress={0.6}
+            increase="+15%"
+            icon={<i className="fa fa-building text-blue-500" />}
+          />
+        </Grid>
+        <Grid item xs={12} md={6} lg={3}>
+          <StatBox
+            title={activeJobs.toString()}
+            subtitle="Active Jobs"
+            progress={0.7}
+            increase="+20%"
+            icon={<i className="fa fa-briefcase text-yellow-500" />}
+          />
+        </Grid>
+        <Grid item xs={12} md={6} lg={3}>
+          <StatBox
+            title={`${applicationSuccessRate}%`}
+            subtitle="Application Success"
+            progress={0.9}
+            increase="+25%"
+            icon={<i className="fa fa-chart-line text-red-500" />}
+          />
+        </Grid>
+      </Grid>
 
-            <tbody className="divide-y divide-gray-700 ">
-              {companies.map((company, index) => (
-                <CompanyTable key={index} rowValue={company} />
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+      {/* Charts */}
+      <Grid container spacing={3} mt={4}>
+        <Grid item xs={12} lg={8}>
+          <Box height="400px" bgcolor={colors.primary[400]} p={2} borderRadius="8px">
+            <Typography variant="h6" color={colors.gray[100]}>
+              User Growth
+            </Typography>
+            <LineChart isDashboard={true} />
+          </Box>
+        </Grid>
+        <Grid item xs={12} lg={4}>
+          <Box height="400px" bgcolor={colors.primary[400]} p={2} borderRadius="8px">
+            <Typography variant="h6" color={colors.gray[100]}>
+              Company Growth
+            </Typography>
+            <BarChart isDashboard={true} />
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 
