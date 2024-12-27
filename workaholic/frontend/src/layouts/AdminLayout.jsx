@@ -4,7 +4,7 @@ import { FiHome, FiUsers, FiMenu, FiX } from "react-icons/fi";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../redux/rtk/user.service";
 
-const EmployerLayout = () => {
+const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [logout] = useLogoutMutation();
   const navigate = useNavigate();
@@ -74,4 +74,4 @@ const EmployerLayout = () => {
   );
 };
 
-export default EmployerLayout;
+export default AdminLayout;

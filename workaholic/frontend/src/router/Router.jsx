@@ -26,6 +26,8 @@ import BookmarkPage from "../pages/Bookmarks/BookmarkPage";
 import CompanyListPage from "../pages/CompanyListPage/CompanyListPage";
 import ManageUser from "../pages/Admin/ManageUser/ManageUser";
 import EmployerDashboard from "../pages/Employer/DashBoard/EmployerDashboard";
+import CV from "../components/CVs/CV";
+import CVPage from "../components/CVs/CVPage";
 
 const Router = () => {
   return (
@@ -44,6 +46,7 @@ const Router = () => {
           <Route path="noti" element={<NotificationPage />} />
           <Route path="company/:id" element={<Company />} />
           <Route path="bookmarked" element={<BookmarkPage />} />
+          <Route path="cvs" element={<CV />} />
         </Route>
         <Route path="employer" element={<EmployerLayout />}>
           <Route path="jobs" element={<JobManagementPage />} />
