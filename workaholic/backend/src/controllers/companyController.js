@@ -4,20 +4,23 @@ import { Company, User } from "../models/relation.js";
 
 export const getAllCompanies = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1; // Default page 1 if not provided
-    const limit = parseInt(req.query.limit) || 10; // Default limit 10 if not provided
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const type = req.query.type || null;
 
-    // Calculate the offset for pagination
     const offset = (page - 1) * limit;
+    const whereCondition = type ? { feild: type } : {};
+    //Loi chinh ta feild
 
-    // Get the companies with pagination
     const companies = await Company.findAll({
+      where: whereCondition,
       limit: limit,
       offset: offset,
     });
 
-    // Get the total count of companies for pagination purposes
-    const totalCompanies = await Company.count();
+    const totalCompanies = await Company.count({
+      where: whereCondition,
+    });
 
     res.json({
       currentPage: page,
@@ -117,6 +120,95 @@ export const getCompanyByUserId = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "An error occurred while fetching the company.",
+    });
+  }
+};
+
+export const createCompany = async (req, res) => {
+  try {
+    const { img, name, feild, description, rating, number_rating, longitude, lattidue, address, user_id } = req.body;
+
+    const newCompany = await Company.create({
+      img,
+      name,
+      feild,
+      description,
+      rating,
+      number_rating,
+      longitude,
+      lattidue,
+      address,
+      user_id,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Company created successfully.",
+      data: newCompany,
+    });
+  } catch (error) {
+    console.error("Error creating company:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while creating the company.",
+    });
+  }
+};
+
+export const updateCompany = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    const company = await Company.findByPk(id);
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found.",
+      });
+    }
+
+    const updatedCompany = await company.update(updates);
+
+    res.status(200).json({
+      success: true,
+      message: "Company updated successfully.",
+      data: updatedCompany,
+    });
+  } catch (error) {
+    console.error("Error updating company:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while updating the company.",
+    });
+  }
+};
+
+export const deleteCompany = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const company = await Company.findByPk(id);
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found.",
+      });
+    }
+
+    await company.destroy();
+
+    res.status(200).json({
+      success: true,
+      message: "Company deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Error deleting company:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while deleting the company.",
     });
   }
 };

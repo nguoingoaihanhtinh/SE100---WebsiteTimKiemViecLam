@@ -2,16 +2,15 @@ import { JobCard } from "../../components/Job/JobCard";
 import { Pagination } from "antd";
 
 const JobListContent = ({ jobs, totalJobs, page, setPage }) => {
-  console.log('content',jobs)
   const validJobs = Array.isArray(jobs) ? jobs : [];
 
   const handlePageChange = (newPage) => {
-    setPage(newPage); // This will update the page number in SearchPage component
+    setPage(newPage);
   };
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-3 gap-18">
+      <div className="grid grid-cols-3 gap-4">
         {validJobs.length === 0 ? (
           <div>No jobs found based on the selected filters</div>
         ) : (
@@ -19,7 +18,7 @@ const JobListContent = ({ jobs, totalJobs, page, setPage }) => {
         )}
       </div>
       <div className="flex justify-center p-2">
-        <Pagination current={page} total={totalJobs} pageSize={9} onChange={handlePageChange} />
+        <Pagination current={page} total={totalJobs} pageSize={6} onChange={handlePageChange} />
       </div>
     </div>
   );

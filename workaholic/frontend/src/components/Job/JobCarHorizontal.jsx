@@ -1,24 +1,35 @@
-import React, { useState } from "react";
+import { useContext } from "react";
 import { FaBookmark, FaLocationPin, FaUserTie } from "react-icons/fa6";
-import { Button } from "antd";
-import Rating from "../Rating/Rating";
+
 import { useNavigate } from "react-router-dom";
+import { useRemoveSaveJobMutation, useSavedJobMutation } from "../../redux/rtk/job.service";
+import { AuthContext } from "../../context/AuthProvider";
+import toast from "react-hot-toast";
 
 export const JobCardHorizontal = ({ jobData }) => {
   const navigate = useNavigate();
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  // console.log('data',jobData);
-  // Format the currency to include commas
   function formatCurrency(amount) {
     return amount.toLocaleString().replace(/\./g, ",");
   }
-
-  // handleCardClick = ({}) => {
-  //   navigate(`/${jobData.id}`)
-  // };
-
-  const handleBookmarkClick = () => {
-    setIsBookmarked(!isBookmarked);
+  const [saveJob] = useSavedJobMutation();
+  const [removeSaveJob] = useRemoveSaveJobMutation();
+  const { savedJobs, setSavedJobs, loginStatus } = useContext(AuthContext);
+  const savedJobsArr = savedJobs?.map((e) => e.job_id) || [];
+  const isSaved = savedJobsArr.includes(jobData.id);
+  const handleBookmarkClick = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!loginStatus?.user?.id) {
+      toast.error("You must be logged in to bookmark a job.");
+      return;
+    }
+    if (!isSaved) {
+      saveJob({ job_id: jobData.id });
+      setSavedJobs((prev) => [...prev, { job_id: jobData.id }]);
+    } else {
+      removeSaveJob({ job_id: jobData.id });
+      setSavedJobs((prev) => prev.filter((job) => job.job_id !== jobData.id));
+    }
   };
 
   return (
@@ -37,7 +48,7 @@ export const JobCardHorizontal = ({ jobData }) => {
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold text-primary-color">{jobData.title}</h2>
           <div
-            className={`cursor-pointer bg-white p-2 rounded-full ${isBookmarked ? "text-yellow-500" : "text-gray-400"}`}
+            className={`cursor-pointer bg-white p-2 rounded-full ${isSaved ? "text-yellow-500" : "text-gray-400"}`}
             onClick={handleBookmarkClick}
           >
             <FaBookmark />

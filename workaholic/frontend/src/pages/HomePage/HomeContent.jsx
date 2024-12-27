@@ -7,6 +7,8 @@ import SmallBanner from "./SmallBanner";
 import jobApi from "../../api/jobApi";
 import { Link } from "react-router-dom";
 import { useGetAllCompaniesQuery } from "../../redux/rtk/company.service";
+import CompanyCarousel from "../../components/Company/CompanyCarousel";
+import toast from "react-hot-toast";
 export const fakeCompany = [
   {
     id: 1,
@@ -50,8 +52,6 @@ const HomeContent = () => {
   const [total, setTotal] = useState(4);
   const [page, setPage] = useState(1);
 
-  const { data: companyData = [] } = useGetAllCompaniesQuery();
-  const companies = companyData.companies || [];
   const getAllJobType = async () => {
     const response = await jobApi.getAllJobTypes();
     setJobTypes(response.data);
@@ -61,11 +61,11 @@ const HomeContent = () => {
   }, []);
   const getAllJobs = async () => {
     try {
-      const response = await jobApi.getAllJobs(page, 4);
+      const response = await jobApi.getAllJobs(page, 9);
       setJobs(response.data);
       setTotal(response.pagination.totalItems);
     } catch (error) {
-      console.error("Error fetching jobs:", error);
+      toast.error("Error fetching jobs:", error);
     }
   };
 
@@ -77,7 +77,7 @@ const HomeContent = () => {
     <div className="mt-12 w-full">
       <div className="flex justify-between items-center w-full">
         <header className="font-serif text-4xl font-medium my-4 text-blue-950">Recommended Jobs</header>
-        <Link to={"/category"}>
+        <Link to={"/jobs"}>
           <div className="group flex items-center gap-4 cursor-pointer">
             <p className="font-semibold group-hover:underline transition-all text-primary-color">View all</p>
             <div className="px-2 py-2 rounded-full cursor-pointer group-hover:bg-orange-600 transition-all bg-primary-color text-white">
@@ -93,39 +93,8 @@ const HomeContent = () => {
           <p>No jobs available</p>
         )}
       </div>
-      <div className="company rounded-xl shadow-md mt-10 border">
-        <div className="heading rounded-t-xl bg-sky-400 flex">
-          <div className="w-3/5 flex flex-col justify-center gap-5 text-left px-5">
-            <p className="text-3xl font-bold text-primary">Thương hiệu lớn tiêu biểu</p>
-            <p className="text-primary-color font-semibold">
-              Những thương hiệu tuyển dụng đã khẳng định được vị thế trên thị trường.
-            </p>
-          </div>
-          <div
-            className="w-2/5 bg-cover bg-center bg-no-repeat h-[140px] p-2"
-            style={{
-              backgroundImage: `url(https://media.tapchitaichinh.vn/w1480/images/upload/hoangthuviet/07292019/0_10-thuong-hieu-dan-dau-viet-nam-dat-gia-tri-gan-7.jpg)`,
-            }}
-          ></div>
-        </div>
-        <div className="category flex justify-between px-14 py-5 border-t gap-1">
-          <Button className="min-w-35 text-lg">All</Button>
-          {jobTypes.map((type) => (
-            <Button key={type.id} className="min-w-35 text-lg">
-              {type.name}
-            </Button>
-          ))}
-        </div>
-        <div className="companyCard grid grid-cols-3 gap-5 px-5">
-          {companies.map((company) => (
-            <CompanyCardHorizontal key={company.id} companyData={company} />
-          ))}
-        </div>
-        <Button className="bg-sky-800 text-white font-bold text-xl h-[46px] rounded-l-2xl rounded-r-2xl p-5 m-5">
-          Tìm hiểu thêm về các công ty
-        </Button>
-      </div>
-      <div className="suitable">
+      <CompanyCarousel />
+      <div className="suitable mt-8">
         <div className="flex justify-between items-center w-full">
           <header className="font-serif text-4xl font-medium my-4 text-blue-950">Suitable for you!</header>
           <div className="group flex items-center gap-4 cursor-pointer">

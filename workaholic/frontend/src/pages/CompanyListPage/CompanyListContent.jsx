@@ -1,6 +1,7 @@
-import React from 'react';
-import { CompanyCardHorizontal } from '../../components/Company/CompanyCardHorizontal';
-import { Pagination, Empty } from 'antd';
+import React from "react";
+import { CompanyCardHorizontal } from "../../components/Company/CompanyCardHorizontal";
+import { Pagination, Empty } from "antd";
+import { CompanyCard } from "../../components/Company/CompanyCard";
 
 const CompanyListContent = ({ companies, totalCompanies, page, setPage }) => {
   const validCompanies = Array.isArray(companies) ? companies : [];
@@ -12,28 +13,23 @@ const CompanyListContent = ({ companies, totalCompanies, page, setPage }) => {
   return (
     <div className="w-full">
       <div className="mb-4">
-        <h2 className="text-2xl font-bold text-primary-color">
-          Found {totalCompanies} Companies
-        </h2>
+        <h2 className="text-2xl font-bold text-primary-color">Found {totalCompanies} Companies</h2>
       </div>
       <div className="grid grid-cols-3 gap-6">
         {validCompanies.length === 0 ? (
-          <Empty 
-            description="No companies match your filters" 
-            className="col-span-3"
-          />
+          <Empty description="No companies match your filters" className="col-span-3" />
         ) : (
           validCompanies.map((company) => (
-            <CompanyCardHorizontal 
-              key={company.id} 
+            <CompanyCard
+              key={company.id}
               companyData={{
                 ...company,
                 stats: {
                   openJobs: company.jobs?.length || 0,
                   employees: company.employeeCount,
-                  rating: company.rating
-                }
-              }} 
+                  rating: company.rating,
+                },
+              }}
             />
           ))
         )}
