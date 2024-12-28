@@ -32,7 +32,7 @@ const Router = () => {
     <Routes>
       <Route>
         <Route path="*" element={<UserLayout />}>
-          <Route index element={<CompanyDetailPage />} />
+          <Route index element={<CvPage />} />
           <Route path="jobs" element={<JobListPage />} />
           <Route path="search" element={<SearchPage />} />
           <Route path="jobs/:id" element={<JobDetailPage />} />
