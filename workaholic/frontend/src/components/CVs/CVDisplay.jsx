@@ -1,43 +1,77 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../../context/AuthProvider";
 
 const CVDisplay = ({ data }) => {
+  console.log("dataDisplay", data);
+  const { userData } = useContext(AuthContext);
+  if (!userData) {
+    return <div>Loading...</div>; // or some other loading indicator
+  }
   return (
-    <div
-      className="relative w-full h-screen bg-contain bg-no-repeat bg-center"
-      style={{ backgroundImage: "url('/picture/Simple Professional CV Resume.png')" }}
-    >
-      {/* Personal Information Section */}
-      <p className="absolute top-[28%] text-xl left-[55%] font-bold transform -translate-x-1/2 -translate-y-[200px] text-gray-800">
-        {data?.title || "Full Name"}
-      </p>
-      <p className="absolute top-[28%] left-[57%] w-[20%] transform -translate-x-1/2 -translate-y-[150px] text-gray-800 border-b border-gray-700">
-        {data?.summary || "Job Title"}
-      </p>
+    <div className="flex w-full h-screen bg-gray-100 p-4">
+      {/* First Part: Avatar, Contact Info, and Skills */}
+      <div className="w-1/3 bg-white shadow-lg rounded-lg p-4 flex flex-col items-center">
+        {/* Avatar */}
+        <div className="w-32 h-32 rounded-full bg-gray-300 overflow-hidden mb-4">
+          {data?.avatar ? (
+            <img src={userData.avatar} alt="Avatar" className="w-full h-full object-cover" />
+          ) : (
+            <p className="flex items-center justify-center h-full text-gray-500">Avatar</p>
+          )}
+        </div>
 
-      {/* Education Section */}
-      <div className="absolute top-[20%] left-[47%] transform p-2 bg-transparent border border-gray-700 text-gray-800 w-[20%] h-28 overflow-auto">
-        {data?.education?.map((edu, index) => <p key={index}>{`${edu.degree} - ${edu.institution}`}</p>) || "Education"}
+        {/* Contact Information */}
+        <div className="text-gray-800 mb-4">
+          <p className="mb-2 font-semibold">Email: {userData.email || "example@example.com"}</p>
+          <p className="mb-2 font-semibold">Phone: {data?.contact?.phone || "(123) 456-7890"}</p>
+        </div>
+
+        {/* Skills */}
+        <div className="w-full">
+          <h2 className="text-lg font-bold mb-2 text-gray-800">Skills</h2>
+          <ul className="list-disc pl-4 text-gray-700">
+            {data?.skills?.length > 0
+              ? data.skills.map((skill, index) => <li key={index}>{skill}</li>)
+              : "No skills added"}
+          </ul>
+        </div>
       </div>
 
-      {/* Contact Information */}
-      <p className="absolute text-sm top-[45.5%] left-[41%] w-[10%] transform -translate-x-1/2 -translate-y-[100px] text-gray-800 border-b border-gray-700">
-        {data?.contact?.email || "Email"}
-      </p>
-      <p className="absolute text-sm top-[37.5%] left-[41%] w-[10%] transform -translate-x-1/2 -translate-y-[50px] text-gray-800 border-b border-gray-700">
-        {data?.contact?.phone || "Phone"}
-      </p>
+      {/* Second Part: Name, Title, Introduction, Education, and Experience */}
+      <div className="w-2/3 bg-white shadow-lg rounded-lg p-4 ml-4">
+        {/* Name and Title */}
+        <div className="mb-4">
+          <h1 className="text-3xl font-bold text-gray-800">{userData?.user_name || "Full Name"}</h1>
+          <h2 className="text-xl text-gray-600">{data?.title || "Job Title"}</h2>
+        </div>
 
-      {/* Work Experience Section */}
-      <div className="absolute top-1/2 left-[35%] transform p-2 bg-transparent border border-gray-700 text-gray-800 w-[10%] h-36 overflow-auto">
-        {data?.experience?.map((exp, index) => (
-          <p key={index}>{`${exp.position} at ${exp.company} (${exp.start_date} - ${exp.end_date})`}</p>
-        )) || "Work Experience"}
-      </div>
+        {/* Introduction */}
+        <div className="mb-4">
+          <h2 className="text-lg font-bold text-gray-800">Introduction</h2>
+          <p className="text-gray-700">{data?.summary || "A brief introduction about yourself."}</p>
+        </div>
 
-      {/* Certifications Section */}
-      <div className="absolute top-[69%] left-[35%] transform p-2 bg-transparent border border-gray-700 text-gray-800 w-[10%] h-36 overflow-auto">
-        {data?.certifications?.map((cert, index) => <p key={index}>{`${cert.name} - ${cert.date_obtained}`}</p>) ||
-          "Certifications"}
+        {/* Education */}
+        <div className="mb-4">
+          <h2 className="text-lg font-bold text-gray-800">Education</h2>
+          <ul className="list-disc pl-4 text-gray-700">
+            {data?.education?.length > 0
+              ? data.education.map((edu, index) => <li key={index}>{`${edu.degree} at ${edu.institution}`}</li>)
+              : "No education details provided."}
+          </ul>
+        </div>
+
+        {/* Work Experience */}
+        <div className="mb-4">
+          <h2 className="text-lg font-bold text-gray-800">Work Experience</h2>
+          <ul className="list-disc pl-4 text-gray-700">
+            {data?.experience?.length > 0
+              ? data.experience.map((exp, index) => (
+                  <li key={index}>{`${exp.position} at ${exp.company} (${exp.start_date} - ${exp.end_date})`}</li>
+                ))
+              : "No work experience added."}
+          </ul>
+        </div>
       </div>
     </div>
   );
