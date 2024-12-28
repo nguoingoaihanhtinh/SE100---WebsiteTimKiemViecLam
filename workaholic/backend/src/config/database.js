@@ -3,10 +3,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const sequelize = new Sequelize('TimKiemViecLamDB', 'root', 'ArandomPassword5@', {
-  host: 'localhost',  // hoặc 'localhost:33060' nếu MySQL của bạn sử dụng cổng này
-  dialect: 'mysql',
-  logging: false, 
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+
+  host: process.env.DB_HOST,
+  
+  dialect: "mysql",
+  logging: false, // Optional: Enable logging for debugging
   pool: {
     max: 5,
     min: 0,
@@ -15,18 +17,16 @@ const sequelize = new Sequelize('TimKiemViecLamDB', 'root', 'ArandomPassword5@',
   },
 });
 
-async function syncDatabase() {
-  try {
-    await sequelize.authenticate();
-    console.log("Connected to MySQL Database");
-
-    await sequelize.sync({ force: false });  // `force: false` sẽ không xóa bảng hiện tại nếu đã tồn tại
-    console.log("Database synced");
-  } catch (err) {
-    console.error("Unable to connect to the database:", err);
-  }
+try {
+  await sequelize.authenticate();
+  console.log("Connected to MySQL Database");
+} catch (err) {
+  console.error("Unable to connect to the database:", err);
 }
 
-syncDatabase();
+sequelize
+  .sync()
+  .then(() => console.log("Database synced"))
+  .catch((err) => console.error("Error syncing database:", err));
 
 export default sequelize;

@@ -35,12 +35,10 @@ const CvContent= () => {
         {/* Tab Content */}
         <div className="mt-6">
           {activeTab === "myCV" && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-             
-            </div>
+              <CVForm  viewOnly={true}/>
           )}
           {activeTab === "upload" && (
-            <CVForm/>
+            <CVForm  viewOnly={false}/>
           )}
         </div>
       </div>

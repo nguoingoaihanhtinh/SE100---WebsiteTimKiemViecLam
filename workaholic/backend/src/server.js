@@ -33,8 +33,8 @@ routes(server);
 
 const PORT = process.env.PORT || 5000;
 console.log("port", process.env.PORT);
-server.listen(process.env.PORT, () => {
-  console.log(`App listening at http://localhost:${process.env.PORT}`);
+server.listen(PORT, () => {
+  console.log(`App listening at http://localhost:${PORT}`);
 
   // Open Swagger UI in the browser automatically
   //open("http://localhost:5000/api-docs");

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaPlus, FaSave, FaTrash } from "react-icons/fa";
 import axios from 'axios';
 
-const CVForm = () => {
+const CVForm = ({ viewOnly = false }) => {
   const [cvData, setCvData] = useState({
     title: "Software Developer CV",
     summary: "Experienced software developer specializing in backend development.",
@@ -32,13 +32,19 @@ const CVForm = () => {
     ]
   });
 
+  const [cvExists, setCvExists] = useState(false); // Check if CV exists
+  const userId = 1;
+
   useEffect(() => {
     // Fetch the CV if it exists for the user
     const fetchCV = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/v1/cv/"1"`);
+        const response = await axios.get(`http://localhost:5000/api/v1/cv/${userId}`);
         if (response.data) {
           setCvData(response.data); // Populate the form with existing data
+          setCvExists(true); // Mark that CV exists
+        } else {
+          setCvExists(false); // No CV found
         }
       } catch (error) {
         console.error('Error fetching CV:', error);
@@ -46,8 +52,21 @@ const CVForm = () => {
     };
 
     fetchCV();
-  }, [1]); // Re-fetch when userId changes
+  }, [userId]);
 
+  const handleDeleteCV = async () => {
+    if (cvData && cvData._id) {
+      try {
+        await axios.delete(`http://localhost:5000/api/v1/cv/${cvData._id}`);
+        setCvData(null); // Clear the CV data
+        setCvExists(false); // Mark that CV doesn't exist anymore
+        alert("CV deleted successfully!");
+      } catch (error) {
+        console.error('Error deleting CV:', error);
+        alert("Failed to delete CV. Please try again.");
+      }
+    }
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCvData({ ...cvData, [name]: value });
@@ -71,8 +90,6 @@ const CVForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Validate required fields
     const requiredFields = ["title", "skills"];
     let isValid = true;
     let errors = [];
@@ -92,10 +109,9 @@ const CVForm = () => {
       return;
     }
 
-    // Submit the CV data (either create or update)
     const submitCV = async () => {
       try {
-        const method = cvData._id ? "put" : "post"; // If _id exists, update, else create
+        const method = cvData._id ? "put" : "post";
         const url = cvData._id
           ? `http://localhost:5000/api/v1/cv/${cvData._id}`
           : "http://localhost:5000/api/v1/cv";
@@ -110,7 +126,161 @@ const CVForm = () => {
 
     submitCV();
   };
-  
+
+  if (viewOnly) {
+    return (
+      <div className="p-6 bg-gray-50 rounded-lg shadow-lg max-w-4xl mx-auto">
+  {cvExists ? (
+    <>
+      {/* Display CV content if CV exists */}
+      <h2 className="text-3xl font-semibold text-blue-500 mb-6 border-b-2 border-blue-200 pb-3">Your CV</h2>
+      <div>
+        {/* Title */}
+        <div className="mb-6">
+          <p className="text-lg font-semibold text-blue-500">Title:</p>
+          <div className="border p-5 rounded-lg border-gray-300">
+            <p className="text-gray-700">{cvData.title}</p>
+          </div>
+        </div>
+
+        {/* Summary */}
+        <div className="mb-6">
+          <p className="text-lg font-semibold text-blue-500">Summary:</p>
+          <div className="border p-5 rounded-lg border-gray-300">
+            <p className="text-gray-700">{cvData.summary}</p>
+          </div>
+        </div>
+
+        {/* Skills */}
+        <div className="mb-6">
+          <p className="text-lg font-semibold text-blue-500">Skills:</p>
+          <div className="border p-5 rounded-lg border-gray-300">
+            <ul className="list-disc pl-6">
+              {cvData.skills.map((skill, index) => (
+                <li key={index} className="text-gray-700">{skill}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+         {/* Experience */}
+         <div className="mb-6">
+          <p className="text-lg font-semibold text-blue-500">Experience:</p>
+          {cvData.experience.map((job, index) => (
+            <div key={index} className="border p-5 rounded-lg mb-4 border-gray-300">
+              {/* Company */}
+              <div className="mb-4">
+                <p className="font-medium text-gray-700">Company:</p>
+                <div className="border-b pb-2">
+                  <p className="text-gray-700">{job.company}</p>
+                </div>
+              </div>
+
+              {/* Position, Dates */}
+              <div className="grid grid-cols-1 gap-6 mb-4">
+                <div className="mb-4">
+                  <p className="font-medium text-gray-700">Position:</p>
+                  <div className="border-b pb-2">
+                    <p className="text-gray-700">{job.position}</p>
+                  </div>
+                </div>
+                <div className="mb-4">
+                  <p className="font-medium text-gray-700">Start Date:</p>
+                  <div className="border-b pb-2">
+                    <p className="text-gray-700">{job.start_date}</p>
+                  </div>
+                </div>
+                <div className="mb-4">
+                  <p className="font-medium text-gray-700">End Date:</p>
+                  <div className="border-b pb-2">
+                    <p className="text-gray-700">{job.end_date}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="mt-2">
+                <p className="font-medium text-gray-700">Description:</p>
+                <div className="border-b pb-2">
+                  <p className="text-gray-700">{job.description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Education */}
+        <div className="mb-6">
+          <p className="text-lg font-semibold text-blue-500">Education:</p>
+          {cvData.education.map((edu, index) => (
+            <div key={index} className="border p-5 rounded-lg mb-4 border-gray-300">
+              <div className="mb-4">
+                <p className="font-medium text-gray-700">Degree:</p>
+                <div className="border-b pb-2">
+                  <p className="text-gray-700">{edu.degree}</p>
+                </div>
+              </div>
+              <div className="mb-4">
+                <p className="font-medium text-gray-700">Institution:</p>
+                <div className="border-b pb-2">
+                  <p className="text-gray-700">{edu.institution}</p>
+                </div>
+              </div>
+              <div className="mb-4">
+                <p className="font-medium text-gray-700">Start Date:</p>
+                <div className="border-b pb-2">
+                  <p className="text-gray-700">{edu.start_date}</p>
+                </div>
+              </div>
+              <div className="mb-4">
+                <p className="font-medium text-gray-700">End Date:</p>
+                <div className="border-b pb-2">
+                  <p className="text-gray-700">{edu.end_date}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Certifications */}
+        <div className="mb-6">
+          <p className="text-lg font-semibold text-blue-500">Certifications:</p>
+          {cvData.certifications.map((cert, index) => (
+            <div key={index} className="border p-5 rounded-lg mb-4 border-gray-300">
+              <div className="mb-4">
+                <p className="font-medium text-gray-700">Certification Name:</p>
+                <div className="border-b pb-2">
+                  <p className="text-gray-700">{cert.name}</p>
+                </div>
+              </div>
+              <div className="mb-4">
+                <p className="font-medium text-gray-700">Date Obtained:</p>
+                <div className="border-b pb-2">
+                  <p className="text-gray-700">{cert.date_obtained}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Delete Button */}
+      <button
+        onClick={handleDeleteCV}
+        className="bg-red-500 text-white px-6 py-3 rounded-lg mt-6 hover:bg-red-700 flex items-center"
+      >
+        <FaTrash className="mr-2" /> Delete CV
+      </button>
+    </>
+  ) : (
+    // Display message if no CV exists
+    <div className="text-center mt-6">
+      <p className="text-xl text-gray-500">You haven't uploaded a CV yet</p>
+    </div>
+  )}
+</div>
+  );
+  }
+
   return (
     <form onSubmit={handleSubmit} className="p-6 bg-gray-50 rounded-lg shadow-lg max-w-4xl mx-auto">
       {/* Header */}
@@ -346,6 +516,7 @@ const CVForm = () => {
       </button>
     </form>
   );
+
 };
 
 export default CVForm;
