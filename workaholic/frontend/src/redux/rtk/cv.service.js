@@ -33,7 +33,15 @@ export const cvRTKApi = baseApi.injectEndpoints({
         credentials: "include",
       }),
     }),
+    getCVByUserId: build.query({
+      query: (userId) => ({
+        url: `/cv/user/${userId}`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-export const { useGetCVsQuery, useCreateCVMutation, useUpdateCVMutation, useDeleteCVMutation } = cvRTKApi;
+export const { useGetCVsQuery, useCreateCVMutation, useUpdateCVMutation, useDeleteCVMutation, useGetCVByUserIdQuery } =
+  cvRTKApi;

@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 
 const CVDisplay = ({ data }) => {
-  console.log("dataDisplay", data);
+  console.log("data", data);
   const { userData } = useContext(AuthContext);
-  if (!userData) {
-    return <div>Loading...</div>; // or some other loading indicator
+  if (!userData || !data) {
+    return null;
   }
   return (
     <div className="flex w-full h-screen bg-gray-100 p-4">
@@ -27,14 +27,27 @@ const CVDisplay = ({ data }) => {
         </div>
 
         {/* Skills */}
-        <div className="w-full">
-          <h2 className="text-lg font-bold mb-2 text-gray-800">Skills</h2>
-          <ul className="list-disc pl-4 text-gray-700">
-            {data?.skills?.length > 0
-              ? data.skills.map((skill, index) => <li key={index}>{skill}</li>)
-              : "No skills added"}
-          </ul>
-        </div>
+        {data?.skills?.length > 0 && (
+          <div className="w-full">
+            <h2 className="text-lg font-bold mb-2 text-gray-800">Skills</h2>
+            <ul className="list-disc pl-4 text-gray-700">
+              {data.skills.map((skill, index) => (
+                <li key={index}>{skill}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {/* Certifications */}
+        {data?.certifications?.length > 0 && (
+          <div className="w-full">
+            <h2 className="text-lg font-bold mb-2 text-gray-800">Certifications</h2>
+            <ul className="list-disc pl-4 text-gray-700">
+              {data.certifications.map((certi, index) => (
+                <li key={index}>{`${certi.name} (${certi.date_obtained})`}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       {/* Second Part: Name, Title, Introduction, Education, and Experience */}
@@ -52,26 +65,28 @@ const CVDisplay = ({ data }) => {
         </div>
 
         {/* Education */}
-        <div className="mb-4">
-          <h2 className="text-lg font-bold text-gray-800">Education</h2>
-          <ul className="list-disc pl-4 text-gray-700">
-            {data?.education?.length > 0
-              ? data.education.map((edu, index) => <li key={index}>{`${edu.degree} at ${edu.institution}`}</li>)
-              : "No education details provided."}
-          </ul>
-        </div>
+        {data?.education?.length > 0 && (
+          <div className="mb-4">
+            <h2 className="text-lg font-bold text-gray-800">Education</h2>
+            <ul className="list-disc pl-4 text-gray-700">
+              {data.education.map((edu, index) => (
+                <li key={index}>{`${edu.degree} at ${edu.institution} (${edu.start_date} - ${edu.end_date})`}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Work Experience */}
-        <div className="mb-4">
-          <h2 className="text-lg font-bold text-gray-800">Work Experience</h2>
-          <ul className="list-disc pl-4 text-gray-700">
-            {data?.experience?.length > 0
-              ? data.experience.map((exp, index) => (
-                  <li key={index}>{`${exp.position} at ${exp.company} (${exp.start_date} - ${exp.end_date})`}</li>
-                ))
-              : "No work experience added."}
-          </ul>
-        </div>
+        {data?.experience?.length > 0 && (
+          <div className="mb-4">
+            <h2 className="text-lg font-bold text-gray-800">Work Experience</h2>
+            <ul className="list-disc pl-4 text-gray-700">
+              {data.experience.map((exp, index) => (
+                <li key={index}>{`${exp.position} at ${exp.company} (${exp.start_date} - ${exp.end_date})`}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );

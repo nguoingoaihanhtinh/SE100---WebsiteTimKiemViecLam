@@ -6,6 +6,7 @@ import CVDisplay from "./CVDisplay";
 const CV = () => {
   const { data: existingCV, isLoading } = useGetCVsQuery();
   console.log("exist", existingCV);
+  console.log("Existing CV ID:", existingCV?.data?.id);
   const [formData, setFormData] = useState({
     title: "",
     summary: "",
@@ -16,31 +17,28 @@ const CV = () => {
   });
   const [previewData, setPreviewData] = useState(null);
   const [createCV] = useCreateCVMutation();
-  const [updateCV] = useUpdateCVMutation();
+  const [updateCV] = useUpdateCVMutation(existingCV?.id);
   const [sectionsVisibility, setSectionsVisibility] = useState({
     experience: false,
     education: false,
     certifications: false,
   });
+
   useEffect(() => {
-    if (existingCV) {
-      // Filter out unnecessary fields and format the data
+    if (existingCV?.data) {
       const transformedData = {
-        title: existingCV.title || "",
-        summary: existingCV.summary || "",
-        skills: existingCV.skills || [""], // Ensure skills is an array
-        experience: existingCV.experience || [
+        title: existingCV.data.title || "",
+        summary: existingCV.data.summary || "",
+        skills: existingCV.data.skills || [""],
+        experience: existingCV.data.experience || [
           { company: "", position: "", start_date: "", end_date: "", description: "" },
-        ], // Ensure experience is an array
-        education: existingCV.education || [{ degree: "", institution: "", start_date: "", end_date: "" }],
-        certifications: existingCV.certifications || [{ name: "", date_obtained: "" }],
+        ],
+        education: existingCV.data.education || [{ degree: "", institution: "", start_date: "", end_date: "" }],
+        certifications: existingCV.data.certifications || [{ name: "", date_obtained: "" }],
       };
 
-      // Set the form data with the transformed data
       setFormData(transformedData);
-
-      // Set preview data to match the desired format
-      setPreviewData(transformedData);
+      setPreviewData(existingCV.data);
     }
   }, [existingCV]);
 
@@ -76,23 +74,39 @@ const CV = () => {
   const handleSubmit = async () => {
     try {
       let result;
-      if (existingCV) {
-        result = await updateCV({ id: existingCV.id, body: formData }).unwrap();
+      if (existingCV?.data?.id) {
+        // Update existing CV
+        result = await updateCV({ id: existingCV.data.id, body: formData }).unwrap();
         alert("CV updated successfully!");
       } else {
+        // Create new CV
         result = await createCV(formData).unwrap();
         alert("CV created successfully!");
+
+        // Update local state with the new CV data
+        const newCV = result.data;
+        setFormData({
+          title: newCV.title || "",
+          summary: newCV.summary || "",
+          skills: newCV.skills || [""],
+          experience: newCV.experience || [
+            { company: "", position: "", start_date: "", end_date: "", description: "" },
+          ],
+          education: newCV.education || [{ degree: "", institution: "", start_date: "", end_date: "" }],
+          certifications: newCV.certifications || [{ name: "", date_obtained: "" }],
+        });
+        setPreviewData(newCV);
       }
-      // After successful update or creation, update preview data with the result
-      setPreviewData(result); // This assumes the result contains the updated CV data
     } catch (error) {
+      console.error("Error saving CV:", error);
       alert(error.data?.message || "An error occurred while saving the CV.");
     }
   };
+
   return (
     <div className="container mx-auto p-6 space-y-6 flex">
       <div className="display w-1/2">
-        <CVDisplay data={previewData} />
+        <CVDisplay data={previewData || existingCV?.data} />
       </div>
       <div className="add w-1/2 p-5 bg-gray-100">
         {/* Title */}
