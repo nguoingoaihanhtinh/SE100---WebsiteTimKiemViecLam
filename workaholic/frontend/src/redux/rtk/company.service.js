@@ -7,6 +7,7 @@ export const companyRTKApi = baseApi.injectEndpoints({
         url: `/company/getByUser/${companyId}`,
         credentials: "include",
       }),
+      providesTags: ["company"],
     }),
     getAllCompanies: build.query({
       query: ({ page = 1, limit = 9, type = "" }) => ({
@@ -39,6 +40,7 @@ export const companyRTKApi = baseApi.injectEndpoints({
         credentials: "include",
         body: updatedCompany,
       }),
+      invalidatesTags: ["company"],
     }),
     deleteCompany: build.mutation({
       query: (id) => ({

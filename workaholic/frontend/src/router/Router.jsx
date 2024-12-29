@@ -9,7 +9,6 @@ import JobDetailPage from "../pages/JobDetailPage/JobDetailPage";
 import EmployerLayout from "../layouts/EmployerLayout";
 import ManageJobs from "../pages/Employer/ManageJobs";
 import ManageApplication from "../pages/Employer/ManageApplication/ManageApplication";
-import Dashboard from "../pages/Employer/Dashboard";
 import JobApplicationList from "../pages/Application/ApplicationList";
 import CompanyDetailPage from "../pages/CompanyDetailPage/CompanyDetailPage";
 import CvPage from "../pages/CvPage/CvPage";
@@ -26,6 +25,9 @@ import BookmarkPage from "../pages/Bookmarks/BookmarkPage";
 import CompanyListPage from "../pages/CompanyListPage/CompanyListPage";
 import ManageUser from "../pages/Admin/ManageUser/ManageUser";
 import EmployerDashboard from "../pages/Employer/DashBoard/EmployerDashboard";
+import CV from "../components/CVs/CV";
+import CVPage from "../components/CVs/CVPage";
+import RegisterEmployerPage from "../pages/RegisterEmployerPage/RegisterEmployerPage";
 
 const Router = () => {
   return (
@@ -44,6 +46,8 @@ const Router = () => {
           <Route path="noti" element={<NotificationPage />} />
           <Route path="company/:id" element={<Company />} />
           <Route path="bookmarked" element={<BookmarkPage />} />
+          <Route path="cvs" element={<CV />} />
+          <Route path="cv/:id" element={<CVPage />} />
         </Route>
         <Route path="employer" element={<EmployerLayout />}>
           <Route path="jobs" element={<JobManagementPage />} />
@@ -60,6 +64,7 @@ const Router = () => {
         </Route>
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
+        <Route path="registerEmployer" element={<RegisterEmployerPage />} />
       </Route>
     </Routes>
   );

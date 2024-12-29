@@ -1,7 +1,5 @@
 import { Notification } from "../models/relation.js";
 
-
-
 /**
  * Create a new notification
  */
@@ -127,5 +125,31 @@ export const getGlobalNotifications = async (req, res) => {
     res.status(200).json(notifications);
   } catch (error) {
     res.status(500).json({ message: "Failed to retrieve global notifications", error: error.message });
+  }
+};
+
+export const getNotificationsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const notifications = await Notification.findAll({
+      where: { user_id: userId },
+    });
+
+    if (notifications.length === 0) {
+      return res.status(404).json({
+        message: "No notifications found for this user",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Notifications retrieved successfully",
+      data: notifications,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to retrieve notifications",
+      error: error.message,
+    });
   }
 };

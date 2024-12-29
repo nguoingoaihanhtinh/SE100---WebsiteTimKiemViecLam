@@ -104,6 +104,13 @@ export const notificationApi = baseApi.injectEndpoints({
         }
       },
     }),
+    getNotificationsByUserId: build.query({
+      query: (userId) => ({
+        url: `/notification/user/${userId}`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -114,4 +121,5 @@ export const {
   useUpdateNotificationMutation,
   useDeleteNotificationMutation,
   useGetGlobalNotificationsQuery,
+  useGetNotificationsByUserIdQuery,
 } = notificationApi;

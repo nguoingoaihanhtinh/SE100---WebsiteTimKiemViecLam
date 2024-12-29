@@ -3,28 +3,23 @@ import { CV } from "../models/relation.js";
 export const getCVs = async (req, res) => {
   try {
     const user_id = req.user.id;
-    const { page = 1, limit = 10 } = req.query;
-
-    const offset = (page - 1) * limit;
-    const { rows: cvs, count: total } = await CV.findAndCountAll({
+    const cv = await CV.findOne({
       where: { user_id },
-      limit: parseInt(limit),
-      offset: parseInt(offset),
     });
 
+    if (!cv) {
+      return res.status(404).json({
+        message: "CV not found for this user",
+      });
+    }
+
     return res.status(200).json({
-      message: "CVs retrieved successfully",
-      data: cvs,
-      pagination: {
-        total,
-        page: parseInt(page),
-        limit: parseInt(limit),
-        totalPages: Math.ceil(total / limit),
-      },
+      message: "CV retrieved successfully",
+      data: cv,
     });
   } catch (error) {
     return res.status(500).json({
-      message: "Failed to retrieve CVs",
+      message: "Failed to retrieve CV",
       error: error.message,
     });
   }
@@ -93,6 +88,31 @@ export const deleteCV = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: "Failed to delete CV",
+      error: error.message,
+    });
+  }
+};
+export const getCVByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const cvs = await CV.findAll({
+      where: { user_id: userId },
+    });
+
+    if (cvs.length === 0) {
+      return res.status(404).json({
+        message: "No CVs found for this user",
+      });
+    }
+
+    return res.status(200).json({
+      message: "CVs retrieved successfully",
+      data: cvs,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to retrieve CVs",
       error: error.message,
     });
   }

@@ -25,7 +25,7 @@ User.hasMany(Application, {
   as: "applications",
 });
 User.hasOne(Company, { foreignKey: "user_id", as: "Company" });
-User.hasMany(CV, {
+User.hasOne(CV, {
   foreignKey: "user_id", // Links CV.user_id to User.id
   as: "cvs", // Alias for the relation
 });

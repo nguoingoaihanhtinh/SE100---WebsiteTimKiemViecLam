@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
-import { FiHome, FiBriefcase, FiBell, FiUsers, FiMenu, FiX } from "react-icons/fi";
+import { FiHome, FiBriefcase, FiBell, FiMenu, FiX } from "react-icons/fi";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../redux/rtk/user.service";
 
@@ -14,7 +14,6 @@ const EmployerLayout = () => {
     { title: "Dashboard", icon: <FiHome className="w-6 h-6 min-w-[30px]" />, path: "/employer/dashboard" },
     { title: "Manage Jobs", icon: <FiBriefcase className="w-6 h-6 min-w-[30px]" />, path: "/employer/joblist" },
     { title: "Manage Notifications", icon: <FiBell className="w-6 h-6 min-w-[30px]" />, path: "/employer/noti" },
-    { title: "Manage Applications", icon: <FiUsers className="w-6 h-6 min-w-[30px]" />, path: "/employer/application" },
     { title: "Logout", icon: <FaArrowRightFromBracket className="w-5 h-5 min-w-[30px]" />, path: "#" },
   ];
   const handleLogout = async () => {
