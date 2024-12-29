@@ -2,17 +2,16 @@ import React, { useContext } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 
 const CVDisplay = ({ data }) => {
-  console.log("data", data);
   const { userData } = useContext(AuthContext);
   if (!userData || !data) {
     return null;
   }
   return (
-    <div className="flex w-full h-screen bg-gray-100 p-4">
+    <div className="flex w-full h-screen bg-yellow-900/40 p-4">
       {/* First Part: Avatar, Contact Info, and Skills */}
-      <div className="w-1/3 bg-white shadow-lg rounded-lg p-4 flex flex-col items-center">
+      <div className="w-1/3 bg-orange-100/90  shadow-lg rounded-lg p-4 flex flex-col items-center">
         {/* Avatar */}
-        <div className="w-32 h-32 rounded-full bg-gray-300 overflow-hidden mb-4">
+        <div className="w-full h-1/4 rounded-xl bg-gray-300 overflow-hidden mb-4">
           {data?.avatar ? (
             <img src={userData.avatar} alt="Avatar" className="w-full h-full object-cover" />
           ) : (
@@ -51,42 +50,45 @@ const CVDisplay = ({ data }) => {
       </div>
 
       {/* Second Part: Name, Title, Introduction, Education, and Experience */}
-      <div className="w-2/3 bg-white shadow-lg rounded-lg p-4 ml-4">
-        {/* Name and Title */}
-        <div className="mb-4">
-          <h1 className="text-3xl font-bold text-gray-800">{userData?.user_name || "Full Name"}</h1>
-          <h2 className="text-xl text-gray-600">{data?.title || "Job Title"}</h2>
-        </div>
-
-        {/* Introduction */}
-        <div className="mb-4">
-          <h2 className="text-lg font-bold text-gray-800">Introduction</h2>
-          <p className="text-gray-700">{data?.summary || "A brief introduction about yourself."}</p>
-        </div>
-
-        {/* Education */}
-        {data?.education?.length > 0 && (
+      <div className="w-2/3 bg-orange-50 shadow-lg rounded-lg p-4 ml-4">
+        <div className="NameAndTitle bg-orange-100 px-5 py-2 rounded-xl border-2 border-amber-900">
+          {/* Name and Title */}
           <div className="mb-4">
-            <h2 className="text-lg font-bold text-gray-800">Education</h2>
-            <ul className="list-disc pl-4 text-gray-700">
-              {data.education.map((edu, index) => (
-                <li key={index}>{`${edu.degree} at ${edu.institution} (${edu.start_date} - ${edu.end_date})`}</li>
-              ))}
-            </ul>
+            <h1 className="text-3xl font-bold text-gray-700">{userData?.user_name || "Full Name"}</h1>
+            <h2 className="text-xl text-primary-color">{data?.title || "Job Title"}</h2>
           </div>
-        )}
 
-        {/* Work Experience */}
-        {data?.experience?.length > 0 && (
+          {/* Introduction */}
           <div className="mb-4">
-            <h2 className="text-lg font-bold text-gray-800">Work Experience</h2>
-            <ul className="list-disc pl-4 text-gray-700">
-              {data.experience.map((exp, index) => (
-                <li key={index}>{`${exp.position} at ${exp.company} (${exp.start_date} - ${exp.end_date})`}</li>
-              ))}
-            </ul>
+            <h2 className="text-lg font-bold text-gray-400">Introduction</h2>
+            <p className="text-black">{data?.summary || "A brief introduction about yourself."}</p>
           </div>
-        )}
+        </div>
+        <div className="mainContent border-t-2 mt-5 py-5">
+          {/* Education */}
+          {data?.education?.length > 0 && (
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-white p-1 bg-amber-950">Education</h2>
+              <ul className="list-disc pl-4 text-gray-700">
+                {data.education.map((edu, index) => (
+                  <li key={index}>{`${edu.degree} at ${edu.institution} (${edu.start_date} - ${edu.end_date})`}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Work Experience */}
+          {data?.experience?.length > 0 && (
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-white p-1 bg-amber-950">Work Experience</h2>
+              <ul className="list-disc pl-4 text-gray-700">
+                {data.experience.map((exp, index) => (
+                  <li key={index}>{`${exp.position} at ${exp.company} (${exp.start_date} - ${exp.end_date})`}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
