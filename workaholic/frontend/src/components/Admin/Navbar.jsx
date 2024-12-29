@@ -1,52 +1,44 @@
-import { Box, IconButton, InputBase, Typography } from "@mui/material";
+// Navbar.jsx
+import React from "react";
+import { Badge } from "@mui/material";
 import {
-  DarkModeOutlined,
-  LightModeOutlined,
   NotificationsOutlined,
-  PersonOutlined,
   SettingsOutlined,
+  PersonOutlined,
   SearchOutlined,
 } from "@mui/icons-material";
 
 const NavbarAdmin = () => {
   return (
-    <Box
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-      padding="10px"
-      bgcolor="#2f3136"
-    >
-      <Box display="flex" alignItems="center" gap={2}>
-        <Typography variant="h6" color="white">
-          Admin Dashboard
-        </Typography>
-        <Box
-          display="flex"
-          alignItems="center"
-          bgcolor="#4b4f56"
-          borderRadius="5px"
-          padding="5px"
-        >
-          <InputBase placeholder="Search..." sx={{ marginLeft: 2, color: "white" }} />
-          <IconButton>
-            <SearchOutlined sx={{ color: "white" }} />
-          </IconButton>
-        </Box>
-      </Box>
+    <div className="flex items-center justify-between bg-gray-800 text-white p-4 shadow-md">
+      {/* Left Section */}
+      <div className="flex items-center space-x-4">
+        <span className="text-xl font-semibold">Admin Portal</span>
+        <div className="flex items-center bg-gray-700 rounded-md px-3 py-1">
+          <SearchOutlined className="text-gray-300" />
+          <input
+            type="text"
+            placeholder="Search..."
+            className="bg-transparent text-sm text-white focus:outline-none ml-2"
+          />
+        </div>
+      </div>
 
-      <Box>
-        <IconButton>
-          <NotificationsOutlined sx={{ color: "white" }} />
-        </IconButton>
-        <IconButton>
-          <SettingsOutlined sx={{ color: "white" }} />
-        </IconButton>
-        <IconButton>
-          <PersonOutlined sx={{ color: "white" }} />
-        </IconButton>
-      </Box>
-    </Box>
+      {/* Right Section */}
+      <div className="flex items-center space-x-4">
+        <button className="relative hover:text-blue-500 transition-colors duration-200">
+          <Badge badgeContent={4} color="error">
+            <NotificationsOutlined className="text-white" />
+          </Badge>
+        </button>
+        <button className="hover:text-blue-500 transition-colors duration-200">
+          <SettingsOutlined className="text-white" />
+        </button>
+        <button className="hover:text-blue-500 transition-colors duration-200">
+          <PersonOutlined className="text-white" />
+        </button>
+      </div>
+    </div>
   );
 };
 

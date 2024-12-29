@@ -1,19 +1,32 @@
-import { Box } from "@mui/material";
-import { Outlet } from "react-router-dom";
+// AdminLayout.jsx
+import React, { useState } from "react";
 import SidebarAdmin from "../components/Admin/Sidebar";
 import NavbarAdmin from "../components/Admin/Navbar";
+import { Outlet } from "react-router-dom";
 
 const AdminLayout = () => {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  const handleSidebarToggle = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
+
   return (
-    <Box display="flex" height="100vh">
-      <SidebarAdmin />
-      <Box flex={1} display="flex" flexDirection="column">
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <SidebarAdmin collapsed={isSidebarCollapsed} onToggle={handleSidebarToggle} />
+
+      {/* Main Content */}
+      <div className="flex flex-col flex-1">
+        {/* Navbar */}
         <NavbarAdmin />
-        <Box flex={1} bgcolor="#f4f5f7" overflow="auto" padding="20px">
+
+        {/* Page Content */}
+        <main className="flex-1 p-4 overflow-auto">
           <Outlet />
-        </Box>
-      </Box>
-    </Box>
+        </main>
+      </div>
+    </div>
   );
 };
 

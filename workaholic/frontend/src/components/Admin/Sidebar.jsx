@@ -1,6 +1,6 @@
-import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+// Sidebar.jsx
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Avatar, Box, Typography, IconButton } from "@mui/material";
 import {
   DashboardOutlined,
   PeopleAltOutlined,
@@ -8,12 +8,11 @@ import {
   BarChartOutlined,
   ReceiptOutlined,
   TimelineOutlined,
+  MenuOutlined,
 } from "@mui/icons-material";
-import { useState } from "react";
-import logo from "../../assets/react.svg"; // Thay bằng logo của bạn
+import logo from "../../assets/logo.png"; // Đảm bảo đường dẫn chính xác tới logo của bạn
 
-const SidebarAdmin = () => {
-  const [collapsed, setCollapsed] = useState(false);
+const SidebarAdmin = ({ collapsed, onToggle }) => {
   const location = useLocation();
 
   const menuItems = [
@@ -26,36 +25,71 @@ const SidebarAdmin = () => {
   ];
 
   return (
-    <Sidebar collapsed={collapsed} backgroundColor="#2f3136">
-      <Menu>
-        <MenuItem>
-          <Box display="flex" alignItems="center" justifyContent="space-between" p="10px">
-            {!collapsed && (
-              <Box display="flex" alignItems="center">
-                <Avatar src={logo} alt="Logo" sx={{ marginRight: "10px" }} />
-                <Typography variant="h5" color="white">
-                  Admin Portal
-                </Typography>
-              </Box>
-            )}
-            <IconButton onClick={() => setCollapsed(!collapsed)}>
-              {collapsed ? ">" : "<"}
-            </IconButton>
-          </Box>
-        </MenuItem>
+    <div
+      className={`flex flex-col bg-gray-800 text-white h-full transition-width duration-300 ${
+        collapsed ? "w-20" : "w-60"
+      }`}
+    >
+      {/* Logo Section */}
+      <div className="flex items-center justify-center p-4">
+        <img
+          src={logo}
+          alt="Logo"
+          className={`transition-transform duration-300 ${
+            collapsed ? "w-10 h-auto" : "w-36 h-auto"
+          }`}
+        />
+      </div>
 
-        {menuItems.map((item, index) => (
-          <MenuItem
-            key={index}
-            component={<Link to={item.path} />}
-            icon={item.icon}
-            active={location.pathname === item.path}
-          >
-            {!collapsed && item.title}
-          </MenuItem>
-        ))}
-      </Menu>
-    </Sidebar>
+      {/* Toggle Button */}
+      <button
+        onClick={onToggle}
+        className="flex items-center justify-center p-2 hover:bg-gray-700 transition-colors duration-200"
+      >
+        <MenuOutlined
+          className={`text-lg ${
+            collapsed ? "text-white" : "text-blue-500"
+          }`}
+        />
+      </button>
+
+      {/* Menu Items */}
+      <nav className="flex-1 mt-4">
+        {menuItems.map((item, index) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <Link
+              to={item.path}
+              key={index}
+              className={`flex items-center p-2 my-2 mx-4 rounded hover:bg-gray-700 ${
+                isActive ? "bg-gray-700" : ""
+              }`}
+            >
+              <span
+                className={`text-lg ${
+                  isActive
+                    ? "text-blue-500"
+                    : "text-white hover:text-blue-500"
+                }`}
+              >
+                {item.icon}
+              </span>
+              {!collapsed && (
+                <span
+                  className={`ml-4 ${
+                    isActive
+                      ? "text-blue-500"
+                      : "text-white hover:text-blue-500"
+                  }`}
+                >
+                  {item.title}
+                </span>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
   );
 };
 
