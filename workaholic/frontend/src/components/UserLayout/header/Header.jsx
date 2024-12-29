@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UserSection from "./UserSection";
 import SearchBox from "./SearchBox";
 
 const Header = () => {
+  const navigate = useNavigate();
   return (
     <div className="bg-blue-700 fixed top-0 right-0 left-0 z-[10]">
       {/* Header Section */}
@@ -15,7 +16,10 @@ const Header = () => {
           className="h-[40px] w-[90px]  bg-no-repeat bg-contain bg-center"
         ></Link>
 
-        <div className="">
+        <div className="flex items-center gap-8">
+          <div onClick={() => navigate("/registerEmployer")} className="font-semibold cursor-pointer">
+            Become employer
+          </div>
           <SearchBox />
         </div>
 
