@@ -13,6 +13,9 @@ const Company = sequelize.define(
     img: {
       type: DataTypes.STRING,
     },
+    coverimg: {
+      type: DataTypes.STRING,
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,

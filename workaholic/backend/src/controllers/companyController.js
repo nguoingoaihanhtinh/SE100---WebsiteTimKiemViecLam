@@ -159,7 +159,6 @@ export const updateCompany = async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
-
     const company = await Company.findByPk(id);
 
     if (!company) {

@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import AddJobForm from "./AddJobForm";
 import { FaRegPenToSquare, FaRegTrashCan } from "react-icons/fa6";
 import toast from "react-hot-toast";
+import { Select } from "antd";
 const formatNumber = (number) => {
   return new Intl.NumberFormat("en-US").format(number);
 };
@@ -20,6 +21,7 @@ const ManageJobs = () => {
   const { data: company } = useGetCompanyByUserIdQuery(userData?.id, {
     skip: !userData?.id,
   });
+  const [sortBy, setSortBy] = useState("createdAt");
   const navigate = useNavigate();
   const [callGetJobs] = useLazyGetAllJobsByCompanyIdQuery();
   const getJobs = async () => {
@@ -28,6 +30,7 @@ const ManageJobs = () => {
       page: 1,
       company_id: company?.data?.id,
       kw: "",
+      order: sortBy,
     });
     setJobs(res.data?.data);
     setAllJobs(res.data?.data);
@@ -41,7 +44,7 @@ const ManageJobs = () => {
     if (company?.data?.id) {
       getJobs();
     }
-  }, [company]);
+  }, [company, sortBy]);
   useEffect(() => {
     const filteredJobs = allJobs.filter((job) => {
       const lowerSearchQuery = searchQuery.toLowerCase();
@@ -49,6 +52,7 @@ const ManageJobs = () => {
     });
     setJobs(filteredJobs);
   }, [searchQuery]);
+
   return (
     <div className="min-h-screen bg-gray-100 p-8 text-black">
       {showAddJobForm === -1 && (
@@ -72,13 +76,26 @@ const ManageJobs = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex justify-end">
+            <Select
+              defaultValue="createdAt"
+              style={{ width: 120 }}
+              onChange={(vl) => setSortBy(vl)}
+              options={[
+                { value: "createdAt", label: "Newest" },
+                { value: "-createdAt", label: "Oldest" },
+                { value: "title", label: "A -> Z" },
+                { value: "-title", label: "Z -> A" },
+              ]}
+            />
+          </div>
+          <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {jobs?.length > 0 ? (
               jobs.map((job, idx) => (
                 <div
                   key={job.id}
                   onClick={() => navigate(`/employer/joblist/${job.id}`)}
-                  className="border relative border-gray-300 rounded-lg bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 p-6"
+                  className=" cursor-pointer border relative border-gray-300 rounded-lg bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 p-6"
                 >
                   <h2 className="text-xl font-semibold text-blue-600">{job.title}</h2>
                   <p className="text-gray-700">
