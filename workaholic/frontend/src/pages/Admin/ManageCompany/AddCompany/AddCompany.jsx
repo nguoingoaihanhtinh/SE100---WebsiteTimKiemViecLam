@@ -88,10 +88,13 @@ export default function AddCompanyForm({ onClose, refetch, editCompany }) {
   return (
     <div className="w-full mx-auto p-4 bg-white rounded-lg shadow-md text-white">
       <div className="flex items-center gap-2 mb-4">
-        <div onClick={onClose} className="flex items-center cursor-pointer w-[40px] h-[40px] justify-center">
+        <div
+          onClick={onClose}
+          className="flex items-center cursor-pointer w-[40px] h-[40px] justify-center text-gray-900"
+        >
           <FaChevronLeft />
         </div>
-        <h2 className="text-2xl font-bold">{editCompany ? "Update Company" : "Add Company"}</h2>
+        <h2 className="text-2xl font-bold text-gray-900">{editCompany ? "Update Company" : "Add Company"}</h2>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="gap-8 grid grid-cols-2">
         <div>
@@ -99,7 +102,7 @@ export default function AddCompanyForm({ onClose, refetch, editCompany }) {
           <input
             {...register("name")}
             placeholder="Enter name..."
-            className="mt-1 block w-full p-2 border rounded-md"
+            className="mt-1 block w-full p-2 border rounded-md text-black bg-gray-200"
           />
           {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
         </div>
@@ -108,7 +111,7 @@ export default function AddCompanyForm({ onClose, refetch, editCompany }) {
           <input
             {...register("img")}
             placeholder="Enter image URL..."
-            className="mt-1 block w-full p-2 border rounded-md"
+            className="mt-1 block w-full p-2 border rounded-md text-black bg-gray-200"
           />
           {errors.img && <span className="text-red-500 text-sm">{errors.img.message}</span>}
         </div>
@@ -117,22 +120,30 @@ export default function AddCompanyForm({ onClose, refetch, editCompany }) {
           <input
             {...register("feild")}
             placeholder="Enter field..."
-            className="mt-1 block w-full p-2 border rounded-md"
+            className="mt-1 block w-full p-2 border rounded-md text-black bg-gray-200"
           />
           {errors.feild && <span className="text-red-500 text-sm">{errors.feild.message}</span>}
         </div>
         <div className="col-span-2 text-black">
-          <label className="block text-sm font-medium text-gray-700">Description</label>
+          <label className="block text-sm  font-medium text-gray-700">Description</label>
           <ReactQuill value={text} onChange={setText} className="mt-1 h-[200px]" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Rating</label>
-          <input {...register("rating")} type="number" className="mt-1 block w-full p-2 border rounded-md" />
+          <label className="block text-sm mt-5 font-medium text-gray-700">Rating</label>
+          <input
+            {...register("rating")}
+            type="number"
+            className="mt-1 block w-full p-2 border rounded-md text-black bg-gray-200"
+          />
           {errors.rating && <span className="text-red-500 text-sm">{errors.rating.message}</span>}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Number of Ratings</label>
-          <input {...register("number_rating")} type="number" className="mt-1 block w-full p-2 border rounded-md" />
+          <label className="block text-sm font-medium mt-5 text-gray-700">Number of Ratings</label>
+          <input
+            {...register("number_rating")}
+            type="number"
+            className="mt-1 block w-full p-2 border rounded-md text-black bg-gray-200"
+          />
           {errors.number_rating && <span className="text-red-500 text-sm">{errors.number_rating.message}</span>}
         </div>
         <div>
@@ -141,7 +152,7 @@ export default function AddCompanyForm({ onClose, refetch, editCompany }) {
             {...register("longitude")}
             type="number"
             step="any" // Allows decimal values
-            className="mt-1 block w-full p-2 border rounded-md"
+            className="mt-1 block w-full p-2 border rounded-md text-black bg-gray-200"
           />
           {errors.longitude && <span className="text-red-500 text-sm">{errors.longitude.message}</span>}
         </div>
@@ -151,7 +162,7 @@ export default function AddCompanyForm({ onClose, refetch, editCompany }) {
             {...register("lattidue")}
             type="number"
             step="any" // Allows decimal values
-            className="mt-1 block w-full p-2 border rounded-md"
+            className="mt-1 block w-full p-2 border rounded-md text-black bg-gray-200"
           />
           {errors.lattidue && <span className="text-red-500 text-sm">{errors.lattidue.message}</span>}
         </div>
@@ -161,13 +172,17 @@ export default function AddCompanyForm({ onClose, refetch, editCompany }) {
           <input
             {...register("address")}
             placeholder="Enter address..."
-            className="mt-1 block w-full p-2 border rounded-md"
+            className="mt-1 block w-full p-2 border rounded-md text-black bg-gray-200"
           />
           {errors.address && <span className="text-red-500 text-sm">{errors.address.message}</span>}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">User ID</label>
-          <input {...register("user_id")} type="number" className="mt-1 block w-full p-2 border rounded-md" />
+          <input
+            {...register("user_id")}
+            type="number"
+            className="mt-1 block w-full p-2 border rounded-md text-black bg-gray-200"
+          />
           {errors.user_id && <span className="text-red-500 text-sm">{errors.user_id.message}</span>}
         </div>
         <div className="col-span-2">

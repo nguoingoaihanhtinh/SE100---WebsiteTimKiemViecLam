@@ -36,8 +36,8 @@ const CompanyTable = ({ rowValue, onEdit, onDelete }) => {
       </tr>
       {isExpanded && (
         <tr>
-          <td colSpan="5" className="p-4 bg-gray-100 rounded-md">
-            <div className="flex flex-col space-y-4">
+          <td colSpan="5" className="p-4 bg-gray-100 rounded-md ">
+            <div className="flex flex-col space-y-4 w-full">
               <p>
                 <strong>Name:</strong> {rowValue.name}
               </p>
@@ -47,21 +47,23 @@ const CompanyTable = ({ rowValue, onEdit, onDelete }) => {
               <p>
                 <strong>Description:</strong> {rowValue.description}
               </p>
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 justify-between w-full gap-20">
+                <div className="flex justify-between gap-5">
+                  <button
+                    className="px-4 py-2 text-sm text-white bg-yellow-500 rounded-md hover:bg-yellow-600"
+                    onClick={onEdit}
+                  >
+                    Update
+                  </button>
+                  <button
+                    className="px-4 py-2 text-sm text-white bg-red-500 rounded-md hover:bg-red-600"
+                    onClick={onDelete}
+                  >
+                    Delete
+                  </button>
+                </div>
                 <button
-                  className="px-4 py-2 text-sm text-white bg-yellow-500 rounded-md hover:bg-yellow-600"
-                  onClick={onEdit}
-                >
-                  Update
-                </button>
-                <button
-                  className="px-4 py-2 text-sm text-white bg-red-500 rounded-md hover:bg-red-600"
-                  onClick={onDelete}
-                >
-                  Delete
-                </button>
-                <button
-                  className="px-4 py-2 text-sm text-white bg-red-500 rounded-md hover:bg-red-600"
+                  className="px-4 py-2 text-sm text-white bg-green-500 rounded-md hover:bg-green-600"
                   onClick={onJobs}
                 >
                   Checkout Jobs

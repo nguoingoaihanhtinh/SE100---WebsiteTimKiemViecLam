@@ -165,7 +165,7 @@ const ManageApplication = () => {
                               <p className="text-sm font-medium text-gray-500">CV:</p>
                               <p
                                 onClick={() => handleCvClicked(app?.user?.id)}
-                                className="text-blue-500 hover:underline"
+                                className="text-blue-500 hover:underline hover:cursor-pointer"
                               >
                                 Xem cv của người dùng này
                               </p>
