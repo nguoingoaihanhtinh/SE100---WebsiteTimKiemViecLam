@@ -110,7 +110,7 @@ export const getAllJobs = async (req, res) => {
 
 export const getAllJobsByCompanyId = async (req, res) => {
   try {
-    const { company_id, page = 1, limit = 10, kw = "" } = req.query;
+    const { company_id, page = 1, limit = 10, kw = "", order = "createdAt" } = req.query;
 
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
@@ -131,12 +131,22 @@ export const getAllJobsByCompanyId = async (req, res) => {
           ],
         }
       : {};
+    // Dynamically handle sorting based on the 'order' query parameter
+    const validFields = ["createdAt", "-createdAt", "-title", "title"]; // Add more valid fields here as needed
+
+    // If the order has a `-` prefix, it indicates descending order
+    let sortBy = order.startsWith("-") ? order.slice(1) : order;
+    let sortDirection = order.startsWith("-") ? "DESC" : "ASC";
+    if (!validFields.includes(sortBy)) {
+      sortBy = "createdAt"; // Default to sorting by createdAt
+      sortDirection = "DESC"; // Default to descending order
+    }
     // Fetch jobs with pagination and include related models
     const { rows: jobs, count: totalItems } = await Job.findAndCountAll({
       where: { company_id: company_id, ...searchCondition },
       offset,
       limit: limitNumber,
-      order: [["createdAt", "DESC"]], // Order by newest jobs first
+      order: [[sortBy, sortDirection]],
       include: [
         {
           model: Company,

@@ -12,6 +12,9 @@ module.exports = {
       img: {
         type: Sequelize.STRING,
       },
+      coverimg: {
+        type: Sequelize.STRING,
+      },
       feild: {
         type: Sequelize.STRING,
         allowNull: false,

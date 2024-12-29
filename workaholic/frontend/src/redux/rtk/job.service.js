@@ -39,7 +39,7 @@ export const jobRTKApi = baseApi.injectEndpoints({
     }),
     getAllJobsByCompanyId: build.query({
       query: (body) => ({
-        url: `/job/company?page=${body.page}&limit=${body.limit}&company_id=${body.company_id}&kw=${body.kw}`,
+        url: `/job/company?page=${body.page}&limit=${body.limit}&company_id=${body.company_id}&kw=${body.kw}&order=${body.order}`,
         credentials: "include",
       }),
     }),
