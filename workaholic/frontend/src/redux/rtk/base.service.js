@@ -7,6 +7,6 @@ export const fetchBaseQueryWithAuth = () =>
 export const baseApi = createApi({
   reducerPath: "baseRTKApi",
   baseQuery: fetchBaseQueryWithAuth(),
-  tagTypes: ["company"],
+  tagTypes: ["company", "ratingcompany"],
   endpoints: () => ({}),
 });

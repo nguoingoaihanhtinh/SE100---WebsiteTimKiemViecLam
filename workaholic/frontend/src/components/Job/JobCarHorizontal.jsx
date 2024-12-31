@@ -13,13 +13,13 @@ export const JobCardHorizontal = ({ jobData }) => {
   }
   const [saveJob] = useSavedJobMutation();
   const [removeSaveJob] = useRemoveSaveJobMutation();
-  const { savedJobs, setSavedJobs, loginStatus } = useContext(AuthContext);
+  const { savedJobs, setSavedJobs, isLoggedIn } = useContext(AuthContext);
   const savedJobsArr = savedJobs?.map((e) => e.job_id) || [];
   const isSaved = savedJobsArr.includes(jobData.id);
   const handleBookmarkClick = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!loginStatus?.user?.id) {
+    if (!isLoggedIn) {
       toast.error("You must be logged in to bookmark a job.");
       return;
     }

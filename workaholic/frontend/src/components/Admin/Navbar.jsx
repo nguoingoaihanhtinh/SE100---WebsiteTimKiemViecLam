@@ -1,12 +1,6 @@
 // Navbar.jsx
-import React from "react";
 import { Badge } from "@mui/material";
-import {
-  NotificationsOutlined,
-  SettingsOutlined,
-  PersonOutlined,
-  SearchOutlined,
-} from "@mui/icons-material";
+import { NotificationsOutlined, SettingsOutlined, PersonOutlined, SearchOutlined } from "@mui/icons-material";
 
 const NavbarAdmin = () => {
   return (

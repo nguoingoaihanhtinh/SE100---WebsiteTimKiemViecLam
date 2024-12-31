@@ -59,11 +59,11 @@ const JobApplicationForm = ({ JobData, closeForm, user }) => {
           closeForm();
         }
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 z-50 flex items-center justify-center  bg-black bg-opacity-50"
     >
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 relative">
-        <button onClick={closeForm} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-          &times;
+      <div className="bg-white rounded-[8px] shadow-xl w-full max-w-lg p-6 relative">
+        <button onClick={closeForm} className="absolute bg-gray-200  top-4 right-4 text-gray-700 hover:text-gray-800">
+          X
         </button>
         <h2 className="text-2xl font-bold mb-6 text-primary-color">Job Application Form</h2>
         {isSuccess && (
@@ -123,7 +123,7 @@ const JobApplicationForm = ({ JobData, closeForm, user }) => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-[8px] hover:bg-blue-600 transition"
             disabled={isLoading}
           >
             {isLoading ? "Submitting..." : "Submit"}

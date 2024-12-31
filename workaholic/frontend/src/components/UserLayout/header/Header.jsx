@@ -5,7 +5,7 @@ import SearchBox from "./SearchBox";
 const Header = () => {
   const navigate = useNavigate();
   return (
-    <div className="bg-blue-700 fixed top-0 right-0 left-0 z-[10]">
+    <div className="bg-blue-700 fixed top-0 right-0 left-0 z-[99999]">
       {/* Header Section */}
       <div className="flex justify-between py-2 items-center px-12">
         <Link

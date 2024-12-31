@@ -41,6 +41,10 @@ function AuthProvider({ children }) {
       }
     }
   }, [user]);
+  // useEffect(() => {
+  //   const savedJobsArr = savedJobs?.map((e) => e.job_id) || [];
+  //   console.log(savedJobsArr);
+  // }, [savedJobs]);
   return (
     <AuthContext.Provider
       value={{

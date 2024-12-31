@@ -39,7 +39,7 @@ const EditForm = ({ review, onClose }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+      <div className="bg-white rounded-[8px] p-6 shadow-lg w-80">
         <h3 className="text-lg font-semibold text-center mb-4">Edit Your Rating</h3>
 
         {/* Rating Stars */}
@@ -58,7 +58,7 @@ const EditForm = ({ review, onClose }) => {
           value={content}
           onChange={handleContentChange}
           placeholder="Write your comment here..."
-          className="w-full h-24 p-2 border rounded-md resize-none mb-4"
+          className="w-full h-24 p-2 bg-gray-200 text-black border rounded-md resize-none mb-4"
         />
 
         {/* Buttons */}
@@ -66,13 +66,13 @@ const EditForm = ({ review, onClose }) => {
           <button
             onClick={handleSubmit}
             disabled={isLoading}
-            className={`px-4 py-2 rounded-md ${
+            className={`px-4 py-2 rounded-[8px] ${
               isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 text-white"
             }`}
           >
             {isLoading ? "Updating..." : "Update"}
           </button>
-          <button onClick={onClose} className="text-red-500 font-semibold">
+          <button onClick={onClose} className="text-red-500 bg-gray-200 font-semibold">
             Close
           </button>
         </div>
