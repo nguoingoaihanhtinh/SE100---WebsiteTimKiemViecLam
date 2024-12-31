@@ -6,6 +6,7 @@ import jobRoute from "./jobRoute.js";
 import notiRouter from "./notificationRoute.js";
 import ratingRouter from "./ratingRoute.js";
 import savedRouter from "./savedRoute.js";
+import statRouter from "./statRoute.js";
 
 export default function routes(server) {
   server.use("/api/v1/job", jobRoute);
@@ -16,4 +17,5 @@ export default function routes(server) {
   server.use("/api/v1/save", savedRouter);
   server.use("/api/v1/cv", cvRouter);
   server.use("/api/v1/rating", ratingRouter);
+  server.use("/api/v1/stat", statRouter);
 }
