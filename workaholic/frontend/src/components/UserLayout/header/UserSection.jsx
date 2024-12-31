@@ -76,7 +76,12 @@ function UserSection() {
               <li onClick={() => navigate("/noti")} className="px-4 py-2 text-black hover:bg-gray-100 cursor-pointer">
                 My Notifications
               </li>
-
+              <li
+                onClick={() => navigate("/setting")}
+                className="px-4 py-2 text-black hover:bg-gray-100 cursor-pointer"
+              >
+                Settings
+              </li>
               <li onClick={handleLogout} className="px-4 py-2 hover:bg-red-100 text-red-600 cursor-pointer">
                 Logout
               </li>

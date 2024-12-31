@@ -28,6 +28,7 @@ import EmployerDashboard from "../pages/Employer/DashBoard/EmployerDashboard";
 import CV from "../components/CVs/CV";
 import CVPage from "../components/CVs/CVPage";
 import RegisterEmployerPage from "../pages/RegisterEmployerPage/RegisterEmployerPage";
+import SettingPage from "../pages/SettingPage/SettingPage";
 
 const Router = () => {
   return (
@@ -46,6 +47,7 @@ const Router = () => {
           <Route path="noti" element={<NotificationPage />} />
           <Route path="company/:id" element={<Company />} />
           <Route path="bookmarked" element={<BookmarkPage />} />
+          <Route path="setting" element={<SettingPage />} />
           <Route path="cvs" element={<CV />} />
           <Route path="cv/:id" element={<CVPage />} />
         </Route>

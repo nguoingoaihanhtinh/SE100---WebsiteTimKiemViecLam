@@ -32,6 +32,7 @@ const sendJsonToken = (user, statusCode, req, res) => {
       user_name: user.dataValues.user_name,
       email: user.dataValues.email,
       role: user.dataValues.role,
+      avatar: user.dataValues.avatar,
     },
   });
 };
@@ -142,6 +143,7 @@ export const checkUserSession = async (req, res) => {
         user_name: user.user_name,
         email: user.email,
         role: user.role,
+        avatar: user.avatar,
       },
     });
   } catch (error) {
@@ -194,7 +196,7 @@ export const getUserById = async (req, res) => {
 };
 export const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { userName, email, role, password } = req.body;
+  const { userName, avatar, role, oldPassword, newPassword } = req.body;
 
   try {
     const user = await User.findByPk(id);
@@ -205,11 +207,14 @@ export const updateUser = async (req, res) => {
 
     const updatedData = {
       user_name: userName || user.user_name,
-      email: email || user.email,
+      avatar: avatar || user.avatar,
     };
 
-    if (password) {
-      updatedData.password = await bcrypt.hash(password, 10);
+    if (oldPassword && oldPassword !== user.password) {
+      return res.status(400).json({ message: "Wrong current password" });
+    }
+    if (newPassword) {
+      updatedData.password = newPassword;
     }
 
     await user.update(updatedData);
@@ -221,6 +226,7 @@ export const updateUser = async (req, res) => {
         id: user.id,
         user_name: user.user_name,
         email: user.email,
+        avatar: user.avatar,
         role: user.role,
       },
     });
