@@ -3,7 +3,6 @@ import Rating from "../Rating/Rating";
 import { useContext, useState } from "react";
 import JobApplicationForm from "../../pages/Application/ApplicationForm";
 import { FaPaperPlane } from "react-icons/fa";
-import { useCheckLoginQuery } from "../../redux/rtk/user.service";
 import { useNavigate } from "react-router-dom";
 import { useRemoveSaveJobMutation, useSavedJobMutation } from "../../redux/rtk/job.service";
 import { AuthContext } from "../../context/AuthProvider";
@@ -12,9 +11,8 @@ function formatCurrency(amount) {
   return new Intl.NumberFormat("vi-VN").format(amount) + " đ";
 }
 export const JobCard = ({ jobData }) => {
-  console.log("job", jobData);
-  const { data: loginStatus, isLoading } = useCheckLoginQuery();
-  const userData = loginStatus?.user;
+  const { isLoggedIn, userData } = useContext(AuthContext);
+
   const navigate = useNavigate();
   const [isFormVisible, setFormVisible] = useState(false);
   const [saveJob] = useSavedJobMutation();
@@ -23,7 +21,7 @@ export const JobCard = ({ jobData }) => {
   const savedJobsArr = savedJobs?.map((e) => e.job_id) || [];
   const isSaved = savedJobsArr.includes(jobData.id);
   const showForm = () => {
-    if (!loginStatus?.user?.id) {
+    if (!isLoggedIn) {
       toast.error("You must be logged in to apply for a job.");
       window.location.href = "/login"; // Redirect to login page
       return;
@@ -63,7 +61,7 @@ export const JobCard = ({ jobData }) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (!loginStatus?.user?.id) {
+    if (!isLoggedIn) {
       toast.error("You must be logged in to bookmark a job.");
       return;
     }

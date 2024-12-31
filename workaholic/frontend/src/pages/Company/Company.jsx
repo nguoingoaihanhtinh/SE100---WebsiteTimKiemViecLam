@@ -6,6 +6,7 @@ import { JobCardHorizontal } from "../../components/Job/JobCarHorizontal";
 import { FaBuilding, FaLocationDot } from "react-icons/fa6";
 import { useGetCompanyByIdQuery } from "../../redux/rtk/company.service";
 import CompanyRating from "../../components/Rating/CompanyRating";
+import MapCaller from "../../components/Map/MapCaller";
 
 export default function Company() {
   const { id } = useParams();
@@ -43,18 +44,24 @@ export default function Company() {
   }, [data]);
   if (!company) return <></>;
   return (
-    <div className="px-[200px] mt-[120px] text-black">
+    <div className="px-[70px] mt-[120px] text-black">
       <div
         className="h-[400px] relative w-full bg-no-repeat bg-cover rounded-[12px]"
         style={{
-          backgroundImage: `url(https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_covers/cong-ty-trach-nhiem-huu-han-bao-hiem-nhan-tho-mb-ageas-mb-ageas-life-b6207b77b0ddf491ecc2d49848cb04de-6495669cd6e1e.jpg)`,
+          backgroundImage: `url(${
+            company.coverimg ||
+            "https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_covers/cong-ty-trach-nhiem-huu-han-bao-hiem-nhan-tho-mb-ageas-mb-ageas-life-b6207b77b0ddf491ecc2d49848cb04de-6495669cd6e1e.jpg"
+          })`,
         }}
       >
         <div className="absolute px-[32px] gap-[50px] flex top-[70%] rounded-b-[12px] bg-blue-900 h-[180px] w-full">
           <div
             className="w-[160px] h-[160px] rounded-full bg-no-repeat bg-cover bg-center mt-[-50px]"
             style={{
-              backgroundImage: `url(https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/cong-ty-trach-nhiem-huu-han-bao-hiem-nhan-tho-mb-ageas-mb-ageas-life-63aac9a35aeea.jpg)`,
+              backgroundImage: `url(${
+                company.img ||
+                "https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/cong-ty-trach-nhiem-huu-han-bao-hiem-nhan-tho-mb-ageas-mb-ageas-life-63aac9a35aeea.jpg"
+              })`,
             }}
           ></div>
           <div className="flex flex-col gap-2 mt-[16px]">
@@ -94,7 +101,9 @@ export default function Company() {
               {jobs.map((job, idx) => (
                 <JobCardHorizontal jobData={job} key={idx} />
               ))}
-              <Pagination defaultCurrent={page} total={totalItems} onChange={(e) => setPage(e)} pageSize={2} />
+              <div className="flex items-center justify-center">
+                <Pagination defaultCurrent={page} total={totalItems} onChange={(e) => setPage(e)} pageSize={2} />
+              </div>
             </div>
           </div>
           <CompanyRating companyId={company.id} />
@@ -110,6 +119,12 @@ export default function Company() {
                 <p className="text-lg font-semibold">Địa chỉ công ty</p>
               </div>
               <p className="my-3">{company.address}</p>
+              <MapCaller
+                width={"100%"}
+                height={"400px"}
+                long={Number(company.lattidue)}
+                lat={Number(company.longitude)}
+              />
             </div>
           </div>
         </div>

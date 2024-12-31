@@ -9,9 +9,10 @@ export const ratingRTKApi = baseApi.injectEndpoints({
       }),
     }),
     getRatingsByCompanyId: build.query({
-      query: (companyId) => ({
-        url: `/rating/company/${companyId}`,
+      query: (params) => ({
+        url: `/rating/company/${params.companyId}?page=${params.page}&limit=${params.limit}&order=${params.sortBy}`,
       }),
+      providesTags: ["ratingcompany"],
     }),
     createRating: build.mutation({
       query: (ratingData) => ({
@@ -20,6 +21,7 @@ export const ratingRTKApi = baseApi.injectEndpoints({
         body: ratingData,
         credentials: "include",
       }),
+      invalidatesTags: ["ratingcompany"],
     }),
     updateRating: build.mutation({
       query: ({ id, updatedData }) => ({
@@ -28,6 +30,7 @@ export const ratingRTKApi = baseApi.injectEndpoints({
         body: updatedData,
         credentials: "include",
       }),
+      invalidatesTags: ["ratingcompany"],
     }),
     deleteRating: build.mutation({
       query: (id) => ({
@@ -35,6 +38,7 @@ export const ratingRTKApi = baseApi.injectEndpoints({
         method: "DELETE",
         credentials: "include",
       }),
+      invalidatesTags: ["ratingcompany"],
     }),
   }),
 });

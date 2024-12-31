@@ -9,6 +9,7 @@ import {
 import CompanyRatingCard from "./RatingCard";
 import { AuthContext } from "../../context/AuthProvider";
 import { toast } from "react-hot-toast"; // Import react-hot-toast
+import { Pagination, Select } from "antd";
 
 const CompanyRating = ({ companyId }) => {
   const { userData } = useContext(AuthContext);
@@ -17,8 +18,15 @@ const CompanyRating = ({ companyId }) => {
   const [editingRatingId, setEditingRatingId] = useState(null);
   const [selectedReview, setSelectedReview] = useState(null);
   const [reviews, setReviews] = useState([]);
+  const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState("-createdAt");
 
-  const { data, isLoading } = useGetRatingsByCompanyIdQuery(companyId);
+  const { data, isLoading } = useGetRatingsByCompanyIdQuery({
+    companyId,
+    page,
+    limit: 4,
+    sortBy,
+  });
   const [createRating] = useCreateRatingMutation();
   const [updateRating] = useUpdateRatingMutation();
 
@@ -27,6 +35,7 @@ const CompanyRating = ({ companyId }) => {
       setReviews(data.data);
     }
   }, [data]);
+  const totalPages = data?.pagination?.totalPages;
 
   const handleRatingContentChange = (e) => setContent(e.target.value);
   const handleRatingChange = (value) => setRatingPoint(value);
@@ -50,12 +59,11 @@ const CompanyRating = ({ companyId }) => {
         setReviews(reviews.map((review) => (review.id === editingRatingId ? updatedReview : review)));
         setEditingRatingId(null);
       } else {
-        const newReview = await createRating(payload).unwrap();
-        setReviews([newReview, ...reviews]);
+        await createRating(payload).unwrap();
       }
 
       setContent("");
-      setRatingPoint(5);
+      setRatingPoint(0);
       toast.success("Rating submitted successfully!"); // Show success toast
     } catch (error) {
       console.error("Failed to submit rating:", error);
@@ -85,7 +93,7 @@ const CompanyRating = ({ companyId }) => {
   if (isLoading) return <p>Loading ratings...</p>;
 
   return (
-    <div className="flex flex-col gap-[10px] my-10">
+    <div className="flex flex-col gap-[10px] my-10 p-4 border-[1px] rounded-[8px] bg-white">
       {/* Summary Section */}
       <div className="summary flex text-xl gap-[10px] w-full">
         <FaStar className="text-yellow-400 fill-yellow-400 w-[24px] h-[24px]" />
@@ -116,9 +124,14 @@ const CompanyRating = ({ companyId }) => {
             placeholder="Write your comment here..."
             className="border h-[150px] p-2 w-full bg-gray-200 rounded-xl"
           />
-          <button onClick={handleRatingSubmit} className="bg-blue-600 text-white py-2 px-4 rounded-md w-1/12">
-            {editingRatingId ? "Update" : "Submit"}
-          </button>
+          <div className="flex justify-end">
+            <div
+              onClick={handleRatingSubmit}
+              className="bg-blue-600 text-white text-center cursor-pointer py-2 px-4 rounded-[4px] "
+            >
+              {editingRatingId ? "Update" : "Submit"}
+            </div>
+          </div>
         </div>
       ) : (
         <p className="text-center text-red-500">Bạn cần phải đăng nhập để đánh giá</p> // Show message if not logged in
@@ -126,6 +139,19 @@ const CompanyRating = ({ companyId }) => {
 
       {/* Ratings List */}
       <div className="content flex flex-col gap-[10px]">
+        <div className="flex">
+          <Select
+            defaultValue="-createdAt"
+            style={{ width: 120 }}
+            onChange={(vl) => setSortBy(vl)}
+            options={[
+              { value: "-createdAt", label: "Newest" },
+              { value: "createdAt", label: "Oldest" },
+              { value: "-RatingValue", label: "Most rating" },
+              { value: "RatingValue", label: "Lowest rating" },
+            ]}
+          />
+        </div>
         {reviews.length > 0 ? (
           reviews.map((review) => (
             <div key={review.id}>
@@ -143,6 +169,9 @@ const CompanyRating = ({ companyId }) => {
         ) : (
           <p>No reviews yet. Be the first to leave a review!</p>
         )}
+        <div className="flex items-center justify-center">
+          <Pagination current={page} total={totalPages} onChange={(e) => setPage(e)} pageSize={2} />
+        </div>
       </div>
 
       {/* Load More Button */}

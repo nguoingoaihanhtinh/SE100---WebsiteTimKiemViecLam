@@ -25,7 +25,7 @@ const CompanyRatingCard = ({ review, userId, onEdit, onDeleteSuccess }) => {
   const name = review?.User?.user_name || "Anonymous";
 
   return (
-    <div className="flex flex-col gap-4 bg-gray-300 rounded-md p-4 w-full">
+    <div className="flex flex-col gap-4 bg-gray-100 rounded-[8px] p-4 w-full">
       <div className="flex gap-4">
         <img src={avatar} alt="User Avatar" className="h-8 w-8 rounded-full object-cover" />
         <div className="flex flex-col w-full">
@@ -38,7 +38,7 @@ const CompanyRatingCard = ({ review, userId, onEdit, onDeleteSuccess }) => {
               </div>
             </div>
             {review.UserId === userId && (
-              <div className="buttons flex gap-5 items-center">
+              <div className="buttons flex gap-2 items-center">
                 <button onClick={handleEditClick} className="hover:text-blue-500 flex items-center bg-transparent">
                   <FaEdit className="mr-1" />
                 </button>
