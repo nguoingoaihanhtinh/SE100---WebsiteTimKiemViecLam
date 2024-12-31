@@ -109,11 +109,11 @@ const CV = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6 flex bg-gray-100">
-      <div className="display w-1/2">
+    <div className="container mx-auto p-6 space-y-6 flex flex-col lg:flex-row bg-gray-100">
+      <div className="display w-full lg:w-1/2">
         <CVDisplay data={previewData || existingCV?.data} />
       </div>
-      <div className="add w-1/2 p-5 bg-gray-100">
+      <div className="add w-full lg:w-1/2 p-5 bg-gray-100">
         {/* Title */}
         <div className="space-y-2">
           <label htmlFor="title" className="block text-gray-700 font-medium">

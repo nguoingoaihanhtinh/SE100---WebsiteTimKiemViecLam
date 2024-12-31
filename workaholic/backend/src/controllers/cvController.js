@@ -1,10 +1,17 @@
-import { CV } from "../models/relation.js";
+import { CV, User } from "../models/relation.js";
 
 export const getCVs = async (req, res) => {
   try {
     const user_id = req.user.id;
     const cv = await CV.findOne({
       where: { user_id },
+      include: [
+        {
+          model: User,
+          attributes: ["user_name", "avatar"],
+          as: "user",
+        },
+      ],
     });
 
     if (!cv) {
@@ -98,6 +105,13 @@ export const getCVByUserId = async (req, res) => {
 
     const cvs = await CV.findAll({
       where: { user_id: userId },
+      include: [
+        {
+          model: User,
+          attributes: ["user_name", "avatar"],
+          as: "user",
+        },
+      ],
     });
 
     if (cvs.length === 0) {

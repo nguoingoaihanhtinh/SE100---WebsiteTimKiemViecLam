@@ -1,30 +1,42 @@
 import React, { useState } from "react";
-import { FaTrash, FaSearch, FaPlus, FaChevronDown, FaUser, FaAngleDown, FaAngleUp } from "react-icons/fa";
+import { FaSearch, FaUser, FaAngleDown, FaAngleUp } from "react-icons/fa";
 import { useGetApplicationsByJobIdQuery, useUpdateApplicationMutation } from "../../../redux/rtk/application.service";
 import { useNavigate, useParams } from "react-router-dom";
+import { Pagination } from "antd";
 
 const ManageApplication = () => {
-  //   const [applications, setApplications] = useState(initialApplications);
   const { id } = useParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedRow, setExpandedRow] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
-  const { data: applications = [], refetch } = useGetApplicationsByJobIdQuery(id);
+
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const { data, error, isLoading } = useGetApplicationsByJobIdQuery({
+    jobId: id,
+    page: currentPage,
+    limit: itemsPerPage,
+    order: sortOrder,
+  });
+
+  const applications = data?.data || [];
+  const total = data?.pagination?.totalApplications || 0;
+
   const [updateApplication] = useUpdateApplicationMutation();
   const navigate = useNavigate();
-  console.log("Applications:", applications);
-
   const handleStatusChange = async (id, newStatus) => {
     try {
       await updateApplication({ id, applicationData: { status: newStatus } }).unwrap();
-      refetch();
       setPopupMessage(`Application has been ${newStatus}.`);
       setShowPopup(true);
     } catch (error) {
       console.error("Failed to update application status", error);
     }
   };
+
   const filteredApplications = applications.filter(
     (app) =>
       app.user?.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -41,20 +53,31 @@ const ManageApplication = () => {
         return "bg-yellow-500";
     }
   };
+
+  const handleSortChange = () => {
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+  };
+
   const handleCvClicked = (userId) => {
     console.log("id", userId);
-    navigate(`/cv/${userId}}`);
+    navigate(`/cv/${userId}`);
   };
+
+  // Handle pagination change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+  if (isLoading) {
+    return <div>Loading...</div>; // Display loading indicator while fetching data
+  }
+
+  if (error) {
+    return <div>Error loading applications</div>; // Handle error state
+  }
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Application Listings</h1>
-        {/* <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-        >
-          <FaPlus className="mr-2" /> Add New Application
-        </button> */}
       </div>
       <div>
         <div className="mb-4 relative">
@@ -180,6 +203,12 @@ const ManageApplication = () => {
             </table>
           </div>
         )}
+
+        {/* Pagination */}
+        <div className="mt-6 text-center flex justify-center">
+          <Pagination current={currentPage} total={total || 0} pageSize={itemsPerPage} onChange={handlePageChange} />
+        </div>
+
         {showPopup && (
           <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-xl shadow-md">

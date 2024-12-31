@@ -10,65 +10,40 @@ export const applicationApi = baseApi.injectEndpoints({
         body: applicationData,
         credentials: "include",
       }),
-      async onQueryStarted(arg, { queryFulfilled }) {
-        try {
-          await queryFulfilled;
-        } catch (err) {
-          if (err.error?.status === 401) {
-            alert("Session expired. Please log in again.");
-            window.location.href = "/login";
-          }
-        }
-      },
+      invalidatesTags: [{ type: "Application", id: "LIST" }],
     }),
+
     getUserApplication: build.query({
-      query: () => ({
-        url: "/application/user",
+      query: ({ page = 1, limit = 5, order = "desc" }) => ({
+        url: `/application/user/`,
+        params: { page, limit, order },
         credentials: "include",
       }),
-      async onQueryStarted(arg, { queryFulfilled }) {
-        try {
-          await queryFulfilled;
-        } catch (err) {
-          if (err.error?.status === 401) {
-            alert("Session expired. Please log in again.");
-            window.location.href = "/login";
-          }
-        }
-      },
+      providesTags: (result) =>
+        result
+          ? [...result.data.map(({ id }) => ({ type: "Application", id })), { type: "Application", id: "LIST" }]
+          : [{ type: "Application", id: "LIST" }],
     }),
+
     getAllApplications: build.query({
       query: () => ({
         url: "/application",
         credentials: "include",
       }),
-      async onQueryStarted(arg, { queryFulfilled }) {
-        try {
-          await queryFulfilled;
-        } catch (err) {
-          if (err.error?.status === 401) {
-            alert("Session expired. Please log in again.");
-            window.location.href = "/login";
-          }
-        }
-      },
+      providesTags: (result) =>
+        result
+          ? [...result.data.map(({ id }) => ({ type: "Application", id })), { type: "Application", id: "LIST" }]
+          : [{ type: "Application", id: "LIST" }],
     }),
+
     getApplicationById: build.query({
       query: (id) => ({
         url: `/application/${id}`,
         credentials: "include",
       }),
-      async onQueryStarted(arg, { queryFulfilled }) {
-        try {
-          await queryFulfilled;
-        } catch (err) {
-          if (err.error?.status === 401) {
-            alert("Session expired. Please log in again.");
-            window.location.href = "/login";
-          }
-        }
-      },
+      providesTags: (result) => [{ type: "Application", id: result?.id }],
     }),
+
     updateApplication: build.mutation({
       query: ({ id, applicationData }) => ({
         url: `/application/${id}`,
@@ -76,49 +51,28 @@ export const applicationApi = baseApi.injectEndpoints({
         body: applicationData,
         credentials: "include",
       }),
-      async onQueryStarted(arg, { queryFulfilled }) {
-        try {
-          await queryFulfilled;
-        } catch (err) {
-          if (err.error?.status === 401) {
-            alert("Session expired. Please log in again.");
-            window.location.href = "/login";
-          }
-        }
-      },
+      invalidatesTags: (result, error, { id }) => [{ type: "Application", id }],
     }),
+
     deleteApplication: build.mutation({
       query: (id) => ({
         url: `/application/${id}`,
         method: "DELETE",
         credentials: "include",
       }),
-      async onQueryStarted(arg, { queryFulfilled }) {
-        try {
-          await queryFulfilled;
-        } catch (err) {
-          if (err.error?.status === 401) {
-            alert("Session expired. Please log in again.");
-            window.location.href = "/login";
-          }
-        }
-      },
+      invalidatesTags: (result, error, id) => [{ type: "Application", id }],
     }),
+
     getApplicationsByJobId: build.query({
-      query: (jobId) => ({
+      query: ({ jobId, page = 1, limit = 5, order = "desc" }) => ({
         url: `/application/job/${jobId}`,
+        params: { page, limit, order },
         credentials: "include",
       }),
-      async onQueryStarted(arg, { queryFulfilled }) {
-        try {
-          await queryFulfilled;
-        } catch (err) {
-          if (err.error?.status === 401) {
-            alert("Session expired. Please log in again.");
-            window.location.href = "/login";
-          }
-        }
-      },
+      providesTags: (result) =>
+        result
+          ? [...result.data.map(({ id }) => ({ type: "Application", id })), { type: "Application", id: "LIST" }]
+          : [{ type: "Application", id: "LIST" }],
     }),
   }),
 });

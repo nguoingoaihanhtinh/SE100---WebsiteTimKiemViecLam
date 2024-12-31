@@ -49,12 +49,6 @@ function UserSection() {
           <div className="absolute right-35 top-12 bg-white shadow-md rounded-[4px] w-48 z-10">
             <ul className="flex flex-col py-2">
               <li
-                onClick={() => navigate("/profile")}
-                className="px-4 py-2 text-black hover:bg-gray-100 cursor-pointer"
-              >
-                Profile
-              </li>
-              <li
                 onClick={() => navigate("/application")}
                 className="px-4 py-2 text-black hover:bg-gray-100 cursor-pointer"
               >

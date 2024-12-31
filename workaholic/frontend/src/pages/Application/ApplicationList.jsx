@@ -1,26 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { FaUser, FaEnvelope, FaBriefcase, FaPaperPlane, FaChevronDown, FaChevronUp, FaTrash } from "react-icons/fa";
 import { useGetUserApplicationQuery, useDeleteApplicationMutation } from "../../redux/rtk/application.service";
-import { useCheckLoginQuery } from "../../redux/rtk/user.service";
 import { Link } from "react-router-dom";
+import { Pagination } from "antd";
 import toast from "react-hot-toast";
+import { AuthContext } from "../../context/AuthProvider";
+import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
 
 const JobApplicationList = () => {
   const [expandedApplication, setExpandedApplication] = useState(null);
-  const { data: applications, error, isLoading } = useGetUserApplicationQuery();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortOrder, setSortOrder] = useState("desc");
+  const itemsPerPage = 5;
+
+  const { data, error, isLoading } = useGetUserApplicationQuery({
+    page: currentPage,
+    limit: itemsPerPage,
+    order: sortOrder,
+  });
+  const applications = data?.data;
+  const pagination = data?.pagination;
+  console.log("data", applications);
   const [deleteApplication] = useDeleteApplicationMutation();
-  const [deleteMessage, setDeleteMessage] = useState(null);
-  const { data: loginStatus, isLoading: loginLoading } = useCheckLoginQuery();
-
-  console.log("app", applications);
-
+  const { isLoggedIn, isAuthLoading } = useContext(AuthContext);
   useEffect(() => {
-    if (!loginStatus?.user?.id) {
-      toast.error("You must be logged in to apply for a job.");
-      window.location.href = "/login"; // Redirect to login page
-      return;
+    if (!isAuthLoading) {
+      if (!isLoggedIn) {
+        toast.error("You must be logged in to apply for a job.");
+        window.location.href = "/login";
+      }
     }
-  }, [loginLoading, loginStatus]);
+  }, [isLoggedIn, isAuthLoading]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -37,8 +47,17 @@ const JobApplicationList = () => {
     setExpandedApplication(expandedApplication === id ? null : id);
   };
 
-  // Handle loading and error states
-  if (isLoading || loginLoading) {
+  const handleDelete = async (id) => {
+    try {
+      await deleteApplication(id);
+      toast.success("Application deleted successfully.");
+      window.location.reload();
+    } catch (error) {
+      toast.error("Error deleting application.");
+      console.error("Error deleting application:", error);
+    }
+  };
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
@@ -46,12 +65,11 @@ const JobApplicationList = () => {
     return (
       <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 items-center text-center">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-gray-800 8">Job Applications List</h2>
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Job Applications List</h2>
           <div className="text-red-500 text-center p-5">
             Error loading applications:
             <span className="font-semibold">{error.data.message}</span>
           </div>
-          ;
           <Link to={"/jobs"} className="border border-gray-400 p-2 rounded-xl">
             Find a job now
           </Link>
@@ -59,25 +77,32 @@ const JobApplicationList = () => {
       </div>
     );
   }
-
-  // Handle deleting an application
-  const handleDelete = async (id) => {
-    try {
-      await deleteApplication(id);
-      toast.success("Application deleted successfully.");
-      // Reload the page after successful deletion
-      window.location.reload();
-    } catch (error) {
-      toast.error("Error deleting application.");
-      console.error("Error deleting application:", error);
-    }
+  const toggleSortOrder = () => {
+    setSortOrder((prevOrder) => {
+      const newOrder = prevOrder === "asc" ? "desc" : "asc";
+      console.log("New Sort Order:", newOrder);
+      return newOrder;
+    });
   };
-
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Job Applications List</h2>
-        {deleteMessage && <div className="mb-4 text-green-500">{deleteMessage}</div>}
+        {/* Button to toggle sort order */}
+        <div className="flex justify-start mb-4">
+          <p onClick={toggleSortOrder} className="bg-gray-500 text-white flex items-center gap-2 py-2 px-4 rounded">
+            Sort by Date
+            {sortOrder === "asc" ? (
+              <span className="flex items-center">
+                <FaAngleUp /> Ascending
+              </span>
+            ) : (
+              <span className="flex items-center">
+                <FaAngleDown /> Descending
+              </span>
+            )}
+          </p>
+        </div>
         <div className="space-y-4">
           {applications.map((application) => (
             <div key={application.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -95,18 +120,15 @@ const JobApplicationList = () => {
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
-                    {/* Delete Icon */}
                     <button
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevent expanding/collapsing when deleting
+                        e.stopPropagation();
                         handleDelete(application.id);
                       }}
                       className="text-gray-600 hover:text-red-500"
                     >
                       <FaTrash />
                     </button>
-
-                    {/* Status */}
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
                         application.status
@@ -122,7 +144,6 @@ const JobApplicationList = () => {
                   </div>
                 </div>
               </div>
-
               {expandedApplication === application.id && (
                 <div className="px-6 pb-6 border-t border-gray-200">
                   <div className="mt-4 space-y-4">
@@ -146,6 +167,14 @@ const JobApplicationList = () => {
               )}
             </div>
           ))}
+        </div>
+        <div className="mt-6 flex justify-center">
+          <Pagination
+            current={currentPage}
+            pageSize={itemsPerPage}
+            total={pagination?.totalApplications || 0}
+            onChange={(page) => setCurrentPage(page)}
+          />
         </div>
       </div>
     </div>
