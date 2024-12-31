@@ -12,8 +12,8 @@ const CVDisplay = ({ data }) => {
       <div className="w-1/3 bg-orange-100/90  shadow-lg rounded-lg p-4 flex flex-col items-center">
         {/* Avatar */}
         <div className="w-full h-1/4 rounded-xl bg-gray-300 overflow-hidden mb-4">
-          {data?.avatar ? (
-            <img src={userData.avatar} alt="Avatar" className="w-full h-full object-cover" />
+          {data?.user?.avatar ? (
+            <img src={data?.user?.avatar} alt="Avatar" className="w-full h-full object-cover" />
           ) : (
             <p className="flex items-center justify-center h-full text-gray-500">Avatar</p>
           )}

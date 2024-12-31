@@ -37,7 +37,7 @@ INSERT INTO users (user_name,email,role,avatar,cv_url,password,createdAt,updated
 
 -- Insert companies with user_id directly linked to their employer
 INSERT INTO companies (id, img, name, feild, description, longitude, lattidue, createdAt, updatedAt, user_id, address) VALUES
-(1, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHpKR-St3jrJVdI1BXS19aFiBwjEowCwf5SA&s', 'TechCorp', 'Technology', 'Leading tech solutions provider.', -122.4194, 37.7749, NOW(), NOW(), 1, 'Tan Phu'),
+(1, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHpKR-St3jrJVdI1BXS19aFiBwjEowCwf5SA&s', 'TechCorp', 'Technology', 'Leading tech solutions provider.', 106.6156513, 10.797671, NOW(), NOW(), 1, 'Tan Phu'),
 (2, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVg-MpwR4MidIjbNh56cBtGAjgQxQbWXk7Rw&s', 'HealthCare Inc.', 'Healthcare', 'Quality healthcare services.', -74.0060, 40.7128, NOW(), NOW(), 2, 'Thu Duc'),
 (3, 'https://play-lh.googleusercontent.com/gsIyPP1pr6Phvc9VdJqA9v5EdyOfL0KTj-hk_gzO0yLUZgfT_KDYjpsJ2PQMBJuZdX0h', 'EduLearn', 'Education', 'Innovative e-learning platform.', -118.2437, 34.0522, NOW(), NOW(), 3, 'Binh Thanh'),
 (4, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGyYDIZxQC2mM5_Po0owjE2bQzMLugBS3UemVZJ0k&usqp=CAE&s', 'VinaTech', 'Technology', 'Leading tech solutions in Vietnam.', 21.0285, 105.8542, NOW(), NOW(), 4, 'Hanoi'),
