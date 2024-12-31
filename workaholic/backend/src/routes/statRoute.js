@@ -6,5 +6,6 @@ const statRouter = express.Router();
 
 // Define routes for saved items
 statRouter.get("/monthly-user-change", StatController.getMonthlyUserStats);
+statRouter.get("/jobtype-count", StatController.getJobTypeCountStats);
 
 export default statRouter;
