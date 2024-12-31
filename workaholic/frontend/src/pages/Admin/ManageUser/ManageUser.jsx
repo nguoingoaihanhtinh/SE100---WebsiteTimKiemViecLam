@@ -1,5 +1,7 @@
 import { useGetAllUsersQuery, useDeleteUserMutation } from "../../../redux/rtk/user.service";
 import UserTable from "../../../components/Admin/Tables/UserTable";
+import { useState } from "react";
+import { Pagination } from "antd";
 
 const ManageUser = () => {
   const tableHeaders = ["Id", "Avatar", "Name", "Email"];
@@ -7,6 +9,10 @@ const ManageUser = () => {
   const [deleteUser, { isLoading: isDeleting, isError: deleteError }] = useDeleteUserMutation();
 
   const users = userRes?.users || [];
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
+  const currentData = users.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
@@ -31,7 +37,6 @@ const ManageUser = () => {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Users Management</h1>
         </div>
-
         {/* TABLE */}
         <div className="overflow-x-auto bg-white rounded-[10px] shadow-lg">
           <table className="min-w-full divide-y divide-gray-700">
@@ -48,11 +53,21 @@ const ManageUser = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-700">
-              {users.map((user, index) => (
+              {currentData.map((user, index) => (
                 <UserTable key={index} rowValue={user} onDelete={() => handleDelete(user.id)} />
               ))}
             </tbody>
           </table>
+        </div>
+        \
+        <div className="mt-6 flex justify-center">
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={users.length}
+            onChange={(page) => setCurrentPage(page)}
+            showSizeChanger={false}
+          />
         </div>
       </div>
 
