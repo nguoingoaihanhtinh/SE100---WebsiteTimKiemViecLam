@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import { FaBell, FaLocationDot, FaUser } from "react-icons/fa6";
 import { AuthContext } from "../../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
@@ -18,11 +18,7 @@ function UserSection() {
   const handleBellClick = async () => {
     navigate("/noti");
   };
-  const {
-    data: notifications = [],
-    error,
-    isLoading,
-  } = useGetNotificationsQuery({
+  const { data: notifications = [] } = useGetNotificationsQuery({
     user_id: userData?.id,
     is_global: false,
   });
