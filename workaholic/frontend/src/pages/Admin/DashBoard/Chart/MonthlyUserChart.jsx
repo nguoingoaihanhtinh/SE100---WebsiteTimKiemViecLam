@@ -2,8 +2,9 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 
 export default function MonthlyUserChart({ userMonthlyData }) {
   const data = userMonthlyData.map((dt) => ({ name: `Tháng ${dt.month}`, value: dt.userCount }));
+
   return (
-    <div className="w-[600px] h-[300px] flex justify-center items-center">
+    <div className="w-full h-full flex justify-center items-center">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}

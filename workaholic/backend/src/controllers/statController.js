@@ -1,4 +1,4 @@
-import { User } from "../models/relation.js";
+import { User, JobType, Job } from "../models/relation.js";
 import { Op, Sequelize } from "sequelize";
 
 export const getMonthlyUserStats = async (req, res) => {
@@ -47,6 +47,43 @@ export const getMonthlyUserStats = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: "Failed to retrieve monthly user stats",
+      error: error.message,
+    });
+  }
+};
+export const getJobTypeCountStats = async (req, res) => {
+  try {
+    // Query to count the number of jobs for each job type
+    const jobTypeCounts = await Job.findAll({
+      attributes: [
+        "jobType_id", // Group by jobType_id
+        [Sequelize.fn("COUNT", Sequelize.col("jobType_id")), "jobCount"], // Count the jobs for each jobType
+      ],
+      group: ["jobType_id"], // Group by jobType_id
+      include: [
+        {
+          model: JobType,
+          as: "jobType",
+          attributes: ["id", "name"], // Include job type name
+        },
+      ],
+      raw: true, // Return plain data
+    });
+
+    // Format the result to include job type names
+    const result = jobTypeCounts.map((item) => ({
+      jobTypeId: item["jobType_id"],
+      jobTypeName: item["jobType.name"], // Access the job type name from the included model
+      jobCount: item.jobCount,
+    }));
+
+    return res.status(200).json({
+      message: "success",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to retrieve job type count stats",
       error: error.message,
     });
   }

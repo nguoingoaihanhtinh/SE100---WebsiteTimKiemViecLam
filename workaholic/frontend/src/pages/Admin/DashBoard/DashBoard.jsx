@@ -2,15 +2,24 @@ import { Typography } from "@mui/material";
 import StatBox from "./Chart/StatBox";
 import MonthlyUserChart from "./Chart/MonthlyUserChart";
 import { useGetAllUsersQuery } from "../../../redux/rtk/user.service";
-import { useGetMonthlyUserCreatedQuery } from "../../../redux/rtk/stat.service";
+import { useGetJobTypeCountQuery, useGetMonthlyUserCreatedQuery } from "../../../redux/rtk/stat.service";
+import JobTypeChart from "./Chart/JobTypeChart";
+import { useState } from "react";
+import { Select } from "antd";
 
 const AdminDashBoard = () => {
   const { data: users } = useGetAllUsersQuery();
   const totalUsers = users?.users?.length || 0;
-  const { data: res } = useGetMonthlyUserCreatedQuery(2024);
+  const [year, setYear] = useState("2025");
+  const { data: res } = useGetMonthlyUserCreatedQuery(year);
   const { data: resCurentYear } = useGetMonthlyUserCreatedQuery(2024);
+  const { data: resJobType } = useGetJobTypeCountQuery();
   const usersMonthly = res?.data || [];
   const usersMonthlyCurrentYear = resCurentYear?.data || [];
+  const jobsTypeCountData = resJobType?.data || [];
+  const totalJobCount = jobsTypeCountData.reduce((total, jobType) => {
+    return total + jobType.jobCount;
+  }, 0);
   function calculatePercentageGrowth() {
     const currentMonth = new Date().getMonth() + 1;
     if (currentMonth < 1 || currentMonth > 12) {
@@ -47,7 +56,7 @@ const AdminDashBoard = () => {
           icon={<i className="fa fa-users text-green-500 text-3xl" />}
         />
         <StatBox
-          title={2}
+          title={totalJobCount}
           subtitle="Active Jobs"
           progress={0.7}
           increase="+20%"
@@ -61,10 +70,28 @@ const AdminDashBoard = () => {
           icon={<i className="fa fa-chart-line text-red-500 text-3xl" />}
         />
       </div>
-      <div className="flex mt-6">
-        <div className="basis-[50%] p-4 flex-col gap-4 border-[1px] rounded-[4px] border-gray-400 flex">
-          <p className="text-2xl font-bold">Monthly user register change</p>
+      <div className="flex mt-6 gap-4">
+        <div className="basis-[50%] min-w-[50%] h-[400px] p-4 flex-col gap-4 border-[1px] rounded-[4px] border-gray-400 flex">
+          <div className="flex items-center justify-between">
+            <p className="text-2xl font-bold">Monthly user register change</p>
+            <Select
+              defaultValue="2025"
+              style={{ width: 120 }}
+              onChange={(vl) => setYear(vl)}
+              options={[
+                { value: "2021", label: "2021" },
+                { value: "2022", label: "2022" },
+                { value: "2023", label: "2023" },
+                { value: "2024", label: "2024" },
+                { value: "2025", label: "2025" },
+              ]}
+            />
+          </div>
           <MonthlyUserChart userMonthlyData={usersMonthly} />
+        </div>
+        <div className="basis-[50%] w-[50%] items-center p-4 flex-col gap-4 border-[1px] rounded-[4px] border-gray-400 flex">
+          <p className="text-2xl font-bold">Job base type count</p>
+          <JobTypeChart jobTypeDatas={jobsTypeCountData} />
         </div>
       </div>
     </div>
