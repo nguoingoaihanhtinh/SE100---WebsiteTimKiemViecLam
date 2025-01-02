@@ -16,10 +16,14 @@ const jobApi = {
       if (filters.selectedLocation && filters.selectedLocation.latitude && filters.selectedLocation.longitude) {
         query += `&longitude=${filters.selectedLocation.longitude}&lattidue=${filters.selectedLocation.latitude}`;
       }
+      if (filters.order) {
+        query += `&order=${filters.order}`;
+      }
     }
     const response = await request.get(query);
     return response.data;
   },
+
   getAllJobTypes: async () => {
     let query = `/job/getAllType`;
     const response = await request.get(query);

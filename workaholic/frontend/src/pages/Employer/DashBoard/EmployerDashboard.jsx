@@ -14,7 +14,6 @@ import toast from "react-hot-toast";
 import MapCaller from "../../../components/Map/MapCaller";
 export default function EmployerDashboard() {
   const { userData } = useContext(AuthContext);
-
   const [page, setPage] = useState(1);
   const [jobs, setJobs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
