@@ -14,6 +14,7 @@ export const getAllJobs = async (req, res) => {
       lattidue, // Assuming you meant latitude
       salary_from = 0,
       salary_to = 100000000,
+      order = "createdAt",
     } = req.query;
 
     const offset = (page - 1) * limit;
@@ -55,13 +56,22 @@ export const getAllJobs = async (req, res) => {
 
       whereClause[Op.and] = [Sequelize.where(distanceCondition, true)];
     }
+    let orderBy = [];
+    if (order) {
+      const isDescending = order.startsWith("-");
+      const fieldName = isDescending ? order.slice(1) : order;
 
-    // Fetch jobs with pagination and filters
+      const validFields = ["createdAt", "title", "salary_from"];
+      if (validFields.includes(fieldName)) {
+        orderBy.push([fieldName, isDescending ? "DESC" : "ASC"]);
+      }
+    }
+
     const { rows: jobs, count: totalItems } = await Job.findAndCountAll({
       where: whereClause,
       offset,
       limit: parseInt(limit, 10),
-      order: [["createdAt", "DESC"]],
+      order: orderBy.length > 0 ? orderBy : [["createdAt", "ASC"]],
       include: [
         {
           model: Company,
@@ -131,17 +141,14 @@ export const getAllJobsByCompanyId = async (req, res) => {
           ],
         }
       : {};
-    // Dynamically handle sorting based on the 'order' query parameter
-    const validFields = ["createdAt", "-createdAt", "-title", "title"]; // Add more valid fields here as needed
+    const validFields = ["createdAt", "-createdAt", "-title", "title"];
 
-    // If the order has a `-` prefix, it indicates descending order
     let sortBy = order.startsWith("-") ? order.slice(1) : order;
     let sortDirection = order.startsWith("-") ? "DESC" : "ASC";
     if (!validFields.includes(sortBy)) {
-      sortBy = "createdAt"; // Default to sorting by createdAt
-      sortDirection = "DESC"; // Default to descending order
+      sortBy = "createdAt";
+      sortDirection = "DESC";
     }
-    // Fetch jobs with pagination and include related models
     const { rows: jobs, count: totalItems } = await Job.findAndCountAll({
       where: { company_id: company_id, ...searchCondition },
       offset,
