@@ -7,6 +7,7 @@ export const jobRTKApi = baseApi.injectEndpoints({
         url: "/job",
         credentials: "include",
       }),
+      providesTags: ["jobList"],
     }),
     createJob: build.mutation({
       query: (payload) => ({
@@ -15,6 +16,15 @@ export const jobRTKApi = baseApi.injectEndpoints({
         body: payload,
         credentials: "include",
       }),
+      onQueryStarted: async (payload, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(jobRTKApi.util.invalidateTags(["jobList"]));
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      invalidatesTags: ["jobList"],
     }),
     updateJob: build.mutation({
       query: ({ payload, id }) => ({
@@ -23,6 +33,15 @@ export const jobRTKApi = baseApi.injectEndpoints({
         body: payload,
         credentials: "include",
       }),
+      onQueryStarted: async ({ payload, id }, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(jobRTKApi.util.invalidateTags(["jobList"]));
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      invalidatesTags: ["jobList"],
     }),
     deleteJob: build.mutation({
       query: (id) => ({
@@ -30,6 +49,15 @@ export const jobRTKApi = baseApi.injectEndpoints({
         method: "DELETE",
         credentials: "include",
       }),
+      onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(jobRTKApi.util.invalidateTags(["jobList"]));
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      invalidatesTags: ["jobList"],
     }),
     getById: build.query({
       query: (id) => ({
@@ -42,6 +70,7 @@ export const jobRTKApi = baseApi.injectEndpoints({
         url: `/job/company?page=${body.page}&limit=${body.limit}&company_id=${body.company_id}&kw=${body.kw}&order=${body.order}`,
         credentials: "include",
       }),
+      providesTags: (result) => (result ? result.data.map(({ id }) => ({ type: "job", id })) : []),
     }),
     getAllJobTypes: build.query({
       query: () => ({
@@ -73,6 +102,7 @@ export const jobRTKApi = baseApi.injectEndpoints({
     }),
   }),
 });
+
 export const {
   useGetAllJobsQuery,
   useGetAllJobsByCompanyIdQuery,

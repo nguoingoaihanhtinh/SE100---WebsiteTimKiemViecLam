@@ -5,7 +5,7 @@ import { Application, Job, User, Notification, Company } from "../models/relatio
 export const createApplication = async (req, res) => {
   const transaction = await sequelize.transaction(); // Begin a transaction for atomicity
   try {
-    const { user_id, job_id, status } = req.body;
+    const { user_id, job_id, status, letter } = req.body;
 
     // Validate User (applicant)
     const user = await User.findByPk(user_id);
@@ -25,8 +25,13 @@ export const createApplication = async (req, res) => {
       return res.status(404).json({ error: "Company or employer not found" });
     }
 
-    // Create Application
-    const application = await Application.create({ user_id, job_id, status }, { transaction });
+    if (!letter || letter.trim() === "") {
+      return res.status(400).json({ error: "Cover letter is required." });
+    }
+    const application = await Application.create(
+      { user_id, job_id, status, letter }, // Use the `letter` field
+      { transaction }
+    );
 
     // Notification for the user (applicant)
     await Notification.create(

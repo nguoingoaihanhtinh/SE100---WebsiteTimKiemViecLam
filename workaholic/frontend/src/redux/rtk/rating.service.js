@@ -21,6 +21,14 @@ export const ratingRTKApi = baseApi.injectEndpoints({
         body: ratingData,
         credentials: "include",
       }),
+      onQueryStarted: async (ratingData, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(ratingRTKApi.util.invalidateTags(["ratingcompany"]));
+        } catch (error) {
+          console.error("Error while creating rating:", error);
+        }
+      },
       invalidatesTags: ["ratingcompany"],
     }),
     updateRating: build.mutation({
@@ -30,6 +38,14 @@ export const ratingRTKApi = baseApi.injectEndpoints({
         body: updatedData,
         credentials: "include",
       }),
+      onQueryStarted: async ({ id, updatedData }, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(ratingRTKApi.util.invalidateTags(["ratingcompany"]));
+        } catch (error) {
+          console.error("Error while updating rating:", error);
+        }
+      },
       invalidatesTags: ["ratingcompany"],
     }),
     deleteRating: build.mutation({
@@ -38,6 +54,14 @@ export const ratingRTKApi = baseApi.injectEndpoints({
         method: "DELETE",
         credentials: "include",
       }),
+      onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(ratingRTKApi.util.invalidateTags(["ratingcompany"]));
+        } catch (error) {
+          console.error("Error while deleting rating:", error);
+        }
+      },
       invalidatesTags: ["ratingcompany"],
     }),
   }),

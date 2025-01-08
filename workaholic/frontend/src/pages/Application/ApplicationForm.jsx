@@ -36,6 +36,11 @@ const JobApplicationForm = ({ JobData, closeForm, user }) => {
   };
 
   const handleSubmit = async (e) => {
+    console.log("Submitting payload:", {
+      job_id: JobData.id,
+      user_id: user.id,
+      letter: formData.coverLetter,
+    });
     e.preventDefault();
     if (validateForm()) {
       try {

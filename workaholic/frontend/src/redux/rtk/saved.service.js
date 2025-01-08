@@ -7,6 +7,7 @@ export const savedRTKApi = baseApi.injectEndpoints({
         url: `/save?page=${params.page}&limit=${params.limit}&order=${params.order}`,
         credentials: "include",
       }),
+      providesTags: ["savedJobs"],
     }),
     saveJob: build.mutation({
       query: (jobData) => ({
@@ -15,6 +16,15 @@ export const savedRTKApi = baseApi.injectEndpoints({
         body: jobData,
         credentials: "include",
       }),
+      onQueryStarted: async (jobData, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(savedRTKApi.util.invalidateTags(["savedJobs"]));
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      invalidatesTags: ["savedJobs"],
     }),
     removeSavedJob: build.mutation({
       query: (id) => ({
@@ -22,6 +32,15 @@ export const savedRTKApi = baseApi.injectEndpoints({
         method: "DELETE",
         credentials: "include",
       }),
+      onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(savedRTKApi.util.invalidateTags(["savedJobs"]));
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      invalidatesTags: ["savedJobs"],
     }),
   }),
 });
