@@ -3,6 +3,8 @@ import { useGetAllCompaniesQuery, useDeleteCompanyMutation } from "../../../redu
 import CompanyTable from "../../../components/Admin/Tables/CompanyTable";
 import AddCompanyForm from "./AddCompany/AddCompany";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
+import { Pagination } from "antd"; // Import Ant Design Pagination
+
 const ManageCompany = () => {
   const tableHeaders = ["Image", "Name", "Field", "Description", "Rating"];
   const [page, setPage] = useState(1);
@@ -13,11 +15,16 @@ const ManageCompany = () => {
     isError,
   } = useGetAllCompaniesQuery({
     page,
-    limit: 9,
+    limit: 9, // Limit set to 9 per page
     type: "",
   });
+
   const [deleteCompany] = useDeleteCompanyMutation();
+  console.log("res", companiesRes);
+
   const companies = companiesRes?.companies || [];
+  const totalCompanies = companiesRes?.totalCompanies || 0; // Total companies count for pagination
+  const totalPages = companiesRes?.totalPages || 1; // Total pages available
   const [showAddCompanyForm, setShowAddCompanyForm] = useState(false);
   const [editCompanyIndex, setEditCompanyIndex] = useState(null);
 
@@ -25,6 +32,7 @@ const ManageCompany = () => {
     setEditCompanyIndex(index);
     setShowAddCompanyForm(!showAddCompanyForm);
   };
+
   const sortCompanies = (companies, option) => {
     switch (option) {
       case "name-asc":
@@ -47,6 +55,7 @@ const ManageCompany = () => {
       await deleteCompany(id);
     }
   };
+
   const handleSort = (field) => {
     setSortOption((prev) => {
       const [currentField, direction] = prev.split("-");
@@ -56,6 +65,12 @@ const ManageCompany = () => {
       return `${field}-asc`;
     });
   };
+
+  // Handle pagination change
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching companies!</div>;
 
@@ -122,6 +137,19 @@ const ManageCompany = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex justify-center">
+            <Pagination
+              current={page} // Current page
+              total={totalCompanies} // Total number of companies
+              pageSize={9} // Number of items per page
+              onChange={handlePageChange} // Handle page change
+              showSizeChanger={false} // Hide size changer (as we have fixed page size)
+              totalPages={totalPages} // Specify total pages available
+              className="mt-4" // Styling for pagination
+            />
           </div>
         </div>
       )}

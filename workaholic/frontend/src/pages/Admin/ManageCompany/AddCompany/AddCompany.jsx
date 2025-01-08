@@ -18,8 +18,10 @@ const companySchema = z.object({
   //   description: z.string().min(1, "Description is required"),
   rating: z.coerce.number({ invalid_type_error: "Enter valid number" }).min(0, "Rating is required"),
   number_rating: z.coerce.number({ invalid_type_error: "Enter valid number" }).min(0, "Number of ratings is required"),
-  longitude: z.coerce.number({ invalid_type_error: "Enter valid number" }).min(-180).max(180, "Invalid longitude"),
-  lattidue: z.coerce.number({ invalid_type_error: "Enter valid number" }).min(-90).max(90, "Invalid latitude"),
+
+  longitude: z.coerce.number({ invalid_type_error: "Enter valid number" }).min(0, "Number of ratings is required"),
+  lattidue: z.coerce.number({ invalid_type_error: "Enter valid number" }).min(0, "Number of ratings is required"),
+
   address: z.string().min(1, "Address is required"),
   user_id: z.coerce.number({ invalid_type_error: "Enter valid number" }).min(1, "User ID is required"),
 });

@@ -1,11 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export const CompanyCard = ({ companyData }) => {
   // Destructure the company data
   const { img, name, feild, description, rating, number_rating, address } = companyData;
-
+  const navigate = useNavigate();
+  const handleCardClick = () => {
+    navigate(`/company/${companyData.id}`);
+  };
   return (
-    <div className="company-card-horizontal flex border p-4 rounded-lg shadow-lg">
+    <div className="company-card-horizontal flex border p-4 rounded-lg shadow-lg" onClick={handleCardClick}>
       {/* Company Image */}
       <div className="company-img w-1/3 mr-4">
         <img src={img} alt={name} className="w-full h-32  rounded-lg bg-cover bg-no-repeat" />

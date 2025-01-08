@@ -10,7 +10,16 @@ export const applicationApi = baseApi.injectEndpoints({
         body: applicationData,
         credentials: "include",
       }),
-      invalidatesTags: [{ type: "Application", id: "LIST" }],
+      // Trigger cache invalidation after success
+      onQueryStarted: async (applicationData, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          // Invalidate the Application list cache to trigger a refresh
+          dispatch(applicationApi.util.invalidateTags([{ type: "Application", id: "LIST" }]));
+        } catch (error) {
+          console.error("Error while creating application:", error);
+        }
+      },
     }),
 
     getUserApplication: build.query({
@@ -60,7 +69,16 @@ export const applicationApi = baseApi.injectEndpoints({
         method: "DELETE",
         credentials: "include",
       }),
-      invalidatesTags: (result, error, id) => [{ type: "Application", id }],
+      onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          // Invalidate the specific application cache and the list cache
+          dispatch(applicationApi.util.invalidateTags([{ type: "Application", id }]));
+          dispatch(applicationApi.util.invalidateTags([{ type: "Application", id: "LIST" }]));
+        } catch (error) {
+          console.error("Error while deleting application:", error);
+        }
+      },
     }),
 
     getApplicationsByJobId: build.query({

@@ -13,9 +13,6 @@ export default function Banner() {
           >
             <div className="w-full relative h-full rounded-lg bg-banner-ct ">
               <div className="absolute top-[20%] left-[8%]">
-                <p className="text-sm font-bold text-orange-500">Deal of the weekend</p>
-                <p className="font-serif text-4xl font-medium my-4 text-white">Hello, Austine Robertson</p>
-                <p className="text-gray-300 ">Get on every weekend</p>
                 <p className="px-4 py-3 bg-primary-color rounded-full inline-block text-white mt-4 cursor-pointer hover:bg-cyan-500 transition-all">
                   Check our offers
                 </p>

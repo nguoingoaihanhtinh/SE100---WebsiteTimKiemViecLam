@@ -16,10 +16,11 @@ const companySchema = z.object({
   img: z.string().url("Must be a valid URL"),
   feild: z.string().min(1, "Field is required"),
   //   description: z.string().min(1, "Description is required"),
+  longitude: z.coerce.number({ invalid_type_error: "Enter valid number" }).nullable(), // Add longitude
+  lattidue: z.coerce.number({ invalid_type_error: "Enter valid number" }).nullable(), // Add latitude
   rating: z.coerce.number({ invalid_type_error: "Enter valid number" }).min(0, "Rating is required"),
   number_rating: z.coerce.number({ invalid_type_error: "Enter valid number" }).min(0, "Number of ratings is required"),
-  longitude: z.coerce.number({ invalid_type_error: "Enter valid number" }).min(-180).max(180, "Invalid longitude"),
-  lattidue: z.coerce.number({ invalid_type_error: "Enter valid number" }).min(-90).max(90, "Invalid latitude"),
+
   address: z.string().min(1, "Address is required"),
   user_id: z.coerce.number({ invalid_type_error: "Enter valid number" }).min(1, "User ID is required"),
 });
@@ -35,8 +36,8 @@ export default function AddModal({ onClose, refetch, userId }) {
     description: "",
     rating: 0,
     number_rating: 0,
-    longitude: 0,
-    lattidue: 0,
+    longitude: null,
+    lattidue: null,
     address: "",
     user_id: "",
   };
@@ -52,17 +53,28 @@ export default function AddModal({ onClose, refetch, userId }) {
   });
 
   const onSubmit = async (data) => {
-    const cleanDescription = stripHtml(text);
+    console.log("Form data:", data); // Log the entire data object
 
-    const payload = { ...data, description: cleanDescription || "Empty" };
+    const cleanDescription = stripHtml(data.description);
+    const payload = {
+      ...data,
+      lattidue: data.latitude || 0, // Default to 0 if missing
+      longitude: data.longitude || 0, // Default to 0 if missing
+      description: cleanDescription || "Empty",
+    };
+
+    console.log("Submitting data:", payload);
 
     const res = await createCompany(payload);
     if (res) {
       toast.success("Add company success");
-      refetch();
+      if (refetch && typeof refetch === "function") {
+        refetch();
+      }
       onClose();
     }
   };
+
   useEffect(() => {
     if (userId) {
       setValue("user_id", userId);
@@ -126,7 +138,6 @@ export default function AddModal({ onClose, refetch, userId }) {
             step="any" // Allows decimal values
             className="mt-1 block w-full p-2 border rounded-md"
           />
-          {errors.longitude && <span className="text-red-500 text-sm">{errors.longitude.message}</span>}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Latitude</label>
@@ -136,7 +147,6 @@ export default function AddModal({ onClose, refetch, userId }) {
             step="any" // Allows decimal values
             className="mt-1 block w-full p-2 border rounded-md"
           />
-          {errors.lattidue && <span className="text-red-500 text-sm">{errors.lattidue.message}</span>}
         </div>
 
         <div>

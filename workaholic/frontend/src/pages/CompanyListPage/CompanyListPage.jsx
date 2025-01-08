@@ -46,17 +46,11 @@ const CompanyListPage = () => {
   };
   return (
     <div className="w-full flex flex-col justify-center gap-5 px-20">
-      <div className="bg-primary-color w-full p-5">
-        <SortBar />
-      </div>
       <div className="banner">
         <CompanyBanner />
       </div>
       <div className="w-full flex gap-10">
-        <div className="filter w-1/4 items-center">
-          <Filter />
-        </div>
-        <div className="content w-3/4">
+        <div className="content w-full">
           {isLoading ? (
             <div>Loading...</div>
           ) : (
